@@ -5,6 +5,8 @@ using service.Interfaces;
 
 namespace app.Controllers
 {
+    [ApiController]
+    [Route("api/solicitacaoacao")]
     public class SolicitacaoAcaoController
     {
         private readonly ISolicitacaoAcaoService solicitacaoAcaoService;
@@ -14,11 +16,10 @@ namespace app.Controllers
             this.solicitacaoAcaoService = solicitacaoAcaoService;
         }
         [HttpPost("SolicitacaoAcao")]
-        public IActionResult CadastrarSolicitacaoAcao([FromBody] SolicitacaoAcaoDTO solicitacaoacaoDTO)
+        public void EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoDTO solicitacaoacaoDTO)
         {
-            solicitacaoAcaoService.CadastrarSolicitacaoAcao(solicitacaoacaoDTO);
+            solicitacaoAcaoService.EnviarSolicitacaoAcao(solicitacaoacaoDTO);
 
-            return Ok();
         }
     }
 }

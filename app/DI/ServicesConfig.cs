@@ -7,6 +7,9 @@ namespace app.DI
     {
         public static void AddConfigServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

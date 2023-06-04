@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dominio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace service.Interfaces
 {
     public interface ISolicitacaoAcaoService
     {
+       public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO); 
     }
 }
