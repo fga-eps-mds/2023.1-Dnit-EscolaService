@@ -1,5 +1,6 @@
 using Dapper;
 using dominio;
+using dominio.Enums;
 using repositorio.Contexto;
 using repositorio.Interfaces;
 using System.Collections.Generic;
@@ -17,17 +18,9 @@ namespace repositorio
         }
 
 
-        public EscolasCadastradas VisualizarEscolas()
+        public IEnumerable<EscolaCadastrada> ObterEscolas()
         {
-            var sql = @"SELECT * FROM public.escolas";
-
-            var escolas = contexto?.Conexao.QuerySingleOrDefault<UsuarioDnit>(sql, parametro);
-
-            if (escolas == null)
-                return null;
-
-            return escolas;
+            throw new System.NotImplementedException();
         }
-
     }
 }

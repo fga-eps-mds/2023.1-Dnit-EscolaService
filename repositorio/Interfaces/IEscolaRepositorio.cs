@@ -1,9 +1,10 @@
 using dominio;
+using System.Collections.Generic;
 
 namespace repositorio.Interfaces
 {
-    public interface IEscolaRepositorios
+    public interface IEscolaRepositorio
     {
-        public EscolasCadastradas VisualizarEscolas();
+        public IEnumerable<EscolaCadastrada> ObterEscolas();
     }
 }
