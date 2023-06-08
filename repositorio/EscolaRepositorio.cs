@@ -18,7 +18,7 @@ namespace repositorio
         }
 
        
-        public Escola ListarEscolas(string nome)
+        public Escola ListarInformacoesEscolas(string nome)
         {
             var sql = @"SELECT * FROM public.escola WHERE nome = @Nome";
 
@@ -35,5 +35,18 @@ namespace repositorio
 
             return escola;
         }
+
+        public void AdicionarSituacao(string situacao){
+            var sql = @"INSERT INTO public.escola (situacao) VALUES (@Situacao)";
+
+
+            var parametro = new
+            {
+                Situacao = situacao
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
+
     }
 }

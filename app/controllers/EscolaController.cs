@@ -20,10 +20,17 @@ namespace app.Controllers
             this.escolaService = escolaService;
         }
         
-        [HttpGet("ListarEscolas")]
-        public IActionResult ListarEscola([FromBody] Escola escola)
+        [HttpGet("ListarInformacoesEscolas")]
+        public IActionResult ListarInformacoesEscolas([FromBody] Escola escola)
         {
-            escolaService.ListaEscolas(escola);
+            escolaService.ListarInformacoesEscolas(escola);
+            return Ok();
+        }
+
+        [HttpPost("AdicionarSituacao")]
+        public IActionResult AdicionarSituacao([FromBody]Escola escola)
+        {
+            escolaService.AdicionarSituacao(escola);
             return Ok();
         }
     }

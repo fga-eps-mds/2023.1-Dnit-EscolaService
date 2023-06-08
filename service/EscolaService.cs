@@ -20,9 +20,13 @@ namespace service
             this.mapper = mapper;
         }
 
-        public void ListaEscolas(Escola escola)
+        public void ListarInformacoesEscolas(Escola escola)
         {
-            escolaRepositorio.ListarEscolas(escola.Nome);
+            escolaRepositorio.ListarInformacoesEscolas(escola.Nome);
+        }
+
+        public void AdicionarSituacao(Escola escola){
+            escolaRepositorio.AdicionarSituacao(escola.Situacao);
         }
     }
 }

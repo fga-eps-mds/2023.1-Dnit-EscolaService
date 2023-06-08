@@ -10,7 +10,9 @@ namespace service.Interfaces
 {
     public interface IEscolaService
     {
-        public void ListaEscolas(Escola escola);
+        public void ListarInformacoesEscolas(Escola escola);
+
+        public void AdicionarSituacao(Escola escola);
 
     }
 }
