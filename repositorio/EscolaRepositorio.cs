@@ -36,13 +36,13 @@ namespace repositorio
             return escola;
         }
 
-        public void AdicionarSituacao(string situacao){
-            var sql = @"INSERT INTO public.escola (situacao) VALUES (@Situacao)";
-
+        public void AdicionarSituacao(string situacao, int id){
+            var sql = @"UPDATE public.escola SET situacao = @Situacao WHERE id = @Id";
 
             var parametro = new
             {
-                Situacao = situacao
+                Situacao = situacao, 
+                Id = id
             };
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);

@@ -25,8 +25,9 @@ namespace service
             escolaRepositorio.ListarInformacoesEscolas(escola.Nome);
         }
 
-        public void AdicionarSituacao(Escola escola){
-            escolaRepositorio.AdicionarSituacao(escola.Situacao);
+        public void AdicionarSituacao(Escola escola)
+        {
+            escolaRepositorio.AdicionarSituacao(escola.Situacao, escola.Id);
         }
     }
 }

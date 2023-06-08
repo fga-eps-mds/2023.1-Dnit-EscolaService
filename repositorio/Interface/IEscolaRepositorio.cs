@@ -6,6 +6,6 @@ namespace repositorio.Interfaces
     public interface IEscolaRepositorio
     {
         public Escola ListarInformacoesEscolas(string nome);
-        public void AdicionarSituacao(string situacao);
+        public void AdicionarSituacao(string situacao, int id);
     }
 }
