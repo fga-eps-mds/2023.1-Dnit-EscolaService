@@ -16,5 +16,9 @@ namespace service
         {
             return escolaRepositorio.ObterEscolas();
         }
+        public void Excluir(ExclusaoEscola exclusaoEscola)
+        {
+            escolaRepositorio.Excluir(exclusaoEscola.Id);
+        }
     }    
 }

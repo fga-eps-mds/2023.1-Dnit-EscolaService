@@ -21,5 +21,13 @@ namespace app.Controllers
             return listaEscolasCadastradas;
         }
 
+        [HttpDelete ("excluir")]
+        public IActionResult Excluir(ExclusaoEscola exclusaoEscola)
+        {
+            service.Excluir(exclusaoEscola);
+            return Ok();
+
+    }
+
     }
 }

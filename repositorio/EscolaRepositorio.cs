@@ -22,5 +22,9 @@ namespace repositorio
         {
             throw new System.NotImplementedException();
         }
+        public int Excluir(int Id)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
