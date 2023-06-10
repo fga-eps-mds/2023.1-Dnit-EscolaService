@@ -1,6 +1,7 @@
 ﻿using dominio;
 using Microsoft.AspNetCore.Mvc;
 using service;
+using service.Interfaces;
 using System.Collections;
 
 namespace app.Controllers
@@ -9,8 +10,8 @@ namespace app.Controllers
     [Route("escolas")]
     public class EscolaController : Controller
     {
-        private readonly EscolaService service;
-        public EscolaController(EscolaService service)
+        private readonly IEscolaService service;
+        public EscolaController(IEscolaService service)
         {
             this.service = service;
         }
