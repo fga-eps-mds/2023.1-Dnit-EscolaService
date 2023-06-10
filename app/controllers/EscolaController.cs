@@ -21,16 +21,16 @@ namespace app.Controllers
         }
         
         [HttpGet("ListarInformacoesEscolas")]
-        public IActionResult ListarInformacoesEscolas([FromBody] Escola escola)
+        public IActionResult ListarInformacoesEscolas([FromQuery] int id_escola)
         {
-            escolaService.ListarInformacoesEscolas(escola);
-            return Ok();
+            Escola escola = escolaService.ListarInformacoesEscolas(id_escola);
+            return Ok(escola);
         }
 
         [HttpPost("AdicionarSituacao")]
-        public IActionResult AdicionarSituacao([FromBody]Escola escola)
+        public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
         {
-            escolaService.AdicionarSituacao(escola);
+            escolaService.AdicionarSituacao(atualizarSituacaoDTO);
             return Ok();
         }
     }

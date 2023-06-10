@@ -18,14 +18,14 @@ namespace repositorio
         }
 
        
-        public Escola ListarInformacoesEscolas(string nome)
+        public Escola ListarInformacoesEscolas(int id_escola)
         {
-            var sql = @"SELECT * FROM public.escola WHERE nome = @Nome";
+            var sql = @"SELECT * FROM public.escola WHERE id_escola = @Id_escola";
 
 
             var parametro = new
             {
-                Nome = nome
+                Id_escola = id_escola
             };
 
             var escola = contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
@@ -36,13 +36,13 @@ namespace repositorio
             return escola;
         }
 
-        public void AdicionarSituacao(string situacao, int id){
-            var sql = @"UPDATE public.escola SET situacao = @Situacao WHERE id = @Id";
+        public void AdicionarSituacao(int id_situacao, int id_escola){
+            var sql = @"UPDATE public.escola SET id_situacao = @Id_situacao WHERE id_escola = @Id_escola";
 
             var parametro = new
             {
-                Situacao = situacao, 
-                Id = id
+                Id_situacao = id_situacao,
+                Id_escola = id_escola
             };
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);

@@ -20,14 +20,17 @@ namespace service
             this.mapper = mapper;
         }
 
-        public void ListarInformacoesEscolas(Escola escola)
+        public Escola ListarInformacoesEscolas(int id_escola)
         {
-            escolaRepositorio.ListarInformacoesEscolas(escola.Nome);
+            Escola escola = escolaRepositorio.ListarInformacoesEscolas(id_escola);
+            
+            return escola;
         }
 
-        public void AdicionarSituacao(Escola escola)
+        public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO)
         {
-            escolaRepositorio.AdicionarSituacao(escola.Situacao, escola.Id);
+            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.id_situacao, atualizarSituacaoDTO.id_escola);
         }
+
     }
 }
