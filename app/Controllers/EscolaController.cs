@@ -1,16 +1,17 @@
 ﻿using dominio;
 using Microsoft.AspNetCore.Mvc;
 using service;
+using service.Interfaces;
 using System.Collections;
 
 namespace app.Controllers
 {
     [ApiController]
-    [Route("escolas")]
-    public class EscolaController : Controller
+    [Route("api/escolas")]
+    public class EscolaController : ControllerBase
     {
-        private readonly EscolaService service;
-        public EscolaController(EscolaService service)
+        private readonly IEscolaService service;
+        public EscolaController(IEscolaService service)
         {
             this.service = service;
         }
