@@ -1,5 +1,6 @@
 ﻿using service.Interfaces;
 using repositorio.Interfaces;
+using dominio;
 
 namespace service
 {
@@ -10,6 +11,11 @@ namespace service
         public EscolaService(IEscolaRepositorio escolaRepositorio)
         {
             this.escolaRepositorio = escolaRepositorio;
+        }
+
+        public void CadastrarEscola(Escola escola)
+        {
+            escolaRepositorio.CadastrarEscola(escola);
         }
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
+using dominio;
 
 namespace app.Controllers
 {
@@ -17,9 +18,10 @@ namespace app.Controllers
         }
 
         [HttpPost("cadastroEscola")]
-        public IActionResult CadastrarEscola(IFormFile escolas)
+        public IActionResult CadastrarEscola(Escola escola)
         {
-
+            escolaService.CadastrarEscola(escola);
+            return Ok();
         }
     }
 }
