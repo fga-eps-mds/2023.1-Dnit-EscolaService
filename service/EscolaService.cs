@@ -1,4 +1,4 @@
-using dominio;
+﻿using dominio;
 using repositorio.Interfaces;
 using service.Interfaces;
 using AutoMapper;
@@ -20,16 +20,16 @@ namespace service
             this.mapper = mapper;
         }
 
-        public Escola ListarInformacoesEscolas(int id_escola)
+        public Escola ListarInformacoesEscola(int idEscola)
         {
-            Escola escola = escolaRepositorio.ListarInformacoesEscolas(id_escola);
+            Escola escola = escolaRepositorio.ListarInformacoesEscola(idEscola);
             
             return escola;
         }
 
         public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO)
         {
-            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.id_situacao, atualizarSituacaoDTO.id_escola);
+            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
 
     }

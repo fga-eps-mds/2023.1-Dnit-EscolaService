@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using dominio;
 using dominio.Enums;
 using repositorio.Contexto;
@@ -18,31 +18,51 @@ namespace repositorio
         }
 
        
-        public Escola ListarInformacoesEscolas(int id_escola)
+        public Escola ListarInformacoesEscola(int idEscola)
         {
-            var sql = @"SELECT * FROM public.escola WHERE id_escola = @Id_escola";
-
+            var sql = @"
+                SELECT
+                    nome_escola nomeEscola,
+                    codigo_escola codigoEscola,
+                    cep,
+                    endereco,
+                    latitude,
+                    longitude,
+                    numero_total_de_alunos numeroTotalDeAlunos,
+                    telefone,
+                    numero_total_de_docentes numeroTotalDeDocentes,
+                    id_escola idEscola,
+                    id_rede idRede,
+                    id_uf idUf,
+                    id_localizacao idLocalizacao,
+                    id_municipio idMunicipio,
+                    id_etapas_de_ensino idEtapasDeEnsino,
+                    id_porte idPorte,
+                    id_situacao idSituacao
+                FROM
+                    public.escola
+                WHERE
+                    id_escola = @IdEscola";
 
             var parametro = new
             {
-                Id_escola = id_escola
+                IdEscola = idEscola
             };
 
             var escola = contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
 
             if (escola == null)
                 return null;
-
             return escola;
         }
 
-        public void AdicionarSituacao(int id_situacao, int id_escola){
-            var sql = @"UPDATE public.escola SET id_situacao = @Id_situacao WHERE id_escola = @Id_escola";
+        public void AdicionarSituacao(int idSituacao, int idEscola){
+            var sql = @"UPDATE public.escola SET id_situacao = @IdSituacao WHERE id_escola = @IdEscola";
 
             var parametro = new
             {
-                Id_situacao = id_situacao,
-                Id_escola = id_escola
+                IdSituacao = idSituacao,
+                IdEscola = idEscola
             };
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);

@@ -2,7 +2,7 @@ namespace dominio
 {
     public class AtualizarSituacaoDTO
     {
-        public int id_situacao {get; set;}
-        public int id_escola {get; set;}
+        public int IdSituacao {get; set;}
+        public int IdEscola {get; set;}
     }
 }

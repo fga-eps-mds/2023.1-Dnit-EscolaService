@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using dominio;
 using Microsoft.AspNetCore.Mvc;
 using service;
@@ -20,14 +20,14 @@ namespace app.Controllers
             this.escolaService = escolaService;
         }
         
-        [HttpGet("ListarInformacoesEscolas")]
-        public IActionResult ListarInformacoesEscolas([FromQuery] int id_escola)
+        [HttpGet("listarInformacoesEscola")]
+        public IActionResult ListarInformacoesEscola([FromQuery] int idEscola)
         {
-            Escola escola = escolaService.ListarInformacoesEscolas(id_escola);
+            Escola escola = escolaService.ListarInformacoesEscola(idEscola);
             return Ok(escola);
         }
 
-        [HttpPost("AdicionarSituacao")]
+        [HttpPost("adicionarSituacao")]
         public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
         {
             escolaService.AdicionarSituacao(atualizarSituacaoDTO);
