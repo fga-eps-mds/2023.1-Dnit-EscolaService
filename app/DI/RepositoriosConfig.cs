@@ -1,5 +1,4 @@
 ﻿using repositorio;
-using repositorio.Interfaces;
 
 namespace app.DI
 {
