@@ -6,8 +6,8 @@ using service.Interfaces;
 namespace app.Controllers
 {
     [ApiController]
-    [Route("api/solicitacaoacao")]
-    public class SolicitacaoAcaoController
+    [Route("api/solicitacaoAcao")]
+    public class SolicitacaoAcaoController : ControllerBase
     {
         private readonly ISolicitacaoAcaoService solicitacaoAcaoService;
 
@@ -15,10 +15,10 @@ namespace app.Controllers
         {
             this.solicitacaoAcaoService = solicitacaoAcaoService;
         }
-        [HttpPost("SolicitacaoAcao")]
-        public void EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoDTO solicitacaoacaoDTO)
+        [HttpPost]
+        public void EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoDTO solicitacaoAcaoDTO)
         {
-            solicitacaoAcaoService.EnviarSolicitacaoAcao(solicitacaoacaoDTO);
+            solicitacaoAcaoService.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
         }
     }

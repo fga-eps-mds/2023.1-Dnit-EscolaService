@@ -20,14 +20,16 @@ namespace service
         }
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO)
         {
-            string mensagem = $"Nova solicitação de ação em escola\n\n" +
+            string ciclosEnsino = "\n" + string.Join("\n", solicitacaoAcaoDTO.CiclosEnsino.Select(ciclo => $"    > {ciclo}"));
+
+            string mensagem = $"Nova solicitação de ação em escola.\n\n" +
                             $"Escola: {solicitacaoAcaoDTO.Escola}\n" +
                             $"Nome do Solicitante: {solicitacaoAcaoDTO.NomeSolicitante}\n" +
                             $"Vínculo com a escola: {solicitacaoAcaoDTO.VinculoEscola}\n" +
                             $"Email: {solicitacaoAcaoDTO.Email}\n" +
                             $"Telefone: {solicitacaoAcaoDTO.Telefone}\n" +
-                            $"Ciclos de ensino: {solicitacaoAcaoDTO.CiclosEnsino}\n" +
-                            $"Quantidade de alunos{solicitacaoAcaoDTO.QuantidadeAlunos}\n" +
+                            $"Ciclos de ensino: {ciclosEnsino}\n" +
+                            $"Quantidade de alunos: {solicitacaoAcaoDTO.QuantidadeAlunos}\n" +
                             $"Observações: {solicitacaoAcaoDTO.Observacoes}\n";
             string emailDestinatario = Environment.GetEnvironmentVariable("EMAIL_DNIT");
             EnviarEmail(emailDestinatario, "Solicitação de Serviço", mensagem);

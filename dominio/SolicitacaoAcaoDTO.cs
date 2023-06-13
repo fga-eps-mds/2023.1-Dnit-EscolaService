@@ -13,7 +13,7 @@ namespace dominio
         public string VinculoEscola { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }
-        public string CiclosEnsino { get; set; }
+        public string[] CiclosEnsino { get; set; }
         public int QuantidadeAlunos { get; set; }
         public string Observacoes { get; set; }
     }
