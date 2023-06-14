@@ -21,7 +21,27 @@ namespace repositorio
 
         public IEnumerable<EscolaCadastrada> ObterEscolas()
         {
-            var sql = @"SELECT * FROM public.escola";
+            var sql = @"
+            SELECT
+                nome_escola nomeEscola,
+                codigo_escola codigoEscola,
+                cep,
+                endereco,
+                latitude,
+                longitude,
+                numero_total_de_alunos numeroTotalDeAlunos,
+                telefone,
+                numero_total de docentes numeroTotalDeDocentes,
+                id_escola idEscola,
+                id_rede idRede,
+                id_uf idUf,
+                id_localizacao idLocalizacao,
+                id_municipio idMunicipio,
+                id_etapas_de_ensino idEtapasDeEnsino,
+                id_porte idPorte,
+                id_situacao idSituacao
+            FROM
+                public.escola";
 
             var escolas = contexto?.Conexao.Query<EscolaCadastrada>(sql);
 
@@ -31,99 +51,6 @@ namespace repositorio
             return escolas;
 
         }
-
-        /*
-        public EscolaCadastrada ListarEscolasNome(string nome)
-        {
-            var sql = @"SELECT * FROM public.escola WHERE nome_escola = @Nome";
-
-
-            var parametro = new
-            {
-                Nome = nome
-            };
-
-            var escola = contexto?.Conexao.QuerySingleOrDefault<EscolaCadastrada>(sql, parametro);
-
-            if (escola == null)
-                return null;
-
-            return escola;
-        }
-
-        public EscolaCadastrada ListarEscolasEtapas(string etapas_ensino)
-        {
-            var sql = @"SELECT * FROM public.escola WHERE id_etapas_de_ensino = @EtapasEnsino";
-
-
-            var parametro = new
-            {
-                EtapasEnsino = etapas_ensino
-            };
-
-            var escola = contexto?.Conexao.QuerySingleOrDefault<EscolaCadastrada>(sql, parametro);
-
-            if (escola == null)
-                return null;
-
-            return escola;
-        }
-
-
-        public EscolaCadastrada ListarEscolasUF(string uf)
-        {
-            var sql = @"SELECT * FROM public.escola WHERE id_uf = @UF";
-
-
-            var parametro = new
-            {
-                UF = uf
-            };
-
-            var escola = contexto?.Conexao.QuerySingleOrDefault<EscolaCadastrada>(sql, parametro);
-
-            if (escola == null)
-                return null;
-
-            return escola;
-        }
-       
-       public EscolaCadastrada ListarEscolasSituacao(string situacao)
-       {
-           var sql = @"SELECT * FROM public.escola WHERE situacao = @Situacao";
-
-
-           var parametro = new
-           {
-               Situacao = situacao
-           };
-
-           var escola = contexto?.Conexao.QuerySingleOrDefault<EscolaCadastrada>(sql, parametro);
-
-           if (escola == null)
-               return null;
-
-           return escola;
-       }
-
-       public EscolaCadastrada ListarEscolasMunicipio(string municipio)
-       {
-           var sql = @"SELECT * FROM public.escola WHERE id_municipio = @Municipio";
-
-
-           var parametro = new
-           {
-               Municipio = municipio
-           };
-
-           var escola = contexto?.Conexao.QuerySingleOrDefault<EscolaCadastrada>(sql, parametro);
-
-           if (escola == null)
-               return null;
-
-           return escola;
-       }
-        */
     }
 
 }
