@@ -19,7 +19,7 @@ namespace repositorio
         }
 
 
-        public IEnumerable<EscolaCadastrada> ObterEscolas()
+        public IEnumerable<Escola> ObterEscolas()
         {
             var sql = @"
             SELECT
@@ -31,7 +31,7 @@ namespace repositorio
                 longitude,
                 numero_total_de_alunos numeroTotalDeAlunos,
                 telefone,
-                numero_total de docentes numeroTotalDeDocentes,
+                numero_total_de_docentes numeroTotalDeDocentes,
                 id_escola idEscola,
                 id_rede idRede,
                 id_uf idUf,
@@ -43,7 +43,7 @@ namespace repositorio
             FROM
                 public.escola";
 
-            var escolas = contexto?.Conexao.Query<EscolaCadastrada>(sql);
+            var escolas = contexto?.Conexao.Query<Escola>(sql);
 
             if (escolas == null)
                 return null;

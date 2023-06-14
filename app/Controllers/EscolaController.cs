@@ -16,10 +16,10 @@ namespace app.Controllers
             this.service = service;
         }
         [HttpGet]
-        public IEnumerable<EscolaCadastrada> Listar()
+        public IEnumerable<Escola> Listar()
         {
-            IEnumerable<EscolaCadastrada> listaEscolasCadastradas = service.Listar();
-            return listaEscolasCadastradas;
+            IEnumerable<Escola> listaEscola = service.Listar();
+            return listaEscola;
         }
 
     }

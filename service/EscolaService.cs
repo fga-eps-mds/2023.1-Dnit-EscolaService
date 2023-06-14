@@ -12,7 +12,7 @@ namespace service
         {
             this.escolaRepositorio = escolaRepositorio;
         }
-        public IEnumerable<EscolaCadastrada> Listar()
+        public IEnumerable<Escola> Listar()
         {
             return escolaRepositorio.ObterEscolas();
         }

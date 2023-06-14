@@ -5,6 +5,6 @@ namespace service.Interfaces
 {
     public interface IEscolaService
     {
-        public IEnumerable<EscolaCadastrada> Listar();
+        public IEnumerable<Escola> Listar();
     }
 }

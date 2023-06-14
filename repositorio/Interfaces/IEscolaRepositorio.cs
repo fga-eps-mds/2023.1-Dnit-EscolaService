@@ -5,6 +5,6 @@ namespace repositorio.Interfaces
 {
     public interface IEscolaRepositorio
     {
-        public IEnumerable<EscolaCadastrada> ObterEscolas();
+        public IEnumerable<Escola> ObterEscolas();
     }
 }
