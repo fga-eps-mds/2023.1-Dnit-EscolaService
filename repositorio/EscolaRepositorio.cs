@@ -4,6 +4,9 @@ using repositorio.Contexto;
 using static repositorio.Contexto.ResolverContexto;
 using dominio;
 using Dapper;
+using CsvHelper;
+
+
 
 namespace repositorio
 {
@@ -47,6 +50,21 @@ namespace repositorio
 
             contexto?.Conexao.Execute(sqlInserirEscola, parametrosEscola);
         }
+
+        public void CadastrarEscolaCSV (Escola escola){
+            using (var reader = new System.IO.StreamReader("escola.csv"))
+            using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture))
+            {
+                var records = csv.GetRecords<Escola>();
+            }
+
+            var configuration = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
+            {
+                Delimiter = ";",
+                Comment = '%'
+            };
+        }
+
 
         
     }
