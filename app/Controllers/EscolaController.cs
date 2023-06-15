@@ -23,5 +23,14 @@ namespace app.Controllers
             escolaService.CadastrarEscola(escola);
             return Ok();
         }
+
+        [Consumes("multipart/form-data")]
+        [HttpPost("cadastrarEscolaPlanilha")]
+        public IActionResult EnviarPlanilha(IFormFile arquivo)
+        {
+            //o arquivo vai chegar aqui e vocês vão usar na escola service
+            return Ok();
+    
+        }
     }
 }
