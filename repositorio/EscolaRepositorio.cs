@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using dominio;
 using dominio.Enums;
 using repositorio.Contexto;
@@ -17,8 +17,40 @@ namespace repositorio
             contexto = resolverContexto(ContextoBancoDeDados.Postgresql);
         }
 
+        public IEnumerable<Escola> Obter()
+        {
+            var sql = @"
+            SELECT
+                nome_escola nomeEscola,
+                codigo_escola codigoEscola,
+                cep,
+                endereco,
+                latitude,
+                longitude,
+                numero_total_de_alunos numeroTotalDeAlunos,
+                telefone,
+                numero_total_de_docentes numeroTotalDeDocentes,
+                id_escola idEscola,
+                id_rede idRede,
+                id_uf idUf,
+                id_localizacao idLocalizacao,
+                id_municipio idMunicipio,
+                id_etapas_de_ensino idEtapasDeEnsino,
+                id_porte idPorte,
+                id_situacao idSituacao
+            FROM
+                public.escola";
+
+            var escolas = contexto?.Conexao.Query<Escola>(sql);
+
+            if (escolas == null)
+                return null;
+
+            return escolas;
+
+        }
        
-        public Escola ListarInformacoesEscola(int idEscola)
+        public Escola Obter(int idEscola)
         {
             var sql = @"
                 SELECT

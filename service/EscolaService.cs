@@ -1,28 +1,26 @@
-﻿using dominio;
+using AutoMapper;
+using dominio;
 using repositorio.Interfaces;
 using service.Interfaces;
-using AutoMapper;
 using System.Collections.Generic;
-using System;
-using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace service
 {
     public class EscolaService : IEscolaService
     {
-
         private readonly IEscolaRepositorio escolaRepositorio;
-        private readonly IMapper mapper;
-
-        public EscolaService(IEscolaRepositorio escolaRepositorio, IMapper mapper)
+        public EscolaService(IEscolaRepositorio escolaRepositorio)
         {
             this.escolaRepositorio = escolaRepositorio;
-            this.mapper = mapper;
+        }
+        public IEnumerable<Escola> Listar()
+        {
+            return escolaRepositorio.Obter();
         }
 
-        public Escola ListarInformacoesEscola(int idEscola)
+        public Escola Listar(int idEscola)
         {
-            Escola escola = escolaRepositorio.ListarInformacoesEscola(idEscola);
+            Escola escola = escolaRepositorio.Obter(idEscola);
             
             return escola;
         }
