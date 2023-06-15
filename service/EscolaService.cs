@@ -1,3 +1,4 @@
+using AutoMapper;
 using dominio;
 using repositorio.Interfaces;
 using service.Interfaces;
@@ -14,7 +15,20 @@ namespace service
         }
         public IEnumerable<Escola> Listar()
         {
-            return escolaRepositorio.ObterEscolas();
+            return escolaRepositorio.Obter();
         }
-    }    
+
+        public Escola Listar(int idEscola)
+        {
+            Escola escola = escolaRepositorio.Obter(idEscola);
+            
+            return escola;
+        }
+
+        public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO)
+        {
+            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
+        }
+
+    }
 }

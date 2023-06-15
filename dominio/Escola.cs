@@ -3,7 +3,7 @@ namespace dominio
     public class Escola
     {
         public int IdEscola { get; set; }
-        public int CodigoEscola { get; set;}
+        public int CodigoEscola { get; set; }
         public string NomeEscola { get; set; }
         public int IdRede { get; set; }
         public string Cep { get; set; }
@@ -19,6 +19,5 @@ namespace dominio
         public int IdPorte { get; set; }
         public string Telefone { get; set; }
         public int NumeroTotalDeDocentes{ get; set; }
-
     }
 }

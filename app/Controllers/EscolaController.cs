@@ -1,26 +1,39 @@
 ﻿using dominio;
 using Microsoft.AspNetCore.Mvc;
-using service;
 using service.Interfaces;
-using System.Collections;
 
 namespace app.Controllers
 {
     [ApiController]
-    [Route("escolas")]
-    public class EscolaController : Controller
+    [Route("api/escolas")]
+    public class EscolaController : ControllerBase
     {
-        private readonly IEscolaService service;
-        public EscolaController(IEscolaService service)
+        private readonly IEscolaService escolaService;
+
+        public EscolaController(IEscolaService escolaService)
         {
-            this.service = service;
-        }
-        [HttpGet]
-        public IEnumerable<Escola> Listar()
-        {
-            IEnumerable<Escola> listaEscola = service.Listar();
-            return listaEscola;
+            this.escolaService = escolaService;
         }
 
+        [HttpGet("listarEscolas")]
+        public IEnumerable<Escola> Listar()
+        {
+            IEnumerable<Escola> escolas = escolaService.Listar();
+            return escolas;
+        }
+
+        [HttpGet("listarInformacoesEscola")]
+        public IActionResult ListarInformacoesEscola([FromQuery] int idEscola)
+        {
+            Escola escola = escolaService.Listar(idEscola);
+            return Ok(escola);
+        }
+
+        [HttpPost("adicionarSituacao")]
+        public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
+        {
+            escolaService.AdicionarSituacao(atualizarSituacaoDTO);
+            return Ok();
+        }
     }
 }
