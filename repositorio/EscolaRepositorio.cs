@@ -5,8 +5,7 @@ using static repositorio.Contexto.ResolverContexto;
 using dominio;
 using Dapper;
 using CsvHelper;
-
-
+using System.Collections.Generic;
 
 namespace repositorio
 {
@@ -30,28 +29,29 @@ namespace repositorio
 
             var parametrosEscola = new
             {
-                Codigo_escola = escola.codigo_escola,
-                Nome_escola = escola.nome_escola,
-                Id_rede = escola.Id_rede,
-                CEP = escola.CEP,
-                Id_uf = escola.Id_uf,
+                Codigo_escola = escola.CodigoEscola,
+                Nome_escola = escola.NomeEscola,
+                Id_rede = escola.IdRede,
+                CEP = escola.Cep,
+                Id_uf = escola.IdUf,
                 Endereco = escola.Endereco,
-                Id_municipio = escola.Id_municipio,
-                Id_localizacao = escola.Id_localizacao,
+                Id_municipio = escola.IdMunicipio,
+                Id_localizacao = escola.IdLocalizacao,
                 Longitude = escola.Longitude,
                 Latitude = escola.Latitude,
-                Id_etapas_de_ensino = escola.Id_etapas_de_ensino,
-                Numero_total_de_alunos = escola.Numero_total_de_alunos,
-                Id_situacao = escola.Id_situacao,
-                Id_porte = escola.Id_porte,
+                Id_etapas_de_ensino = escola.IdEtapasDeEnsino,
+                Numero_total_de_alunos = escola.NumeroTotalDeAlunos,
+                Id_situacao = escola.IdSituacao,
+                Id_porte = escola.IdPorte,
                 Telefone = escola.Telefone,
-                Numero_total_de_docentes = escola.Numero_total_de_docentes
+                Numero_total_de_docentes = escola.NumeroTotalDeAlunos
             };
 
             contexto?.Conexao.Execute(sqlInserirEscola, parametrosEscola);
         }
 
-        public void CadastrarEscolaCSV (Escola escola){
+        public void CadastrarEscolaCSV(Escola escola)
+        {
             using (var reader = new System.IO.StreamReader("escola.csv"))
             using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture))
             {
@@ -64,10 +64,87 @@ namespace repositorio
                 Comment = '%'
             };
         }
+        public IEnumerable<Escola> Obter()
+        {
+            var sql = @"
+            SELECT
+                nome_escola nomeEscola,
+                codigo_escola codigoEscola,
+                cep,
+                endereco,
+                latitude,
+                longitude,
+                numero_total_de_alunos numeroTotalDeAlunos,
+                telefone,
+                numero_total_de_docentes numeroTotalDeDocentes,
+                id_escola idEscola,
+                id_rede idRede,
+                id_uf idUf,
+                id_localizacao idLocalizacao,
+                id_municipio idMunicipio,
+                id_etapas_de_ensino idEtapasDeEnsino,
+                id_porte idPorte,
+                id_situacao idSituacao
+            FROM
+                public.escola";
 
+            var escolas = contexto?.Conexao.Query<Escola>(sql);
 
-        
+            if (escolas == null)
+                return null;
+
+            return escolas;
+
+        } 
+        public Escola Obter(int idEscola)
+        {
+            var sql = @"
+                SELECT
+                    nome_escola nomeEscola,
+                    codigo_escola codigoEscola,
+                    cep,
+                    endereco,
+                    latitude,
+                    longitude,
+                    numero_total_de_alunos numeroTotalDeAlunos,
+                    telefone,
+                    numero_total_de_docentes numeroTotalDeDocentes,
+                    id_escola idEscola,
+                    id_rede idRede,
+                    id_uf idUf,
+                    id_localizacao idLocalizacao,
+                    id_municipio idMunicipio,
+                    id_etapas_de_ensino idEtapasDeEnsino,
+                    id_porte idPorte,
+                    id_situacao idSituacao
+                FROM
+                    public.escola
+                WHERE
+                    id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = idEscola
+            };
+
+            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+
+            if (escola == null)
+                return null;
+            return escola;
+        }
+
+        public void AdicionarSituacao(int idSituacao, int idEscola){
+            var sql = @"UPDATE public.escola SET id_situacao = @IdSituacao WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdSituacao = idSituacao,
+                IdEscola = idEscola
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
+
     }
-
-
 }

@@ -5,11 +5,9 @@ using dominio;
 namespace app.Controllers
 {
     [ApiController]
-    [Route("api/controller")]
-
+    [Route("api/escolas")]
     public class EscolaController : ControllerBase
     {
-
         private readonly IEscolaService escolaService;
 
         public EscolaController(IEscolaService escolaService)
@@ -31,6 +29,27 @@ namespace app.Controllers
             //o arquivo vai chegar aqui e vocês vão usar na escola service
             return Ok();
     
+        }
+
+        [HttpGet("listarEscolas")]
+        public IEnumerable<Escola> Listar()
+        {
+            IEnumerable<Escola> escolas = escolaService.Listar();
+            return escolas;
+        }
+
+        [HttpGet("listarInformacoesEscola")]
+        public IActionResult ListarInformacoesEscola([FromQuery] int idEscola)
+        {
+            Escola escola = escolaService.Listar(idEscola);
+            return Ok(escola);
+        }
+
+        [HttpPost("adicionarSituacao")]
+        public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
+        {
+            escolaService.AdicionarSituacao(atualizarSituacaoDTO);
+            return Ok();
         }
     }
 }
