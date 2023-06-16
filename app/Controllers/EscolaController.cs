@@ -35,5 +35,12 @@ namespace app.Controllers
             escolaService.AdicionarSituacao(atualizarSituacaoDTO);
             return Ok();
         }
+
+        [HttpPost("removerSituacao")]
+        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        {
+            escolaService.RemoverSituacaoEscola(idEscola);
+            return Ok();
+        }
     }
 }
