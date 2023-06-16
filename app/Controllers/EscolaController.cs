@@ -24,11 +24,26 @@ namespace app.Controllers
 
         [Consumes("multipart/form-data")]
         [HttpPost("cadastrarEscolaPlanilha")]
-        public IActionResult EnviarPlanilha(IFormFile arquivo)
+        public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
         {
-            //o arquivo vai chegar aqui e vocês vão usar na escola service
-            return Ok();
-    
+            try
+            {
+                if (arquivo == null || arquivo.Length == 0)
+                    return BadRequest("Nenhum arquivo enviado.");
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await arquivo.CopyToAsync(memoryStream);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpGet("listarEscolas")]

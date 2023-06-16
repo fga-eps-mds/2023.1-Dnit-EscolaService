@@ -4,6 +4,7 @@ using dominio;
 using repositorio.Interfaces;
 using service.Interfaces;
 using System.Collections.Generic;
+using Microsoft.VisualBasic.FileIO;
 
 namespace service
 {
@@ -22,9 +23,19 @@ namespace service
 
         public void CadastrarEscolaViaPlanilha(MemoryStream planilha)
         {
-            /// arquivo vocês precisam ler o memory stream da planilha e enviar
-            /// cada linha pro repositório
-            throw new System.NotImplementedException();
+            using (var reader = new StreamReader(planilha))
+            {
+                using (var parser = new TextFieldParser(reader))
+                {
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(";");
+
+                    while (!parser.EndOfData)
+                    {
+                        string[] linha = parser.ReadFields();
+                    }
+                }
+            }
         }
         public IEnumerable<Escola> Listar()
         {
