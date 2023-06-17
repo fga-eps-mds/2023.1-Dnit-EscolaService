@@ -1,3 +1,4 @@
+using AutoMapper;
 using dominio;
 using repositorio.Interfaces;
 using service.Interfaces;
@@ -12,13 +13,28 @@ namespace service
         {
             this.escolaRepositorio = escolaRepositorio;
         }
-        public IEnumerable<EscolaCadastrada> Listar()
+        public IEnumerable<Escola> Listar()
         {
-            return escolaRepositorio.ObterEscolas();
+            return escolaRepositorio.Obter();
         }
         public void Excluir(ExclusaoEscola exclusaoEscola)
         {
             escolaRepositorio.Excluir(exclusaoEscola.Id);
+
         }
-    }    
+        public Escola Listar(int idEscola)
+        {
+            Escola escola = escolaRepositorio.Obter(idEscola);
+
+            return escola;
+        }
+
+        public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO)
+        {
+            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
+        }
+
+    }
 }
+
+
