@@ -50,17 +50,17 @@ namespace repositorio
             return escolas;
 
         }
-        public int? Excluir(int Id)
+        public void ExcluirEscola(int id)
         {
-            var sqlBuscarDados = @"DELETE FROM public.escola WHERE id_escola = @IdEscola RETURNING id_escola";
+            var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
 
             var parametro = new
             {
-                IdEscola = Id,
+                IdEscola = id,
             };
 
-            int? IdEscola = contexto?.Conexao.Execute(sqlBuscarDados, parametro);
-            return IdEscola;
+            contexto?.Conexao.Execute(sql, parametro);
+          
         }
 
        

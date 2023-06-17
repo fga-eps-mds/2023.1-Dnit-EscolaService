@@ -19,13 +19,13 @@ namespace app.Controllers
             this.escolaService = escolaService;
         }
 
-        [HttpDelete ("excluir")]
-        public IActionResult Excluir(ExclusaoEscola exclusaoEscola)
+        [HttpDelete("excluir")]
+        public IActionResult ExcluirEscola([FromQuery] int id)
         {
-            escolaService.Excluir(exclusaoEscola);
+            escolaService.ExcluirEscola(id);
             return Ok();
 
-    }
+        }
 
 
         [HttpGet("listarEscolas")]
