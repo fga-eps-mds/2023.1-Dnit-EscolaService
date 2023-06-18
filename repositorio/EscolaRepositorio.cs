@@ -3,6 +3,7 @@ using dominio;
 using dominio.Enums;
 using repositorio.Contexto;
 using repositorio.Interfaces;
+using System;
 using System.Collections.Generic;
 using static repositorio.Contexto.ResolverContexto;
 
@@ -49,6 +50,19 @@ namespace repositorio
             return escolas;
 
         }
+        public void ExcluirEscola(int id)
+        {
+            var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = id,
+            };
+
+            contexto?.Conexao.Execute(sql, parametro);
+          
+        }
+
        
         public Escola Obter(int idEscola)
         {
@@ -99,7 +113,6 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
-
         public void RemoverSituacaoEscola(int idEscola)
         {
             var sql = @"UPDATE public.escola SET id_situacao = NULL WHERE id_escola = @IdEscola";
@@ -111,6 +124,5 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro); 
         }
-
     }
 }
