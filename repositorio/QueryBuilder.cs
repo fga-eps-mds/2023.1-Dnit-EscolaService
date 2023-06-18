@@ -28,7 +28,7 @@ namespace repositorio
 
         public QueryBuilder Join(string tabela, string colunaEsquerda, string colunaDireita)
         {
-            queryBuilder.AppendLine($"JOIN {tabela} ON {colunaEsquerda} = {colunaDireita}");
+            queryBuilder.AppendLine($"LEFT JOIN {tabela} ON {colunaEsquerda} = {colunaDireita}");
             return this;
         }
 

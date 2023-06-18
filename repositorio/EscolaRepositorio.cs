@@ -19,27 +19,29 @@ namespace repositorio
 
         public IEnumerable<Escola> Obter()
         {
-            var sql = @"
-            SELECT
-                nome_escola nomeEscola,
-                codigo_escola codigoEscola,
-                cep,
-                endereco,
-                latitude,
-                longitude,
-                numero_total_de_alunos numeroTotalDeAlunos,
-                telefone,
-                numero_total_de_docentes numeroTotalDeDocentes,
-                id_escola idEscola,
-                id_rede idRede,
-                id_uf idUf,
-                id_localizacao idLocalizacao,
-                id_municipio idMunicipio,
-                id_etapas_de_ensino idEtapasDeEnsino,
-                id_porte idPorte,
-                id_situacao idSituacao
-            FROM
-                public.escola";
+            string[] colunas = {
+                    "escola.nome_escola nomeEscola", "escola.codigo_escola codigoEscola", "escola.cep", "escola.endereco",
+                    "escola.latitude", "escola.longitude", "escola.numero_total_de_alunos numeroTotalDeAlunos", "escola.telefone",
+                    "escola.numero_total_de_docentes numeroTotalDeDocentes", "escola.id_escola idEscola",
+                    "escola.id_rede idRede", "rede.descricao_rede descricaoRede",
+                    "escola.id_uf idUf", "uf.sigla siglaUf",
+                    "escola.id_localizacao idLocalizacao", "localizacao.descricao_localizacao descricaoLocalizacao",
+                    "escola.id_municipio idMunicipio", "municipio.nome nomeMunicipio",
+                    "escola.id_etapas_de_ensino idEtapasDeEnsino", "etapas.descricao_etapas_de_ensino descricaoEtapasDeEnsino",
+                    "escola.id_porte idPorte", "porte.descricao_porte descricaoPorte",
+                    "escola.id_situacao idSituacao", "situacao.descricao_situacao descricaoSituacao"
+            };
+            var queryBuilder = new QueryBuilder();
+            var sql = queryBuilder.Select(colunas)
+                        .From("public.escola")
+                        .Join("public.rede rede", "escola.id_rede", "rede.id_rede")
+                        .Join("public.unidade_federativa uf", "escola.id_uf", "uf.id")
+                        .Join("public.localizacao localizacao", "escola.id_localizacao", "localizacao.id_localizacao")
+                        .Join("public.municipio municipio", "escola.id_municipio", "municipio.id_municipio")
+                        .Join("public.etapas_de_ensino etapas", "escola.id_etapas_de_ensino", "etapas.id_etapas_de_ensino")
+                        .Join("public.porte porte", "escola.id_porte", "porte.id_porte")
+                        .Join("public.situacao situacao", "escola.id_situacao", "situacao.id_situacao")
+                        .Build();
 
             var escolas = contexto?.Conexao.Query<Escola>(sql);
 
@@ -47,6 +49,7 @@ namespace repositorio
                 return null;
 
             return escolas;
+
 
         }
        
