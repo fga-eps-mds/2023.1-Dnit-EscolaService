@@ -49,5 +49,11 @@ namespace app.Controllers
             return Ok();
         }
 
+        [HttpPost("removerSituacao")]
+        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        {
+            escolaService.RemoverSituacaoEscola(idEscola);
+            return Ok();
+        }
     }
 }

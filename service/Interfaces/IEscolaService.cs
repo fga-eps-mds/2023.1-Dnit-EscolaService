@@ -7,10 +7,9 @@ namespace service.Interfaces
     {
         public IEnumerable<Escola> Listar();
         public void ExcluirEscola(int id);
-
         public Escola Listar(int idEscola);
         public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO);
-
+        public void RemoverSituacaoEscola(int idEscola);
     }
 
 }
