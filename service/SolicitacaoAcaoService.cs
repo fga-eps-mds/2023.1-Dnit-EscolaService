@@ -9,15 +9,19 @@ using System.Net.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace service
 {
     public class SolicitacaoAcaoService : ISolicitacaoAcaoService
     {
-        public SolicitacaoAcaoService()
-        {
+        private readonly ISmtpClientWrapper _smtpClientWrapper;
 
+        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper)
+        {
+            _smtpClientWrapper = smtpClientWrapper;
         }
+
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO)
         {
             string ciclosEnsino = "\n" + string.Join("\n", solicitacaoAcaoDTO.CiclosEnsino.Select(ciclo => $"    > {ciclo}"));
@@ -33,9 +37,6 @@ namespace service
                             $"Observações: {solicitacaoAcaoDTO.Observacoes}\n";
             string emailDestinatario = Environment.GetEnvironmentVariable("EMAIL_DNIT");
             EnviarEmail(emailDestinatario, "Solicitação de Serviço", mensagem);
-
-
-
         }
         public void EnviarEmail(string emailDestinatario, string assunto, string corpo)
         {
@@ -43,21 +44,13 @@ namespace service
             MailMessage mensagem = new MailMessage();
 
             string emailRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_ADDRESS");
-            string senhaRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_PASSWORD");
 
             mensagem.From = new MailAddress(emailRemetente);
             mensagem.Subject = assunto;
             mensagem.To.Add(new MailAddress(emailDestinatario));
             mensagem.Body = corpo;
 
-            var clienteSmtp = new SmtpClient("smtp-mail.outlook.com")
-            {
-                Port = 587,
-                Credentials = new NetworkCredential(emailRemetente, senhaRemetente),
-                EnableSsl = true,
-
-            };
-            clienteSmtp.Send(mensagem);
+            _smtpClientWrapper.Send(mensagem);
         }
     }
 }
