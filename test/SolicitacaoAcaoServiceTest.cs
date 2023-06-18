@@ -10,6 +10,13 @@ namespace test
 {
     public class SolicitacaoAcaoServiceTest
     {
+        public SolicitacaoAcaoServiceTest()
+        {
+            Environment.SetEnvironmentVariable("EMAIL_SERVICE_ADDRESS", "teste_email@exemplo.com");
+            Environment.SetEnvironmentVariable("EMAIL_SERVICE_PASSWORD", "teste");
+            Environment.SetEnvironmentVariable("EMAIL_DNIT", "teste_email@exemplo.com");
+        }
+
         [Fact]
         public void EnviarSolicitacaoAcao_QuandoSolicitacaoForPassada_DeveEnviarMensagemEsperada()
         {

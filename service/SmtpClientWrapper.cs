@@ -11,14 +11,14 @@ namespace service
 {
     public class SmtpClientWrapper : ISmtpClientWrapper
     {
-        private SmtpClient _smtpClient;
+        private readonly SmtpClient smtpClient;
 
         public SmtpClientWrapper()
         {
             string emailRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_ADDRESS");
             string senhaRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_PASSWORD");
 
-            _smtpClient = new SmtpClient("smtp-mail.outlook.com")
+            smtpClient = new SmtpClient("smtp-mail.outlook.com")
             {
                 Port = 587,
                 Credentials = new NetworkCredential(emailRemetente, senhaRemetente),
@@ -28,7 +28,7 @@ namespace service
 
         public void Send(MailMessage message)
         {
-            _smtpClient.Send(message);
+            smtpClient.Send(message);
         }
     }
 }

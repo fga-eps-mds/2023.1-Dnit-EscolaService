@@ -26,6 +26,7 @@ namespace test
             Assert.IsType<OkResult>(result);
         }
 
+        [Fact]
         public void EnviarSolicitacaoAcao_QuandoEnvioDoEmailFalar_DeveRetornarErro()
         {
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
