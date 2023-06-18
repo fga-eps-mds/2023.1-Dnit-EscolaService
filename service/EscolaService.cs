@@ -30,5 +30,10 @@ namespace service
             escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
 
+        public void RemoverSituacaoEscola(int idEscola)
+        {
+            escolaRepositorio.RemoverSituacaoEscola(idEscola);
+        }
+
     }
 }

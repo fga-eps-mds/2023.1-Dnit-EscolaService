@@ -8,5 +8,7 @@ namespace repositorio.Interfaces
         public Escola Obter(int idEscola);
         public IEnumerable<Escola> Obter();
         public void AdicionarSituacao(int idSituacao, int idEscola);
+        public void RemoverSituacaoEscola(int idEscola);
+
     }
 }
