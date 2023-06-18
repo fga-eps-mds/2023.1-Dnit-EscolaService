@@ -10,6 +10,8 @@ namespace test
 {
     public class SolicitacaoAcaoControllerTest
     {
+        const int INTERNAL_SERVER_ERROR = 500;
+
         [Fact]
         public void EnviarSolicitacaoAcao_QuandoSolicitacaoForEnviada_DeveRetornarOk()
         {
@@ -41,7 +43,7 @@ namespace test
 
             solicitacaoAcaoServiceMock.Verify(service => service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO), Times.Once);
             var objeto = Assert.IsType<ObjectResult>(result);
-            Assert.Equal(500, objeto.StatusCode);
+            Assert.Equal(INTERNAL_SERVER_ERROR, objeto.StatusCode);
         }
     }
 }
