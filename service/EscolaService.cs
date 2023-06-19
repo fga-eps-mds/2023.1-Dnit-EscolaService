@@ -18,6 +18,11 @@ namespace service
             return escolaRepositorio.Obter();
         }
 
+        public void CadastrarEscola()
+        {
+
+        }
+
         public Escola Listar(int idEscola)
         {
             Escola escola = escolaRepositorio.Obter(idEscola);
