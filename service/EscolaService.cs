@@ -17,11 +17,15 @@ namespace service
         {
             return escolaRepositorio.Obter();
         }
+        public void ExcluirEscola(int id)
+        {
+            escolaRepositorio.ExcluirEscola(id);
 
+        }
         public Escola Listar(int idEscola)
         {
             Escola escola = escolaRepositorio.Obter(idEscola);
-            
+
             return escola;
         }
 
@@ -30,5 +34,12 @@ namespace service
             escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
 
+        public void RemoverSituacaoEscola(int idEscola)
+        {
+            escolaRepositorio.RemoverSituacaoEscola(idEscola);
+        }
+
     }
 }
+
+

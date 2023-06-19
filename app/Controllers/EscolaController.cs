@@ -1,6 +1,10 @@
 ﻿using dominio;
 using Microsoft.AspNetCore.Mvc;
+using service;
 using service.Interfaces;
+using System.Collections;
+using service.Interfaces;
+
 
 namespace app.Controllers
 {
@@ -14,6 +18,15 @@ namespace app.Controllers
         {
             this.escolaService = escolaService;
         }
+
+        [HttpDelete("excluir")]
+        public IActionResult ExcluirEscola([FromQuery] int id)
+        {
+            escolaService.ExcluirEscola(id);
+            return Ok();
+
+        }
+
 
         [HttpGet("listarEscolas")]
         public IEnumerable<Escola> Listar()
@@ -33,6 +46,13 @@ namespace app.Controllers
         public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
         {
             escolaService.AdicionarSituacao(atualizarSituacaoDTO);
+            return Ok();
+        }
+
+        [HttpPost("removerSituacao")]
+        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        {
+            escolaService.RemoverSituacaoEscola(idEscola);
             return Ok();
         }
     }

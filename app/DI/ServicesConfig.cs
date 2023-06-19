@@ -7,6 +7,7 @@ namespace app.DI
     {
         public static void AddConfigServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IEscolaService, EscolaService>();
         }
