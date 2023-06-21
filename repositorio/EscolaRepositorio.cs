@@ -80,11 +80,11 @@ namespace repositorio
                 IdMunicipio = pesquisaEscolaFiltro.IdMunicipio
             };
 
-            int total = 0;
-
             var resultados = contexto?.Conexao.Query<Escola>(sql.ToString(), parametros);
 
-            ListaPaginada<Escola> listaEscolaPagina = new(resultados,pesquisaEscolaFiltro.Pagina, pesquisaEscolaFiltro.TamanhoPagina, total);
+            int? total = resultados.Count();
+
+            ListaPaginada<Escola> listaEscolaPagina = new(resultados,pesquisaEscolaFiltro.Pagina, pesquisaEscolaFiltro.TamanhoPagina, total ?? 0);
 
             return listaEscolaPagina;
 

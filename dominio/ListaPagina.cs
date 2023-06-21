@@ -14,7 +14,7 @@
             Pagina = paginaIndex;
             EscolasPorPagina = escolasPorPagina;
             TotalEscolas = totalEscolas;
-            TotalPaginas = (int)Math.Ceiling(TotalPaginas / (double)EscolasPorPagina);
+            TotalPaginas = (int)Math.Ceiling(TotalEscolas / (double)EscolasPorPagina);
             Escolas = new List<T>(escolas);
         }
     }
