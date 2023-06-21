@@ -4,6 +4,8 @@ using dominio.Enums;
 using repositorio.Contexto;
 using repositorio.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using static repositorio.Contexto.ResolverContexto;
 
 namespace repositorio
@@ -17,36 +19,74 @@ namespace repositorio
             contexto = resolverContexto(ContextoBancoDeDados.Postgresql);
         }
 
-        public IEnumerable<Escola> Obter()
+        public ListaPaginada<Escola> ObterEcolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            var sql = @"
-            SELECT
-                nome_escola nomeEscola,
-                codigo_escola codigoEscola,
-                cep,
-                endereco,
-                latitude,
-                longitude,
-                numero_total_de_alunos numeroTotalDeAlunos,
-                telefone,
-                numero_total_de_docentes numeroTotalDeDocentes,
-                id_escola idEscola,
-                id_rede idRede,
-                id_uf idUf,
-                id_localizacao idLocalizacao,
-                id_municipio idMunicipio,
-                id_etapas_de_ensino idEtapasDeEnsino,
-                id_porte idPorte,
-                id_situacao idSituacao
-            FROM
-                public.escola";
+            StringBuilder sql = new(@$"
+                SELECT e.nome_escola as NomeEscola,
+		            e.codigo_escola as CodigoEscola, 
+		            e.cep as Cep,
+		            e.endereco as Endereco, 
+		            e.latitude as Latitude,
+		            e.longitude as Longitude,
+                    e.numero_total_de_alunos as NumeroTotalDeAlunos,
+	                e.telefone as Telefone, 
+	                e.numero_total_de_docentes as NumeroTotalDeDocentes,
+                    e.id_escola as IdEscola,
+	                e.id_rede as IdRede,
+	                e.id_uf as IdUf,
+	                e.id_localizacao as IdLocalizacao,
+	                e.id_municipio as IdMunicipio,
+                    e.id_etapas_de_ensino as IdEtapasDeEnsino,
+	                e.id_porte as IdPorte,
+	                e.id_situacao as IdSituacao,
+                    s.descricao_situacao as DescricaoSituacao,
+	                ede.descricao_etapas_de_ensino,
+	                m.nome as NomeMunicipio,
+	                uf.descricao as DescricaoUf
+                FROM public.escola as e
+                    JOIN situacao as s ON e.id_situacao = s.id_situacao
+                    JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
+                    JOIN municipio as m ON m.id_municipio = e.id_municipio
+                    JOIN unidade_federativa as uf ON uf.id = e.id_uf ");
 
-            var escolas = contexto?.Conexao.Query<Escola>(sql);
+            StringBuilder where = new StringBuilder();
 
-            if (escolas == null)
-                return null;
+            if (pesquisaEscolaFiltro.Nome != null)
+                where.Append(" AND e.nome_escola like '%' || @NomeEscola || '%' ");
+            if (pesquisaEscolaFiltro.IdSituacao != null)
+                where.Append(" AND e.id_situacao  = @IdSituacao");
+            if (pesquisaEscolaFiltro.IdEtapaEnsino != null)
+                where.Append(" AND e.id_etapas_de_ensino = @IdEtapasEnsino");
+            if (pesquisaEscolaFiltro.IdMunicipio != null)
+                where.Append(" AND e.id_municipio = @IdMunicipio");
 
-            return escolas;
+            if(where.Length > 0)
+            {
+                sql.Append(" WHERE ");
+                sql.Append(where.ToString().TrimStart(' ', 'A', 'N', 'D', ' '));
+            }
+
+            sql.Append(" ORDER BY e.nome_escola");
+            sql.Append(" OFFSET (@Pagina - 1) * @TamanhoPagina LIMIT @TamanhoPagina");
+
+
+            var parametros = new
+            {
+                Pagina = pesquisaEscolaFiltro.Pagina,
+                TamanhoPagina = pesquisaEscolaFiltro.TamanhoPagina,
+                NomeEscola = pesquisaEscolaFiltro.Nome,
+                IdSituacao = pesquisaEscolaFiltro.IdSituacao,
+                IdEtapasEnsino = pesquisaEscolaFiltro.IdEtapaEnsino,
+                IdMunicipio = pesquisaEscolaFiltro.IdMunicipio
+            };
+
+            int total = 0;
+
+            var resultados = contexto?.Conexao.Query<Escola>(sql.ToString(), parametros);
+
+            ListaPaginada<Escola> listaEscolaPagina = new(resultados,pesquisaEscolaFiltro.Pagina, pesquisaEscolaFiltro.TamanhoPagina, total);
+
+            return listaEscolaPagina;
 
         }
        

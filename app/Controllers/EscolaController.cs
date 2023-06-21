@@ -15,11 +15,12 @@ namespace app.Controllers
             this.escolaService = escolaService;
         }
 
-        [HttpGet("listarEscolas")]
-        public IEnumerable<Escola> Listar()
+        [HttpGet("obter")]
+        public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            IEnumerable<Escola> escolas = escolaService.Listar();
-            return escolas;
+            ListaPaginada<Escola> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
+
+            return new OkObjectResult(listaEscolaPaginada);
         }
 
         [HttpGet("listarInformacoesEscola")]

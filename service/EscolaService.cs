@@ -13,9 +13,9 @@ namespace service
         {
             this.escolaRepositorio = escolaRepositorio;
         }
-        public IEnumerable<Escola> Listar()
+        public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            return escolaRepositorio.Obter();
+            return escolaRepositorio.ObterEcolas(pesquisaEscolaFiltro);
         }
 
         public Escola Listar(int idEscola)
