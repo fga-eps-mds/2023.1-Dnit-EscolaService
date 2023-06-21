@@ -44,6 +44,7 @@ namespace service
                         escola.NomeEscola = linha[0];
                         escola.CodigoEscola = int.Parse(linha[1]); 
                         escola.Cep = linha[2];
+                        if(escolaRepositorio.EscolaJaExiste(escola.Cep)) continue;
                         escola.Endereco = linha[3];
                         escola.Latitude = linha[4];
                         escola.Longitude = linha[5];

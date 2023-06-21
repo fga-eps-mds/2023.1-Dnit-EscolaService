@@ -50,20 +50,16 @@ namespace repositorio
             contexto?.Conexao.Execute(sqlInserirEscola, parametrosEscola);
         }
 
-        public void CadastrarEscolaCSV(Escola escola)
+        public bool EscolaJaExiste(string cepEscola)
         {
-            using (var reader = new System.IO.StreamReader("escola.csv"))
-            using (var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture))
-            {
-                var records = csv.GetRecords<Escola>();
-            }
+            var sqlConsultaEscola = "SELECT COUNT(*) FROM escola WHERE cep = @CepEscola";
+            var parametros = new { CepEscola = cepEscola };
 
-            var configuration = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
-            {
-                Delimiter = ";",
-                Comment = '%'
-            };
+            var quantidade = contexto?.Conexao.ExecuteScalar<int>(sqlConsultaEscola, parametros);
+
+            return quantidade > 0;
         }
+
         public IEnumerable<Escola> Obter()
         {
             var sql = @"
