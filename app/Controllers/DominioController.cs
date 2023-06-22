@@ -1,9 +1,11 @@
 ﻿using dominio;
+using repositorio;
 using Microsoft.AspNetCore.Mvc;
 using repositorio;
 using repositorio.Interfaces;
 using service;
 using service.Interfaces;
+using dominio.Dominio;
 
 namespace app.Controllers
 {
@@ -11,23 +13,44 @@ namespace app.Controllers
     [Route("api/dominio")]
     public class DominioController : ControllerBase
     {
-        private readonly IunidadeFederativaRepositorio;
+        private readonly IDominioRepositorio dominioRepositorio;
 
-        public DominioController(IUnidadeFederativaRepositorio unidadeFederativaRepositorio)
+        public DominioController(IDominioRepositorio dominioRepositorio)
         {
-            this.unidadeFederativaRepositorio = unidadeFederativaRepositorio;
+            this.dominioRepositorio = dominioRepositorio;
         }
 
-
-
         [HttpGet("unidadeFederativa")]
-        public IActionResult ObterLista()
+        public IActionResult ObterListaUF()
         {
-            IEnumerable<UnidadeFederativa> listaUnidadeFederativa = unidadeFederativaRepositorio.ObterDominio();
+            IEnumerable<UnidadeFederativa> listaUnidadeFederativa = dominioRepositorio.ObterUnidadeFederativa();
 
             return new OkObjectResult(listaUnidadeFederativa);
         }
 
+        [HttpGet("etapasDeEnsino")]
+        public IActionResult ObterListaEtapasdeEnsino()
+        {
+            IEnumerable<EtapasdeEnsino> listaEtapasdeEnsino = dominioRepositorio.ObterEtapasdeEnsino();
+
+            return new OkObjectResult(listaEtapasdeEnsino);
+        }
+
+        [HttpGet("municipio")]
+        public IActionResult ObterListaMunicipio()
+        {
+            IEnumerable<Municipio> listaMunicipio = dominioRepositorio.ObterMunicipio();
+
+            return new OkObjectResult(listaMunicipio);
+        }
+
+        [HttpGet("situacao")]
+        public IActionResult ObterListaSituacao()
+        {
+            IEnumerable<Situacao> listaSituacao = dominioRepositorio.ObterSituacao();
+
+            return new OkObjectResult(listaSituacao);
+        }
 
     }
 }

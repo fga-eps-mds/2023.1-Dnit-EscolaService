@@ -2,6 +2,7 @@
 using dominio.Dominio;
 using dominio.Enums;
 using repositorio.Contexto;
+using repositorio.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using static repositorio.Contexto.ResolverContexto;
 
 namespace repositorio
 {
-    public class DominioRepositorio
+    public class DominioRepositorio : IDominioRepositorio
     {
         private readonly IContexto contexto;
 
@@ -22,7 +23,7 @@ namespace repositorio
         }
         public IEnumerable<UnidadeFederativa> ObterUnidadeFederativa()
         {
-            var sql = @"SELECT id, sigla, descricao FROM public.unidade_federativa";
+            var sql = @"SELECT id as Id, descricao as Nome FROM public.unidade_federativa";
 
             var unidadesFederativas = contexto?.Conexao.Query<UnidadeFederativa>(sql);
 
@@ -30,7 +31,7 @@ namespace repositorio
         }
         public IEnumerable<EtapasdeEnsino> ObterEtapasdeEnsino()
         {
-            var sql = @"SELECT id, sigla, descricao FROM public.etapas_de_ensino";
+            var sql = @"SELECT descricao_etapas_de_ensino as Descricao, id_etapas_de_ensino as Id FROM public.etapas_de_ensino";
 
             var EtapasdeEnsino = contexto?.Conexao.Query<EtapasdeEnsino>(sql);
 
@@ -38,7 +39,7 @@ namespace repositorio
         }
         public IEnumerable<Municipio> ObterMunicipio()
         {
-            var sql = @"SELECT id, sigla, descricao FROM public.municipio";
+            var sql = @"SELECT id_municipio as Id, nome as Nome FROM public.municipio";
 
             var Municipio = contexto?.Conexao.Query<Municipio>(sql);
 
@@ -46,7 +47,7 @@ namespace repositorio
         }
         public IEnumerable<Situacao> ObterSituacao()
         {
-            var sql = @"SELECT id, sigla, descricao FROM public.situcao";
+            var sql = @"SELECT id_situacao as Id, descricao_situacao as Descricao FROM public.situacao";
 
             var Situacao = contexto?.Conexao.Query<Situacao>(sql);
 
