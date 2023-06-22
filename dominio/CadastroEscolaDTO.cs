@@ -14,14 +14,14 @@ namespace dominio
         public string Cep { get; set; }
         public int IdUf { get; set; }
         public string Endereco { get; set; }
-        public int IdMunicipio { get; set; }
-        public int IdLocalizacao { get; set; }
+        public int? IdMunicipio { get; set; }
+        public int? IdLocalizacao { get; set; }
         public string Longitude { get; set; }
         public string Latitude { get; set; }
-        public int IdEtapasDeEnsino { get; set; }
+        public int? IdEtapasDeEnsino { get; set; }
         public int NumeroTotalDeAlunos { get; set; }
-        public int IdSituacao { get; set; }
-        public int IdPorte { get; set; }
+        public int? IdSituacao { get; set; }
+        public int? IdPorte { get; set; }
         public string Telefone { get; set; }
         public int NumeroTotalDeDocentes { get; set; }
 
