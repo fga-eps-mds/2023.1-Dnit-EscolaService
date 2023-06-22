@@ -26,7 +26,7 @@ namespace repositorio
             latitude, longitude, numero_total_de_alunos, telefone, numero_total_de_docentes, 
             id_rede, id_uf, id_localizacao, id_municipio, id_etapas_de_ensino, id_porte, id_situacao) 
             VALUES(@Nome, @Codigo, @CEP, @Endereco, @Latitude, 
-            @Longitude, @NumeroTotalDeAlunos, Telefone, @NumeroTotalDeDocentes, 
+            @Longitude, @NumeroTotalDeAlunos, @Telefone, @NumeroTotalDeDocentes, 
             @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdEtapasDeEnsino, @IdPorte, @IdSituacao) ";
                 
             var parametroEscola = new
@@ -48,7 +48,7 @@ namespace repositorio
                 IdPorte = cadastroEscolaDTO.IdPorte,
                 IdSituacao = cadastroEscolaDTO.IdSituacao
             };
-            int? EscolaId = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametroEscola);
+            contexto?.Conexao.Execute(sqlInserirEscola, parametroEscola);
         }
 
         public IEnumerable<Escola> Obter()
