@@ -35,5 +35,14 @@ namespace app.Controllers
             escolaService.AdicionarSituacao(atualizarSituacaoDTO);
             return Ok();
         }
+
+        [HttpPost("cadastrarEscola")]
+        public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO   cadastroEscolaDTO)
+        {
+            escolaService.AdicionarSituacao(atualizarSituacaoDTO);
+            return Ok();
+        }
+
+
     }
 }

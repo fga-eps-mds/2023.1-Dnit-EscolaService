@@ -18,10 +18,6 @@ namespace service
             return escolaRepositorio.Obter();
         }
 
-        public void CadastrarEscola()
-        {
-
-        }
 
         public Escola Listar(int idEscola)
         {
@@ -35,5 +31,9 @@ namespace service
             escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
 
+        public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
+        {
+            escolaRepositorio.CadastrarEscola(cadastroEscolaDTO);
+        }
     }
 }

@@ -18,31 +18,33 @@ namespace repositorio
         }
 
 
-        public void CadastrarEscola(Escola escola)
+        public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
             var sqlInserirEscola = @"INSERT INTO public.escola(nome_escola, codigo_escola, cep, endereco, 
-            latitude, longitude, numero_total_de_alunos, telefone, numero_total_de_docentes, id_escola, 
+            latitude, longitude, numero_total_de_alunos, telefone, numero_total_de_docentes, 
             id_rede, id_uf, id_localizacao, id_municipio, id_etapas_de_ensino, id_porte, id_situacao) 
-            VALUES(@nome_escola, @codigo_escola, @CEP, @Endereco, @Latitude, 
-            @Longitude, @numeroTotalDeAlunos, Telefone, @numeroTotalDeDocentes, @idEscola, 
-            @idRede, @idUf, @idLocalizacao, @idMunicipio, @idEtapasDeEnsino, @idPorte, @idSituacao) ";
+            VALUES(@Nome, @Codigo, @CEP, @Endereco, @Latitude, 
+            @Longitude, @NumeroTotalDeAlunos, Telefone, @NumeroTotalDeDocentes, 
+            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdEtapasDeEnsino, @IdPorte, @IdSituacao) ";
                 
             var parametroEscola = new
             {
-                Nome = escola.NomeEscola,
-                Codigo = escola.CodigoEscola,
-                CEP = escola.Cep,
-                Endereco = escola.Endereco,
-                Latitude = escola.Latitude,
-                Longitude = escola.Longitude,
-                NumeroTotalDeAlunos = escola.NumeroTotalDeAlunos,
-                Telefone = escola.Telefone,
-                NumeroTotalDeDocentes = escola.NumeroTotalDeDocentes,
-                IdEscola = escola.IdEscola,
-                IdRede = escola.IdRede,
-                IdUf = escola.IdUf,
-                Localizacao = escola.IdLocalizacao,
-                IdMunicipio = escola.IdMunicipio,
+                Nome = cadastroEscolaDTO.NomeEscola,
+                Codigo = cadastroEscolaDTO.CodigoEscola,
+                CEP = cadastroEscolaDTO.Cep,
+                Endereco = cadastroEscolaDTO.Endereco,
+                Latitude = cadastroEscolaDTO.Latitude,
+                Longitude = cadastroEscolaDTO.Longitude,
+                NumeroTotalDeAlunos = cadastroEscolaDTO.NumeroTotalDeAlunos,
+                Telefone = cadastroEscolaDTO.Telefone,
+                NumeroTotalDeDocentes = cadastroEscolaDTO.NumeroTotalDeDocentes,
+                IdRede = cadastroEscolaDTO.IdRede,
+                IdUf = cadastroEscolaDTO.IdUf,
+                IdLocalizacao = cadastroEscolaDTO.IdLocalizacao,
+                IdMunicipio = cadastroEscolaDTO.IdMunicipio,
+                IdEtapasDeEnsino = cadastroEscolaDTO.IdEtapasDeEnsino,
+                IdPorte = cadastroEscolaDTO.IdPorte,
+                IdSituacao = cadastroEscolaDTO.IdSituacao
             };
             int? EscolaId = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametroEscola);
         }
