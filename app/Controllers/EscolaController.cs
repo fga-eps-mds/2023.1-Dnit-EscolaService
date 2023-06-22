@@ -35,7 +35,7 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                    List<int> escolasDuplicadas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
                 }
 
                 return Ok();

@@ -21,8 +21,10 @@ namespace service
             escolaRepositorio.CadastrarEscola(escola);
         }
 
-        public void CadastrarEscolaViaPlanilha(MemoryStream planilha)
+        public List<int> CadastrarEscolaViaPlanilha(MemoryStream planilha)
         {
+            List<int> escolasDuplicadas = new List<int>();
+            int numero_linha = 1;
             using (var reader = new StreamReader(planilha))
             {
                 using (var parser = new TextFieldParser(reader))
@@ -42,9 +44,14 @@ namespace service
                         }
                         Escola escola = new Escola();
                         escola.NomeEscola = linha[0];
-                        escola.CodigoEscola = int.Parse(linha[1]); 
+                        escola.CodigoEscola = int.Parse(linha[1]);
+                        if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
+                        {
+                            escolasDuplicadas.Add(numero_linha);
+                            numero_linha++;
+                            continue;
+                        }
                         escola.Cep = linha[2];
-                        if(escolaRepositorio.EscolaJaExiste(escola.Cep)) continue;
                         escola.Endereco = linha[3];
                         escola.Latitude = linha[4];
                         escola.Longitude = linha[5];
@@ -61,9 +68,11 @@ namespace service
                         escola.IdSituacao = int.Parse(linha[16]);
 
                         escolaRepositorio.CadastrarEscola(escola);
+                        numero_linha++;
                     }
                 }
             }
+            return escolasDuplicadas;
         }
         public IEnumerable<Escola> Listar()
         {
