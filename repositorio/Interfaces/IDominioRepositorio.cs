@@ -9,7 +9,7 @@ namespace repositorio.Interfaces
     {
         public IEnumerable<UnidadeFederativa> ObterUnidadeFederativa();
         public IEnumerable<EtapasdeEnsino> ObterEtapasdeEnsino();
-        public IEnumerable<Municipio> ObterMunicipio();
+        public IEnumerable<Municipio> ObterMunicipio(int? idUf);
         public IEnumerable<Situacao> ObterSituacao();
 
     }

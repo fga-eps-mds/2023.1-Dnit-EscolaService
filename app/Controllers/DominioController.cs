@@ -37,9 +37,9 @@ namespace app.Controllers
         }
 
         [HttpGet("municipio")]
-        public IActionResult ObterListaMunicipio()
+        public IActionResult ObterListaMunicipio([FromQuery] int? idUf)
         {
-            IEnumerable<Municipio> listaMunicipio = dominioRepositorio.ObterMunicipio();
+            IEnumerable<Municipio> listaMunicipio = dominioRepositorio.ObterMunicipio(idUf);
 
             return new OkObjectResult(listaMunicipio);
         }
