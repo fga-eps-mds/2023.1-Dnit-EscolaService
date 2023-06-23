@@ -28,5 +28,12 @@ namespace app.Controllers
                 return StatusCode(500, "Falha no envio do email.");
             }
         }
+
+        [HttpGet("escolas")]
+        public async Task<IEnumerable<EscolaInep>> ObterEscolas([FromQuery] string nome, string? estado)
+        {
+            var escolas = await solicitacaoAcaoService.ObterEscolas(nome, estado);
+            return escolas;
+        }
     }
 }

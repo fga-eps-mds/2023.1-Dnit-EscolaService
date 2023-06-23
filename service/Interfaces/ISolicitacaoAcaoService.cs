@@ -11,5 +11,6 @@ namespace service.Interfaces
     {
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO);
         public void EnviarEmail(string emailDestinatario, string assunto, string corpo);
+        public Task<IEnumerable<EscolaInep>> ObterEscolas(string nome, string? estado);
     }
 }

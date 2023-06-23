@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using System.Web;
 
 namespace service
 {
@@ -51,6 +51,30 @@ namespace service
             mensagem.Body = corpo;
 
             _smtpClientWrapper.Send(mensagem);
+        }
+
+        public async Task<IEnumerable<EscolaInep>> ObterEscolas(string nome, string estado)
+        {
+            var uriBuilder = new UriBuilder("http://educacao.dadosabertosbr.com/api/escolas/buscaavancada");
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+            query["nome"] = nome;
+            if (estado != null)
+            {
+                query["estado"] = estado;
+            }
+           
+            uriBuilder.Query = query.ToString();
+            string url = uriBuilder.ToString();
+
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage response = await httpClient.GetAsync(url);
+            string conteudo = await response.Content.ReadAsStringAsync();
+
+            var jArray = JArray.Parse(conteudo);
+            var escolas = jArray[1].ToObject<IEnumerable<EscolaInep>>();
+
+            return escolas;
         }
     }
 }
