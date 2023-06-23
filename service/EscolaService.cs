@@ -15,13 +15,17 @@ namespace service
         }
         public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            return escolaRepositorio.ObterEcolas(pesquisaEscolaFiltro);
+            return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
+        public void ExcluirEscola(int id)
+        {
+            escolaRepositorio.ExcluirEscola(id);
 
+        }
         public Escola Listar(int idEscola)
         {
             Escola escola = escolaRepositorio.Obter(idEscola);
-            
+
             return escola;
         }
 
@@ -30,5 +34,12 @@ namespace service
             escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
 
+        public void RemoverSituacaoEscola(int idEscola)
+        {
+            escolaRepositorio.RemoverSituacaoEscola(idEscola);
+        }
+
     }
 }
+
+

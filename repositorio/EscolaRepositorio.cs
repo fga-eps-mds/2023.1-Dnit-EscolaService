@@ -3,6 +3,7 @@ using dominio;
 using dominio.Enums;
 using repositorio.Contexto;
 using repositorio.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +20,9 @@ namespace repositorio
             contexto = resolverContexto(ContextoBancoDeDados.Postgresql);
         }
 
-        public ListaPaginada<Escola> ObterEcolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
+
             StringBuilder sql = new(@$"
                 SELECT e.nome_escola as NomeEscola,
 		            e.codigo_escola as CodigoEscola, 
@@ -48,6 +50,7 @@ namespace repositorio
                     JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
                     JOIN municipio as m ON m.id_municipio = e.id_municipio
                     JOIN unidade_federativa as uf ON uf.id = e.id_uf ");
+
 
             StringBuilder where = new StringBuilder();
 
@@ -88,8 +91,8 @@ namespace repositorio
 
             return listaEscolaPagina;
 
+
         }
-       
         public Escola Obter(int idEscola)
         {
             var sql = @"
@@ -127,6 +130,18 @@ namespace repositorio
                 return null;
             return escola;
         }
+        public void ExcluirEscola(int id)
+        {
+            var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = id,
+            };
+
+            contexto?.Conexao.Execute(sql, parametro);
+          
+        }
 
         public void AdicionarSituacao(int idSituacao, int idEscola){
             var sql = @"UPDATE public.escola SET id_situacao = @IdSituacao WHERE id_escola = @IdEscola";
@@ -139,6 +154,16 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+        public void RemoverSituacaoEscola(int idEscola)
+        {
+            var sql = @"UPDATE public.escola SET id_situacao = NULL WHERE id_escola = @IdEscola";
 
+            var parametro = new
+            {
+                IdEscola = idEscola
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro); 
+        }
     }
 }
