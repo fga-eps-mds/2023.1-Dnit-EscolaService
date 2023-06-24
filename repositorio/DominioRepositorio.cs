@@ -24,7 +24,7 @@ namespace repositorio
         }
         public IEnumerable<UnidadeFederativa> ObterUnidadeFederativa()
         {
-            var sql = @"SELECT id as Id, descricao as Nome FROM public.unidade_federativa";
+            var sql = @"SELECT id as Id, descricao as Nome FROM public.unidade_federativa ORDER BY Nome";
 
             var unidadesFederativas = contexto?.Conexao.Query<UnidadeFederativa>(sql);
 
