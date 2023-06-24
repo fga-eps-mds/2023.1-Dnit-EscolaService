@@ -24,5 +24,7 @@ namespace dominio
         public int? IdPorte { get; set; }
         public string Telefone { get; set; }
         public int? NumeroTotalDeDocentes { get; set; }
+
+        public string SiglaUf { get; set; }
     }
 }

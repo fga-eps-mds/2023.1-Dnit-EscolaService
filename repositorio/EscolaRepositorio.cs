@@ -44,7 +44,8 @@ namespace repositorio
                     s.descricao_situacao as DescricaoSituacao,
 	                ede.descricao_etapas_de_ensino,
 	                m.nome as NomeMunicipio,
-	                uf.descricao as DescricaoUf
+	                uf.descricao as DescricaoUf,
+                    uf.sigla as SiglaUf
                 FROM public.escola as e
                     JOIN situacao as s ON e.id_situacao = s.id_situacao
                     JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
@@ -62,17 +63,17 @@ namespace repositorio
                 where.Append(" AND e.id_etapas_de_ensino = @IdEtapasEnsino");
             if (pesquisaEscolaFiltro.IdMunicipio != null)
                 where.Append(" AND e.id_municipio = @IdMunicipio");
+            if (pesquisaEscolaFiltro.IdUf != null)
+                where.Append(" AND e.id_uf = @IdUf");
 
-            if(where.Length > 0)
+            if (where.Length > 0)
             {
                 sql.Append(" WHERE ");
                 sql.Append(where.ToString().TrimStart(' ', 'A', 'N', 'D', ' '));
             }
 
             sql.Append(" ORDER BY e.nome_escola");
-            sql.Append(" OFFSET (@Pagina - 1) * @TamanhoPagina LIMIT @TamanhoPagina");
-
-
+           
             var parametros = new
             {
                 Pagina = pesquisaEscolaFiltro.Pagina,
@@ -80,12 +81,14 @@ namespace repositorio
                 NomeEscola = pesquisaEscolaFiltro.Nome,
                 IdSituacao = pesquisaEscolaFiltro.IdSituacao,
                 IdEtapasEnsino = pesquisaEscolaFiltro.IdEtapaEnsino,
-                IdMunicipio = pesquisaEscolaFiltro.IdMunicipio
+                IdMunicipio = pesquisaEscolaFiltro.IdMunicipio,
+                IdUf = pesquisaEscolaFiltro.IdUf
             };
 
             var resultados = contexto?.Conexao.Query<Escola>(sql.ToString(), parametros);
 
             int? total = resultados.Count();
+            resultados = resultados.Skip((pesquisaEscolaFiltro.Pagina - 1) * pesquisaEscolaFiltro.TamanhoPagina).Take(pesquisaEscolaFiltro.TamanhoPagina);
 
             ListaPaginada<Escola> listaEscolaPagina = new(resultados,pesquisaEscolaFiltro.Pagina, pesquisaEscolaFiltro.TamanhoPagina, total ?? 0);
 
