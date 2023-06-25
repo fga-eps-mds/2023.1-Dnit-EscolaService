@@ -32,7 +32,7 @@ namespace repositorio
         }
         public IEnumerable<EtapasdeEnsino> ObterEtapasdeEnsino()
         {
-            var sql = @"SELECT descricao_etapas_de_ensino as Descricao, id_etapas_de_ensino as Id FROM public.etapas_de_ensino";
+            var sql = @"SELECT descricao_etapas_de_ensino as Descricao, id_etapas_de_ensino as Id FROM public.etapas_de_ensino ORDER BY Descricao";
 
             var EtapasdeEnsino = contexto?.Conexao.Query<EtapasdeEnsino>(sql);
 
@@ -52,6 +52,7 @@ namespace repositorio
                 sql.Append(" WHERE ");
                 sql.Append(where.ToString().TrimStart(' ', 'A', 'N', 'D', ' '));
             }
+            sql.Append(" ORDER BY Nome");
 
             var parametro = new
             {
@@ -64,7 +65,7 @@ namespace repositorio
         }
         public IEnumerable<Situacao> ObterSituacao()
         {
-            var sql = @"SELECT id_situacao as Id, descricao_situacao as Descricao FROM public.situacao";
+            var sql = @"SELECT id_situacao as Id, descricao_situacao as Descricao FROM public.situacao ORDER BY Descricao";
 
             var Situacao = contexto?.Conexao.Query<Situacao>(sql);
 
