@@ -21,7 +21,7 @@ namespace repositorio
         }
 
 
-        public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
+        public int? CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
 
             var sqlInserirEscola = @"INSERT INTO public.escola(nome_escola, codigo_escola, cep, endereco, 
@@ -29,7 +29,7 @@ namespace repositorio
             id_rede, id_uf, id_localizacao, id_municipio, id_etapas_de_ensino, id_porte, id_situacao) 
             VALUES(@Nome, @Codigo, @CEP, @Endereco, @Latitude, 
             @Longitude, @NumeroTotalDeAlunos, @Telefone, @NumeroTotalDeDocentes, 
-            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdEtapasDeEnsino, @IdPorte, @IdSituacao) ";
+            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdEtapasDeEnsino, @IdPorte, @IdSituacao) RETURNING id_escola";
                 
             var parametroEscola = new
             {
@@ -50,7 +50,9 @@ namespace repositorio
                 IdPorte = cadastroEscolaDTO.IdPorte,
                 IdSituacao = cadastroEscolaDTO.IdSituacao
             };
-            contexto?.Conexao.Execute(sqlInserirEscola, parametroEscola);
+            
+            int? idEscola = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametroEscola);
+            return idEscola;
         }
 
         public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)

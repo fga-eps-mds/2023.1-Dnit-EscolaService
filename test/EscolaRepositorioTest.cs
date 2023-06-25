@@ -8,6 +8,9 @@ using System.Data;
 using repositorio.Contexto;
 using Dapper;
 using System;
+using System.Runtime.ConstrainedExecution;
+using dominio.Dominio;
+using test.Stub;
 
 namespace test
 {
@@ -62,6 +65,22 @@ namespace test
             Assert.Equal("CEM02", listaPaginada.Escolas[0].NomeEscola);
             Assert.Equal("CEM04", listaPaginada.Escolas[1].NomeEscola);
         }
+
+        [Fact]
+
+        public void CadastrarEscola_QuandoAEscolaForPassada_DeveCadastrarNoBanco()
+        {
+            EscolaStub escolaStub = new EscolaStub();
+            var escolaEsperada = escolaStub.ObterCadastroEscolaDTO();
+            int? idEscola = repositorio.CadastrarEscola(escolaEsperada);
+            var escolaObtida = repositorio.Obter(idEscola.Value);
+            Assert.Equal(escolaEsperada.NomeEscola, escolaObtida.NomeEscola);
+            Assert.Equal(escolaEsperada.CodigoEscola, escolaObtida.CodigoEscola);
+            Assert.Equal(escolaEsperada.Endereco, escolaObtida.Endereco);
+            Assert.Equal(escolaEsperada.Latitude, escolaObtida.Latitude);
+            Assert.Equal(escolaEsperada.Longitude, escolaObtida.Longitude);
+        }
+
         public void Dispose()
         {
             connection.Close();

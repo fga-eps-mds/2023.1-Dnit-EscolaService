@@ -6,7 +6,7 @@ namespace repositorio.Interfaces
     public interface IEscolaRepositorio
     {
 
-        public void CadastrarEscola(CadastroEscolaDTO  cadastroEscolaDTO);
+        public int? CadastrarEscola(CadastroEscolaDTO  cadastroEscolaDTO);
         public void ExcluirEscola(int Id);
         public Escola Obter(int idEscola);
         public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro);
