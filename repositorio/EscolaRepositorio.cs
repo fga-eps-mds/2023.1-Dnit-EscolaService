@@ -113,20 +113,17 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
-        public int? Excluir(int Id)
+
+        public void RemoverSituacaoEscola(int idEscola)
         {
             var sql = @"UPDATE public.escola SET id_situacao = NULL WHERE id_escola = @IdEscola";
-            var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
 
             var parametro = new
             {
-                IdEscola = id,
                 IdEscola = idEscola
             };
 
-            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro); 
-            contexto?.Conexao.Execute(sql, parametro);
-
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
     }
 }
