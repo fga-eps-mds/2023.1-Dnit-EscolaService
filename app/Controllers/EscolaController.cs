@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using service;
 using service.Interfaces;
 using System.Collections;
+using service.Interfaces;
+
 
 namespace app.Controllers
 {
@@ -11,18 +13,13 @@ namespace app.Controllers
     public class EscolaController : ControllerBase
     {
         private readonly IEscolaService escolaService;
-        public EscolaController(IEscolaService service)
+
+        public EscolaController(IEscolaService escolaService)
         {
-            this.escolaService = service;
-        }
-        [HttpGet]
-        public IEnumerable<EscolaCadastrada> Ler()
-        {
-            IEnumerable<EscolaCadastrada> listaEscolasCadastradas = escolaService.Listar();
-            return listaEscolasCadastradas;
+            this.escolaService = escolaService;
         }
 
-        [HttpDelete ("excluir")]
+        [HttpDelete("excluir")]
         public IActionResult ExcluirEscola([FromQuery] int id)
         {
             escolaService.ExcluirEscola(id);
@@ -30,5 +27,33 @@ namespace app.Controllers
 
         }
 
+
+        [HttpGet("listarEscolas")]
+        public IEnumerable<Escola> Listar()
+        {
+            IEnumerable<Escola> escolas = escolaService.Listar();
+            return escolas;
+        }
+
+        [HttpGet("listarInformacoesEscola")]
+        public IActionResult ListarInformacoesEscola([FromQuery] int idEscola)
+        {
+            Escola escola = escolaService.Listar(idEscola);
+            return Ok(escola);
+        }
+
+        [HttpPost("adicionarSituacao")]
+        public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
+        {
+            escolaService.AdicionarSituacao(atualizarSituacaoDTO);
+            return Ok();
+        }
+
+        [HttpPost("removerSituacao")]
+        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        {
+            escolaService.RemoverSituacaoEscola(idEscola);
+            return Ok();
+        }
     }
 }

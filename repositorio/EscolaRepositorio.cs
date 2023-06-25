@@ -18,10 +18,37 @@ namespace repositorio
             contexto = resolverContexto(ContextoBancoDeDados.Postgresql);
         }
 
-
-        public IEnumerable<EscolaCadastrada> ObterEscolas()
+        public IEnumerable<Escola> Obter()
         {
-            throw new System.NotImplementedException();
+            var sql = @"
+            SELECT
+                nome_escola nomeEscola,
+                codigo_escola codigoEscola,
+                cep,
+                endereco,
+                latitude,
+                longitude,
+                numero_total_de_alunos numeroTotalDeAlunos,
+                telefone,
+                numero_total_de_docentes numeroTotalDeDocentes,
+                id_escola idEscola,
+                id_rede idRede,
+                id_uf idUf,
+                id_localizacao idLocalizacao,
+                id_municipio idMunicipio,
+                id_etapas_de_ensino idEtapasDeEnsino,
+                id_porte idPorte,
+                id_situacao idSituacao
+            FROM
+                public.escola";
+
+            var escolas = contexto?.Conexao.Query<Escola>(sql);
+
+            if (escolas == null)
+                return null;
+
+            return escolas;
+
         }
         public void ExcluirEscola(int id)
         {
@@ -32,6 +59,72 @@ namespace repositorio
                 IdEscola = id,
             };
 
+            contexto?.Conexao.Execute(sql, parametro);
+          
+        }
+
+       
+        public Escola Obter(int idEscola)
+        {
+            var sql = @"
+                SELECT
+                    nome_escola nomeEscola,
+                    codigo_escola codigoEscola,
+                    cep,
+                    endereco,
+                    latitude,
+                    longitude,
+                    numero_total_de_alunos numeroTotalDeAlunos,
+                    telefone,
+                    numero_total_de_docentes numeroTotalDeDocentes,
+                    id_escola idEscola,
+                    id_rede idRede,
+                    id_uf idUf,
+                    id_localizacao idLocalizacao,
+                    id_municipio idMunicipio,
+                    id_etapas_de_ensino idEtapasDeEnsino,
+                    id_porte idPorte,
+                    id_situacao idSituacao
+                FROM
+                    public.escola
+                WHERE
+                    id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = idEscola
+            };
+
+            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+
+            if (escola == null)
+                return null;
+            return escola;
+        }
+
+        public void AdicionarSituacao(int idSituacao, int idEscola){
+            var sql = @"UPDATE public.escola SET id_situacao = @IdSituacao WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdSituacao = idSituacao,
+                IdEscola = idEscola
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
+        public int? Excluir(int Id)
+        {
+            var sql = @"UPDATE public.escola SET id_situacao = NULL WHERE id_escola = @IdEscola";
+            var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = id,
+                IdEscola = idEscola
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro); 
             contexto?.Conexao.Execute(sql, parametro);
 
         }
