@@ -26,6 +26,9 @@ namespace app.Controllers
         [HttpPost("cadastrarEscolaPlanilha")]
         public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
         {
+
+            List<int> escolasDuplicadas;
+
             try
             {
                 if (arquivo == null || arquivo.Length == 0)
@@ -46,10 +49,10 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    List<int> escolasDuplicadas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                    escolasDuplicadas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
                 }
 
-                return Ok();
+                return Ok(escolasDuplicadas);
             }
             catch (Exception ex)
             {
