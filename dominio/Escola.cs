@@ -3,7 +3,7 @@ namespace dominio
     public class Escola
     {
         public string NomeEscola { get; set; }
-        public int CodigoEscola { get; set; }
+        public string CodigoEscola { get; set; }
         public string Cep { get; set; }
         public string Endereco { get; set; }
         public string Latitude { get; set; }

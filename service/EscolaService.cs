@@ -21,10 +21,23 @@ namespace service
             escolaRepositorio.CadastrarEscola(escola);
         }
 
+        public bool SuperaTamanhoMaximo(MemoryStream planilha)
+        { 
+            using (var reader = new StreamReader(planilha))
+            {
+                int tamanho_max = 5000;
+                int quantidade_escolas = -1;
+
+                while (reader.ReadLine() != null) { quantidade_escolas++; }
+
+                return quantidade_escolas > tamanho_max;
+            }
+        }
+
         public List<int> CadastrarEscolaViaPlanilha(MemoryStream planilha)
         {
             List<int> escolasDuplicadas = new List<int>();
-            int numero_linha = 1;
+            int numero_linha = 2;
             using (var reader = new StreamReader(planilha))
             {
                 using (var parser = new TextFieldParser(reader))
@@ -44,7 +57,7 @@ namespace service
                         }
                         Escola escola = new Escola();
                         escola.NomeEscola = linha[0];
-                        escola.CodigoEscola = int.Parse(linha[1]);
+                        escola.CodigoEscola = linha[1];
                         if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
                         {
                             escolasDuplicadas.Add(numero_linha);

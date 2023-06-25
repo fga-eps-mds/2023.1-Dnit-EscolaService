@@ -35,6 +35,13 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
+
+                    if (escolaService.SuperaTamanhoMaximo(memoryStream))
+                    {
+                        return BadRequest("O arquivo excede o tamanho máximo permitido.");
+                    }
+
+                    memoryStream.Seek(0, SeekOrigin.Begin);
                     List<int> escolasDuplicadas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
                 }
 
