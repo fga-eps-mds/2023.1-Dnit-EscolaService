@@ -10,25 +10,25 @@ namespace app.Controllers
     [Route("api/escolas")]
     public class EscolaController : ControllerBase
     {
-        private readonly IEscolaService service;
+        private readonly IEscolaService escolaService;
         public EscolaController(IEscolaService service)
         {
-            this.service = service;
+            this.escolaService = service;
         }
         [HttpGet]
         public IEnumerable<EscolaCadastrada> Ler()
         {
-            IEnumerable<EscolaCadastrada> listaEscolasCadastradas = service.Listar();
+            IEnumerable<EscolaCadastrada> listaEscolasCadastradas = escolaService.Listar();
             return listaEscolasCadastradas;
         }
 
         [HttpDelete ("excluir")]
-        public IActionResult Excluir(ExclusaoEscola exclusaoEscola)
+        public IActionResult ExcluirEscola([FromQuery] int id)
         {
-            service.Excluir(exclusaoEscola);
+            escolaService.ExcluirEscola(id);
             return Ok();
 
-    }
+        }
 
     }
 }
