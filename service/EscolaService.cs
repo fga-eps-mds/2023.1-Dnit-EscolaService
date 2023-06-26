@@ -57,7 +57,7 @@ namespace service
                         }
                         Escola escola = new Escola();
                         escola.NomeEscola = linha[0];
-                        escola.CodigoEscola = linha[1];
+                        escola.CodigoEscola = int.Parse(linha[1]);
                         if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
                         {
                             escolasDuplicadas.Add(numero_linha);

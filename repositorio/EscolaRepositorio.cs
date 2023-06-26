@@ -50,7 +50,7 @@ namespace repositorio
             contexto?.Conexao.Execute(sqlInserirEscola, parametrosEscola);
         }
 
-        public bool EscolaJaExiste(string codigoEscola)
+        public bool EscolaJaExiste(int codigoEscola)
         {
             var sqlConsultaEscola = "SELECT COUNT(*) FROM escola WHERE codigo_escola = @CodigoEscola";
             var parametros = new { CodigoEscola = codigoEscola };
