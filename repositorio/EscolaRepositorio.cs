@@ -1,10 +1,12 @@
-using Dapper;
+﻿using Dapper;
 using dominio;
 using dominio.Enums;
 using repositorio.Contexto;
 using repositorio.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using static repositorio.Contexto.ResolverContexto;
 
 namespace repositorio
@@ -18,39 +20,155 @@ namespace repositorio
             contexto = resolverContexto(ContextoBancoDeDados.Postgresql);
         }
 
-        public IEnumerable<Escola> Obter()
+
+        public int? CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
-            string[] colunas = {
-                    "escola.nome_escola nomeEscola", "escola.codigo_escola codigoEscola", "escola.cep", "escola.endereco",
-                    "escola.latitude", "escola.longitude", "escola.numero_total_de_alunos numeroTotalDeAlunos", "escola.telefone",
-                    "escola.numero_total_de_docentes numeroTotalDeDocentes", "escola.id_escola idEscola",
-                    "escola.id_rede idRede", "rede.descricao_rede descricaoRede",
-                    "escola.id_uf idUf", "uf.sigla siglaUf",
-                    "escola.id_localizacao idLocalizacao", "localizacao.descricao_localizacao descricaoLocalizacao",
-                    "escola.id_municipio idMunicipio", "municipio.nome nomeMunicipio",
-                    "escola.id_etapas_de_ensino idEtapasDeEnsino", "etapas.descricao_etapas_de_ensino descricaoEtapasDeEnsino",
-                    "escola.id_porte idPorte", "porte.descricao_porte descricaoPorte",
-                    "escola.id_situacao idSituacao", "situacao.descricao_situacao descricaoSituacao"
+
+            var sqlInserirEscola = @"INSERT INTO public.escola(nome_escola, codigo_escola, cep, endereco, 
+            latitude, longitude, numero_total_de_alunos, telefone, numero_total_de_docentes, 
+            id_rede, id_uf, id_localizacao, id_municipio, id_etapas_de_ensino, id_porte, id_situacao) 
+            VALUES(@Nome, @Codigo, @CEP, @Endereco, @Latitude, 
+            @Longitude, @NumeroTotalDeAlunos, @Telefone, @NumeroTotalDeDocentes, 
+            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdEtapasDeEnsino, @IdPorte, @IdSituacao) RETURNING id_escola";
+                
+            var parametroEscola = new
+            {
+                Nome = cadastroEscolaDTO.NomeEscola,
+                Codigo = cadastroEscolaDTO.CodigoEscola,
+                CEP = cadastroEscolaDTO.Cep,
+                Endereco = cadastroEscolaDTO.Endereco,
+                Latitude = cadastroEscolaDTO.Latitude,
+                Longitude = cadastroEscolaDTO.Longitude,
+                NumeroTotalDeAlunos = cadastroEscolaDTO.NumeroTotalDeAlunos,
+                Telefone = cadastroEscolaDTO.Telefone,
+                NumeroTotalDeDocentes = cadastroEscolaDTO.NumeroTotalDeDocentes,
+                IdRede = cadastroEscolaDTO.IdRede,
+                IdUf = cadastroEscolaDTO.IdUf,
+                IdLocalizacao = cadastroEscolaDTO.IdLocalizacao,
+                IdMunicipio = cadastroEscolaDTO.IdMunicipio,
+                IdEtapasDeEnsino = cadastroEscolaDTO.IdEtapasDeEnsino,
+                IdPorte = cadastroEscolaDTO.IdPorte,
+                IdSituacao = cadastroEscolaDTO.IdSituacao
             };
-            var queryBuilder = new QueryBuilder();
-            var sql = queryBuilder.Select(colunas)
-                        .From("public.escola")
-                        .Join("public.rede rede", "escola.id_rede", "rede.id_rede")
-                        .Join("public.unidade_federativa uf", "escola.id_uf", "uf.id")
-                        .Join("public.localizacao localizacao", "escola.id_localizacao", "localizacao.id_localizacao")
-                        .Join("public.municipio municipio", "escola.id_municipio", "municipio.id_municipio")
-                        .Join("public.etapas_de_ensino etapas", "escola.id_etapas_de_ensino", "etapas.id_etapas_de_ensino")
-                        .Join("public.porte porte", "escola.id_porte", "porte.id_porte")
-                        .Join("public.situacao situacao", "escola.id_situacao", "situacao.id_situacao")
-                        .Build();
+            
+            int? idEscola = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametroEscola);
+            return idEscola;
+        }
 
-            var escolas = contexto?.Conexao.Query<Escola>(sql);
+        public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        {
 
-            if (escolas == null)
+            StringBuilder sql = new(@$"
+                SELECT e.nome_escola as NomeEscola,
+		            e.codigo_escola as CodigoEscola, 
+		            e.cep as Cep,
+		            e.endereco as Endereco, 
+		            e.latitude as Latitude,
+		            e.longitude as Longitude,
+                    e.numero_total_de_alunos as NumeroTotalDeAlunos,
+	                e.telefone as Telefone, 
+	                e.numero_total_de_docentes as NumeroTotalDeDocentes,
+                    e.id_escola as IdEscola,
+	                e.id_rede as IdRede,
+	                e.id_uf as IdUf,
+	                e.id_localizacao as IdLocalizacao,
+	                e.id_municipio as IdMunicipio,
+                    e.id_etapas_de_ensino as IdEtapasDeEnsino,
+	                e.id_porte as IdPorte,
+	                e.id_situacao as IdSituacao,
+                    s.descricao_situacao as DescricaoSituacao,
+	                ede.descricao_etapas_de_ensino as DescricaoEtapasEnsino,
+	                m.nome as NomeMunicipio,
+	                uf.descricao as DescricaoUf,
+                    uf.sigla as SiglaUf
+                FROM public.escola as e
+                    LEFT JOIN situacao as s ON e.id_situacao = s.id_situacao
+                    LEFT JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
+                    LEFT JOIN municipio as m ON m.id_municipio = e.id_municipio
+                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf ");
+
+
+            StringBuilder where = new StringBuilder();
+
+            if (pesquisaEscolaFiltro.Nome != null)
+                where.Append(" AND e.nome_escola like '%' || @NomeEscola || '%' ");
+            if (pesquisaEscolaFiltro.IdSituacao != null)
+                where.Append(" AND e.id_situacao  = @IdSituacao");
+            if (pesquisaEscolaFiltro.IdEtapaEnsino != null)
+                where.Append(" AND e.id_etapas_de_ensino = @IdEtapasEnsino");
+            if (pesquisaEscolaFiltro.IdMunicipio != null)
+                where.Append(" AND e.id_municipio = @IdMunicipio");
+            if (pesquisaEscolaFiltro.IdUf != null)
+                where.Append(" AND e.id_uf = @IdUf");
+
+            if (where.Length > 0)
+            {
+                sql.Append(" WHERE ");
+                sql.Append(where.ToString().TrimStart(' ', 'A', 'N', 'D', ' '));
+            }
+
+            sql.Append(" ORDER BY e.nome_escola");
+           
+            var parametros = new
+            {
+                Pagina = pesquisaEscolaFiltro.Pagina,
+                TamanhoPagina = pesquisaEscolaFiltro.TamanhoPagina,
+                NomeEscola = pesquisaEscolaFiltro.Nome,
+                IdSituacao = pesquisaEscolaFiltro.IdSituacao,
+                IdEtapasEnsino = pesquisaEscolaFiltro.IdEtapaEnsino,
+                IdMunicipio = pesquisaEscolaFiltro.IdMunicipio,
+                IdUf = pesquisaEscolaFiltro.IdUf
+
+            };
+
+            var resultados = contexto?.Conexao.Query<Escola>(sql.ToString(), parametros);
+
+            int? total = resultados.Count();
+            resultados = resultados.Skip((pesquisaEscolaFiltro.Pagina - 1) * pesquisaEscolaFiltro.TamanhoPagina).Take(pesquisaEscolaFiltro.TamanhoPagina);
+
+            ListaPaginada<Escola> listaEscolaPagina = new(resultados,pesquisaEscolaFiltro.Pagina, pesquisaEscolaFiltro.TamanhoPagina, total ?? 0);
+
+            return listaEscolaPagina;
+
+
+        }
+        public Escola Obter(int idEscola)
+        {
+            var sql = @"
+                SELECT
+                    nome_escola nomeEscola,
+                    codigo_escola codigoEscola,
+                    cep,
+                    endereco,
+                    latitude,
+                    longitude,
+                    numero_total_de_alunos numeroTotalDeAlunos,
+                    telefone,
+                    numero_total_de_docentes numeroTotalDeDocentes,
+                    id_escola idEscola,
+                    id_rede idRede,
+                    id_uf idUf,
+                    id_localizacao idLocalizacao,
+                    id_municipio idMunicipio,
+                    id_etapas_de_ensino idEtapasDeEnsino,
+                    id_porte idPorte,
+                    id_situacao idSituacao
+                FROM
+                    public.escola
+                WHERE
+                    id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = idEscola
+            };
+
+            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+
+            if (escola == null)
                 return null;
 
-            return escolas;
-
+            return escola;
 
         }
         public void ExcluirEscola(int id)
@@ -66,46 +184,6 @@ namespace repositorio
           
         }
 
-       
-        public Escola Obter(int idEscola)
-        {
-            string[] colunas = {
-                    "escola.nome_escola nomeEscola", "escola.codigo_escola codigoEscola", "escola.cep", "escola.endereco",
-                    "escola.latitude", "escola.longitude", "escola.numero_total_de_alunos numeroTotalDeAlunos", "escola.telefone",
-                    "escola.numero_total_de_docentes numeroTotalDeDocentes", "escola.id_escola idEscola",
-                    "escola.id_rede idRede", "rede.descricao_rede descricaoRede",
-                    "escola.id_uf idUf", "uf.sigla siglaUf",
-                    "escola.id_localizacao idLocalizacao", "localizacao.descricao_localizacao descricaoLocalizacao",
-                    "escola.id_municipio idMunicipio", "municipio.nome nomeMunicipio",
-                    "escola.id_etapas_de_ensino idEtapasDeEnsino", "etapas.descricao_etapas_de_ensino descricaoEtapasDeEnsino",
-                    "escola.id_porte idPorte", "porte.descricao_porte descricaoPorte",
-                    "escola.id_situacao idSituacao", "situacao.descricao_situacao descricaoSituacao"
-            };
-            var queryBuilder = new QueryBuilder();
-            var sql = queryBuilder.Select(colunas)
-                        .From("public.escola")
-                        .Join("public.rede rede", "escola.id_rede", "rede.id_rede")
-                        .Join("public.unidade_federativa uf", "escola.id_uf", "uf.id")
-                        .Join("public.localizacao localizacao", "escola.id_localizacao", "localizacao.id_localizacao")
-                        .Join("public.municipio municipio", "escola.id_municipio", "municipio.id_municipio")
-                        .Join("public.etapas_de_ensino etapas", "escola.id_etapas_de_ensino", "etapas.id_etapas_de_ensino")
-                        .Join("public.porte porte", "escola.id_porte", "porte.id_porte")
-                        .Join("public.situacao situacao", "escola.id_situacao", "situacao.id_situacao")
-                        .Where("escola.id_escola", "@IdEscola")
-                        .Build();
-
-            var parametro = new
-            {
-                IdEscola = idEscola
-            };
-
-            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
-
-            if (escola == null)
-                return null;
-            return escola;
-        }
-
         public void AdicionarSituacao(int idSituacao, int idEscola){
             var sql = @"UPDATE public.escola SET id_situacao = @IdSituacao WHERE id_escola = @IdEscola";
 
@@ -117,6 +195,7 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+
         public void RemoverSituacaoEscola(int idEscola)
         {
             var sql = @"UPDATE public.escola SET id_situacao = NULL WHERE id_escola = @IdEscola";
@@ -126,7 +205,7 @@ namespace repositorio
                 IdEscola = idEscola
             };
 
-            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro); 
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
     }
 }

@@ -1,82 +1,93 @@
+﻿
 using Xunit;
 using Moq;
+using repositorio;
 using repositorio.Interfaces;
 using service;
 using dominio;
+using Microsoft.Data.Sqlite;
+using System.Data;
+using repositorio.Contexto;
+using Dapper;
+using System;
+using System.Runtime.ConstrainedExecution;
+using dominio.Dominio;
+using test.Stub;
 using service.Interfaces;
 
 namespace test
 {
-    public class EscolaRepositorioTest
+   
+    public class EscolaRepositorioTest : IDisposable
     {
-        [Fact]
-        public void AdicionarSituacaoEscola_QuandoForChamado_DeveChamarORepositorioUmaVez()
+        IEscolaRepositorio repositorio;
+        SqliteConnection connection;
+        public EscolaRepositorioTest()
         {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new ();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            AtualizarSituacaoDTO atualizarSituacaoDto = new() {IdSituacao = 1, IdEscola = 2};
+            connection = new SqliteConnection("Data Source=:memory:");
+            connection.Open();
 
-            escolaService.AdicionarSituacao(atualizarSituacaoDto);
-            mockEscolaRepositorio.Verify(x => x.AdicionarSituacao(atualizarSituacaoDto.IdSituacao, atualizarSituacaoDto.IdEscola), Times.Once);
+            repositorio = new EscolaRepositorio(contexto => new Contexto(connection));
         }
 
         [Fact]
-        public void RemoverSituacaoEscola_QuandoForChamado_DeveChamarORepositorioUmaVez()
+        public void ObterEscolas_QuandoFiltroForemNulos_DeveRetornarListaDeEscolasPaginadas()
         {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            var IdEscola = 5;
+            var filtro = new PesquisaEscolaFiltro();
+            filtro.Pagina = 1;
+            filtro.TamanhoPagina = 2;
 
-            escolaService.RemoverSituacaoEscola(IdEscola);
-            mockEscolaRepositorio.Verify(x => x.RemoverSituacaoEscola(IdEscola), Times.Once);
+            var listaPaginada = repositorio.ObterEscolas(filtro);
+
+            Assert.Equal(filtro.Pagina, listaPaginada.Pagina);
+            Assert.Equal(filtro.TamanhoPagina, listaPaginada.EscolasPorPagina);
+            Assert.Equal(3, listaPaginada.TotalEscolas);
+            Assert.Equal(2, listaPaginada.TotalPaginas);
+            Assert.Equal("CEM02", listaPaginada.Escolas[0].NomeEscola);
+            Assert.Equal("CEM03", listaPaginada.Escolas[1].NomeEscola);
         }
 
         [Fact]
-        public void Listar_QuandoForChamado_DeveChamarORepositorioUmaVez()
+        public void ObterEscolas_QuandoFiltroForPassado_DeveRetornarListaDeEscolasFiltradas()
         {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            var IdEscola = 22;
+            var filtro = new PesquisaEscolaFiltro();
+            filtro.Pagina = 1;
+            filtro.TamanhoPagina = 2;
+            filtro.Nome = "CEM";
+            filtro.IdUf = 1;
+            filtro.IdSituacao = 1;
+            filtro.IdEtapaEnsino = 1;
+            filtro.IdMunicipio = 1;
 
-            escolaService.Listar(IdEscola);
-            mockEscolaRepositorio.Verify(x => x.Obter(IdEscola), Times.Once);
+            var listaPaginada = repositorio.ObterEscolas(filtro);
+
+            Assert.Equal(filtro.Pagina, listaPaginada.Pagina);
+            Assert.Equal(filtro.TamanhoPagina, listaPaginada.EscolasPorPagina);
+            Assert.Equal(2, listaPaginada.TotalEscolas);
+            Assert.Equal(1, listaPaginada.TotalPaginas);
+            Assert.Equal("CEM02", listaPaginada.Escolas[0].NomeEscola);
+            Assert.Equal("CEM04", listaPaginada.Escolas[1].NomeEscola);
         }
         
         [Fact]
-        public void RemoverSituacaoEscola_QuandoOIdForInexistente_DeveRetornarErro()
-        {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            var IdEscola = 8;
-            var IdInexistente = 999;
 
-            escolaService.RemoverSituacaoEscola(IdInexistente);
-            mockEscolaRepositorio.Verify(x => x.RemoverSituacaoEscola(IdInexistente),Times.Once);
+        public void CadastrarEscola_QuandoAEscolaForPassada_DeveCadastrarNoBanco()
+        {
+            EscolaStub escolaStub = new EscolaStub();
+            var escolaEsperada = escolaStub.ObterCadastroEscolaDTO();
+            int? idEscola = repositorio.CadastrarEscola(escolaEsperada);
+            var escolaObtida = repositorio.Obter(idEscola.Value);
+            Assert.Equal(escolaEsperada.NomeEscola, escolaObtida.NomeEscola);
+            Assert.Equal(escolaEsperada.CodigoEscola, escolaObtida.CodigoEscola);
+            Assert.Equal(escolaEsperada.Endereco, escolaObtida.Endereco);
+            Assert.Equal(escolaEsperada.Latitude, escolaObtida.Latitude);
+            Assert.Equal(escolaEsperada.Longitude, escolaObtida.Longitude);
         }
 
-         [Fact]
-        public void AdicionarSituacaoEscola_QuandoOIdForInexistente_DeveRetornarErro()
+        public void Dispose()
         {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            AtualizarSituacaoDTO atualizarSituacaoDto = new() {IdSituacao = 7, IdEscola = 4};
-            int IdInexistente = 3;
-
-            escolaService.AdicionarSituacao(atualizarSituacaoDto);
-            mockEscolaRepositorio.Verify(x => x.AdicionarSituacao(atualizarSituacaoDto.IdSituacao, IdInexistente),Times.Never);
+            connection.Close();
+            connection.Dispose();
         }
-
-         [Fact]
-        public void Listar_QuandoOIdInexistenteForChamado_DeveRetornarErro()
-        {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            var IdEscola = 22;
-            var IdInexistente = 15;
-
-            escolaService.Listar(IdEscola);
-            mockEscolaRepositorio.Verify(x => x.Obter(IdInexistente), Times.Never);
-        }
-
     }
 }

@@ -13,9 +13,9 @@ namespace service
         {
             this.escolaRepositorio = escolaRepositorio;
         }
-        public IEnumerable<Escola> Listar()
+        public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            return escolaRepositorio.Obter();
+            return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
         public void ExcluirEscola(int id)
         {
@@ -34,11 +34,15 @@ namespace service
             escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
 
+        public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
+        {
+            escolaRepositorio.CadastrarEscola(cadastroEscolaDTO);
+        }
+
         public void RemoverSituacaoEscola(int idEscola)
         {
             escolaRepositorio.RemoverSituacaoEscola(idEscola);
         }
-
     }
 }
 

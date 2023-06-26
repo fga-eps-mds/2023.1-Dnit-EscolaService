@@ -19,20 +19,21 @@ namespace app.Controllers
             this.escolaService = escolaService;
         }
 
+
+   
+        [HttpGet("obter")]
+        public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        {
+            ListaPaginada<Escola> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
+
+            return new OkObjectResult(listaEscolaPaginada);
+        }
         [HttpDelete("excluir")]
         public IActionResult ExcluirEscola([FromQuery] int id)
         {
             escolaService.ExcluirEscola(id);
             return Ok();
 
-        }
-
-
-        [HttpGet("listarEscolas")]
-        public IEnumerable<Escola> Listar()
-        {
-            IEnumerable<Escola> escolas = escolaService.Listar();
-            return escolas;
         }
 
         [HttpGet("listarInformacoesEscola")]
@@ -49,11 +50,22 @@ namespace app.Controllers
             return Ok();
         }
 
+
+        [HttpPost("cadastrarEscola")]
+        public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO   cadastroEscolaDTO)
+        {
+            escolaService.CadastrarEscola(cadastroEscolaDTO);
+            return Ok();
+        }
+
+
+
         [HttpPost("removerSituacao")]
         public IActionResult RemoverSituacao([FromQuery] int idEscola)
         {
             escolaService.RemoverSituacaoEscola(idEscola);
             return Ok();
         }
+
     }
 }
