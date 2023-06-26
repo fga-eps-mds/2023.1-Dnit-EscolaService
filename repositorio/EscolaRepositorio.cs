@@ -47,10 +47,10 @@ namespace repositorio
 	                uf.descricao as DescricaoUf,
                     uf.sigla as SiglaUf
                 FROM public.escola as e
-                    JOIN situacao as s ON e.id_situacao = s.id_situacao
-                    JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
-                    JOIN municipio as m ON m.id_municipio = e.id_municipio
-                    JOIN unidade_federativa as uf ON uf.id = e.id_uf ");
+                    LEFT JOIN situacao as s ON e.id_situacao = s.id_situacao
+                    LEFT JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
+                    LEFT JOIN municipio as m ON m.id_municipio = e.id_municipio
+                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf ");
 
 
             StringBuilder where = new StringBuilder();
