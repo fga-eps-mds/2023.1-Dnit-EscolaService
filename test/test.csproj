@@ -22,12 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
     <ProjectReference Include="..\dominio\dominio.csproj" />
     <ProjectReference Include="..\repositorio\repositorio.csproj" />
-=======
     <ProjectReference Include="..\app\app.csproj" />
->>>>>>> 5366ed4e5aed15add0750a71cc0759db5e87f2b4
     <ProjectReference Include="..\service\service.csproj" />
   </ItemGroup>
 
