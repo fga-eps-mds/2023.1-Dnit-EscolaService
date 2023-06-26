@@ -42,7 +42,7 @@ namespace repositorio
 	                e.id_porte as IdPorte,
 	                e.id_situacao as IdSituacao,
                     s.descricao_situacao as DescricaoSituacao,
-	                ede.descricao_etapas_de_ensino,
+	                ede.descricao_etapas_de_ensino as DescricaoEtapasEnsino,
 	                m.nome as NomeMunicipio,
 	                uf.descricao as DescricaoUf,
                     uf.sigla as SiglaUf
