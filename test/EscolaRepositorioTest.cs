@@ -1,7 +1,9 @@
 ﻿
 using Xunit;
+using Moq;
 using repositorio;
 using repositorio.Interfaces;
+using service;
 using dominio;
 using Microsoft.Data.Sqlite;
 using System.Data;
@@ -11,6 +13,7 @@ using System;
 using System.Runtime.ConstrainedExecution;
 using dominio.Dominio;
 using test.Stub;
+using service.Interfaces;
 
 namespace test
 {
@@ -65,7 +68,7 @@ namespace test
             Assert.Equal("CEM02", listaPaginada.Escolas[0].NomeEscola);
             Assert.Equal("CEM04", listaPaginada.Escolas[1].NomeEscola);
         }
-
+        
         [Fact]
 
         public void CadastrarEscola_QuandoAEscolaForPassada_DeveCadastrarNoBanco()

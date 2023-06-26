@@ -25,6 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dominio\dominio.csproj" />
+    <ProjectReference Include="..\repositorio\repositorio.csproj" />
     <ProjectReference Include="..\app\app.csproj" />
     <ProjectReference Include="..\dominio\dominio.csproj" />
     <ProjectReference Include="..\repositorio\repositorio.csproj" />
