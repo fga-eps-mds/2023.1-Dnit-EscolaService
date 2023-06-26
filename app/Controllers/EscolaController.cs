@@ -34,6 +34,11 @@ namespace app.Controllers
                 if (arquivo == null || arquivo.Length == 0)
                     return BadRequest("Nenhum arquivo enviado.");
 
+                if (arquivo.ContentType.ToLower() != "text/csv")
+                {
+                    return BadRequest("O arquivo deve estar no formato CSV.");
+                }
+
                 using (var memoryStream = new MemoryStream())
                 {
                     await arquivo.CopyToAsync(memoryStream);
@@ -41,7 +46,7 @@ namespace app.Controllers
 
                     if (escolaService.SuperaTamanhoMaximo(memoryStream))
                     {
-                        return BadRequest("O arquivo excede o tamanho m·ximo permitido.");
+                        return StatusCode(406, "Tamanho m√°ximo de arquivo ultrapassado!");
                     }
                 }
 
