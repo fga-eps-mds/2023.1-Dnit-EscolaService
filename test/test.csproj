@@ -22,10 +22,12 @@
 		</PackageReference>
 	</ItemGroup>
 
+
 	<ItemGroup>
 		<ProjectReference Include="..\app\app.csproj" />
 		<ProjectReference Include="..\service\service.csproj" />
-	</ItemGroup>
+    <ProjectReference Include="..\repositorio\repositorio.csproj" />
+  </ItemGroup>
 
 </Project>
 

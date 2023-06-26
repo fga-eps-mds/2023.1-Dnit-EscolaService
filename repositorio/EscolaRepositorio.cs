@@ -157,6 +157,7 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+
         public void RemoverSituacaoEscola(int idEscola)
         {
             var sql = @"UPDATE public.escola SET id_situacao = NULL WHERE id_escola = @IdEscola";
@@ -166,7 +167,7 @@ namespace repositorio
                 IdEscola = idEscola
             };
 
-            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro); 
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
     }
 }
