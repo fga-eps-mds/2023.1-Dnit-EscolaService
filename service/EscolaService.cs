@@ -34,11 +34,15 @@ namespace service
             escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
 
+        public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
+        {
+            escolaRepositorio.CadastrarEscola(cadastroEscolaDTO);
+        }
+
         public void RemoverSituacaoEscola(int idEscola)
         {
             escolaRepositorio.RemoverSituacaoEscola(idEscola);
         }
-
     }
 }
 

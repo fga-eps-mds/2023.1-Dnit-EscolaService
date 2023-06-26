@@ -50,11 +50,22 @@ namespace app.Controllers
             return Ok();
         }
 
+
+        [HttpPost("cadastrarEscola")]
+        public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO   cadastroEscolaDTO)
+        {
+            escolaService.CadastrarEscola(cadastroEscolaDTO);
+            return Ok();
+        }
+
+
+
         [HttpPost("removerSituacao")]
         public IActionResult RemoverSituacao([FromQuery] int idEscola)
         {
             escolaService.RemoverSituacaoEscola(idEscola);
             return Ok();
         }
+
     }
 }

@@ -1,4 +1,4 @@
-using Dapper;
+﻿using Dapper;
 using dominio;
 using dominio.Enums;
 using repositorio.Contexto;
@@ -18,6 +18,41 @@ namespace repositorio
         public EscolaRepositorio(ResolverContextoDelegate resolverContexto)
         {
             contexto = resolverContexto(ContextoBancoDeDados.Postgresql);
+        }
+
+
+        public int? CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
+        {
+
+            var sqlInserirEscola = @"INSERT INTO public.escola(nome_escola, codigo_escola, cep, endereco, 
+            latitude, longitude, numero_total_de_alunos, telefone, numero_total_de_docentes, 
+            id_rede, id_uf, id_localizacao, id_municipio, id_etapas_de_ensino, id_porte, id_situacao) 
+            VALUES(@Nome, @Codigo, @CEP, @Endereco, @Latitude, 
+            @Longitude, @NumeroTotalDeAlunos, @Telefone, @NumeroTotalDeDocentes, 
+            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdEtapasDeEnsino, @IdPorte, @IdSituacao) RETURNING id_escola";
+                
+            var parametroEscola = new
+            {
+                Nome = cadastroEscolaDTO.NomeEscola,
+                Codigo = cadastroEscolaDTO.CodigoEscola,
+                CEP = cadastroEscolaDTO.Cep,
+                Endereco = cadastroEscolaDTO.Endereco,
+                Latitude = cadastroEscolaDTO.Latitude,
+                Longitude = cadastroEscolaDTO.Longitude,
+                NumeroTotalDeAlunos = cadastroEscolaDTO.NumeroTotalDeAlunos,
+                Telefone = cadastroEscolaDTO.Telefone,
+                NumeroTotalDeDocentes = cadastroEscolaDTO.NumeroTotalDeDocentes,
+                IdRede = cadastroEscolaDTO.IdRede,
+                IdUf = cadastroEscolaDTO.IdUf,
+                IdLocalizacao = cadastroEscolaDTO.IdLocalizacao,
+                IdMunicipio = cadastroEscolaDTO.IdMunicipio,
+                IdEtapasDeEnsino = cadastroEscolaDTO.IdEtapasDeEnsino,
+                IdPorte = cadastroEscolaDTO.IdPorte,
+                IdSituacao = cadastroEscolaDTO.IdSituacao
+            };
+            
+            int? idEscola = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametroEscola);
+            return idEscola;
         }
 
         public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
@@ -83,6 +118,7 @@ namespace repositorio
                 IdEtapasEnsino = pesquisaEscolaFiltro.IdEtapaEnsino,
                 IdMunicipio = pesquisaEscolaFiltro.IdMunicipio,
                 IdUf = pesquisaEscolaFiltro.IdUf
+
             };
 
             var resultados = contexto?.Conexao.Query<Escola>(sql.ToString(), parametros);
@@ -131,7 +167,9 @@ namespace repositorio
 
             if (escola == null)
                 return null;
+
             return escola;
+
         }
         public void ExcluirEscola(int id)
         {

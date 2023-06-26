@@ -5,6 +5,7 @@ namespace service.Interfaces
 {
     public interface IEscolaService
     {
+        public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO);
         public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro);
         public void ExcluirEscola(int id);
         public Escola Listar(int idEscola);
