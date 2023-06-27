@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using service.Interfaces;
 using dominio;
+using Microsoft.AspNetCore.Mvc;
+using service;
+using service.Interfaces;
+
 
 namespace app.Controllers
 {
@@ -13,13 +15,6 @@ namespace app.Controllers
         public EscolaController(IEscolaService escolaService)
         {
             this.escolaService = escolaService;
-        }
-
-        [HttpPost("cadastroEscola")]
-        public IActionResult CadastrarEscola(Escola escola)
-        {
-            escolaService.CadastrarEscola(escola);
-            return Ok();
         }
 
         [Consumes("multipart/form-data")]
@@ -64,12 +59,20 @@ namespace app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
-        [HttpGet("listarEscolas")]
-        public IEnumerable<Escola> Listar()
+   
+        [HttpGet("obter")]
+        public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            IEnumerable<Escola> escolas = escolaService.Listar();
-            return escolas;
+            ListaPaginada<Escola> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
+
+            return new OkObjectResult(listaEscolaPaginada);
+        }
+        [HttpDelete("excluir")]
+        public IActionResult ExcluirEscola([FromQuery] int id)
+        {
+            escolaService.ExcluirEscola(id);
+            return Ok();
+
         }
 
         [HttpGet("listarInformacoesEscola")]
@@ -85,5 +88,23 @@ namespace app.Controllers
             escolaService.AdicionarSituacao(atualizarSituacaoDTO);
             return Ok();
         }
+
+
+        [HttpPost("cadastrarEscola")]
+        public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO cadastroEscolaDTO)
+        {
+            escolaService.CadastrarEscola(cadastroEscolaDTO);
+            return Ok();
+        }
+
+
+
+        [HttpPost("removerSituacao")]
+        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        {
+            escolaService.RemoverSituacaoEscola(idEscola);
+            return Ok();
+        }
+
     }
 }

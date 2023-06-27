@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Todo.List": {
+    "EscolaService": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

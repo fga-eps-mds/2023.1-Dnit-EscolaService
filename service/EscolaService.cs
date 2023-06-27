@@ -16,11 +16,6 @@ namespace service
             this.escolaRepositorio = escolaRepositorio;
         }
 
-        public void CadastrarEscola(Escola escola)
-        {
-            escolaRepositorio.CadastrarEscola(escola);
-        }
-
         public bool SuperaTamanhoMaximo(MemoryStream planilha)
         { 
             using (var reader = new StreamReader(planilha))
@@ -87,15 +82,16 @@ namespace service
             }
             return escolasDuplicadas;
         }
-        public IEnumerable<Escola> Listar()
-        {
-            return escolaRepositorio.Obter();
-        }
 
+        public void ExcluirEscola(int id)
+        {
+            escolaRepositorio.ExcluirEscola(id);
+
+        }
         public Escola Listar(int idEscola)
         {
             Escola escola = escolaRepositorio.Obter(idEscola);
-            
+
             return escola;
         }
 
@@ -103,5 +99,22 @@ namespace service
         {
             escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
         }
+
+        public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
+        {
+            escolaRepositorio.CadastrarEscola(cadastroEscolaDTO);
+        }
+
+        public void RemoverSituacaoEscola(int idEscola)
+        {
+            escolaRepositorio.RemoverSituacaoEscola(idEscola);
+        }
+
+        public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        {
+            return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
+        }
     }
 }
+
+
