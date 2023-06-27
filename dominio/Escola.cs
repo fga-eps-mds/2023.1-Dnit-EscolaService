@@ -6,7 +6,6 @@ namespace dominio
         public int CodigoEscola { get; set; }
         public string NomeEscola { get; set; }
         public int? IdRede { get; set; }
-        public string DescricaoRede { get; set; }
         public string Cep { get; set; }
         public int? IdUf { get; set; }
         public string DescricaoUf { get; set; }
