@@ -3,10 +3,9 @@ namespace dominio
     public class Escola
     {
         public int IdEscola { get; set; }
-        public int? CodigoEscola { get; set; }
+        public int CodigoEscola { get; set; }
         public string NomeEscola { get; set; }
         public int? IdRede { get; set; }
-        public string DescricaoRede { get; set; }
         public string Cep { get; set; }
         public int? IdUf { get; set; }
         public string DescricaoUf { get; set; }
@@ -23,8 +22,7 @@ namespace dominio
         public string DescricaoSituacao { get; set; }
         public int? IdPorte { get; set; }
         public string Telefone { get; set; }
-        public int? NumeroTotalDeDocentes { get; set; }
-
+        public int NumeroTotalDeDocentes{ get; set; }
         public string SiglaUf { get; set; }
     }
 }

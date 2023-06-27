@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -28,8 +28,6 @@
     <ProjectReference Include="..\dominio\dominio.csproj" />
     <ProjectReference Include="..\repositorio\repositorio.csproj" />
     <ProjectReference Include="..\app\app.csproj" />
-    <ProjectReference Include="..\dominio\dominio.csproj" />
-    <ProjectReference Include="..\repositorio\repositorio.csproj" />
     <ProjectReference Include="..\service\service.csproj" />
   </ItemGroup>
 
