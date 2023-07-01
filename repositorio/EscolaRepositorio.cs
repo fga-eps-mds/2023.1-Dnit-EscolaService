@@ -122,7 +122,7 @@ namespace repositorio
             StringBuilder where = new StringBuilder();
 
             if (pesquisaEscolaFiltro.Nome != null)
-                where.Append(" AND e.nome_escola like '%' || @NomeEscola || '%' ");
+                where.Append(" AND e.nome_escola ilike '%' || @NomeEscola || '%' ");
             if (pesquisaEscolaFiltro.IdSituacao != null)
                 where.Append(" AND e.id_situacao  = @IdSituacao");
             if (pesquisaEscolaFiltro.IdEtapaEnsino != null)
