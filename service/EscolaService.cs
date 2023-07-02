@@ -114,6 +114,11 @@ namespace service
         {
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
+
+        public void AlterarTelefone(int idEscola, string telefone)
+        {
+            escolaRepositorio.AlterarTelefone(idEscola, telefone);
+        }
     }
 }
 

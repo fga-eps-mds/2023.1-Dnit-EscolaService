@@ -247,5 +247,18 @@ namespace repositorio
 
             return quantidade > 0;
         }
+
+        public void AlterarTelefone(int idEscola, string telefone)
+        {
+            var sql = @"UPDATE public.escola SET telefone = @Telefone WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = idEscola,
+                Telefone = telefone
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
     }
 }

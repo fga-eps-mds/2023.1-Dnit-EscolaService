@@ -95,7 +95,6 @@ namespace app.Controllers
             return Ok();
         }
 
-
         [HttpPost("cadastrarEscola")]
         public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO cadastroEscolaDTO)
         {
@@ -103,12 +102,17 @@ namespace app.Controllers
             return Ok();
         }
 
-
-
         [HttpPost("removerSituacao")]
         public IActionResult RemoverSituacao([FromQuery] int idEscola)
         {
             escolaService.RemoverSituacaoEscola(idEscola);
+            return Ok();
+        }
+
+        [HttpPut("alterarTelefone")]
+        public IActionResult AlterarTelefone([FromQuery] int idEscola, string telefone)
+        {
+            escolaService.AlterarTelefone(idEscola, telefone);
             return Ok();
         }
 
