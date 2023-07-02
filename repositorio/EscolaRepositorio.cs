@@ -286,5 +286,18 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+
+        public void AlterarNumeroDeAlunos(int idEscola, int numeroTotalDeAlunos)
+        {
+            var sql = @"UPDATE public.escola SET numero_total_de_alunos = @NumeroTotalDeAlunos WHERE id_escola = @IdEscola";
+
+            var parametro = new 
+            {
+                IdEscola = idEscola,
+                NumeroTotalDeAlunos = numeroTotalDeAlunos
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
     }
 }

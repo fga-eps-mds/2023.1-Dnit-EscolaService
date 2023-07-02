@@ -129,6 +129,11 @@ namespace service
         {
             escolaRepositorio.AlterarLongitude(idEscola, longitude);
         }
+
+        public void AlterarNumeroDeAlunos(int idEscola, int numeroDeAlunos)
+        {
+            escolaRepositorio.AlterarNumeroDeAlunos(idEscola, numeroDeAlunos);
+        }
     }
 }
 
