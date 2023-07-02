@@ -78,8 +78,14 @@ namespace app.Controllers
         [HttpGet("listarInformacoesEscola")]
         public IActionResult ListarInformacoesEscola([FromQuery] int idEscola)
         {
-            Escola escola = escolaService.Listar(idEscola);
-            return Ok(escola);
+            try
+            {
+                Escola escola = escolaService.Listar(idEscola);
+                return Ok(escola);
+            } catch (InvalidOperationException)
+            {
+                return NotFound("Não foi encontrada escola com o id fornecido.");
+            }
         }
 
         [HttpPost("adicionarSituacao")]

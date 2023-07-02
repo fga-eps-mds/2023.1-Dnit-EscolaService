@@ -193,10 +193,10 @@ namespace repositorio
                 IdEscola = idEscola
             };
 
-            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola?>(sql, parametro);
 
             if (escola == null)
-                return null;
+                throw new InvalidOperationException("Não foi encontrada escola cadastrada com o id fornecido.");
 
             return escola;
 

@@ -16,7 +16,7 @@ namespace test.Stub
                 NomeEscola = "DNIT",
                 CodigoEscola = 586,
                 Cep = "72154365",
-                Endereco = "adsdas54",
+                Endereco = "Endereço Teste",
                 Latitude = "4654",
                 Longitude = "5468",
                 NumeroTotalDeAlunos = 400,
