@@ -14,7 +14,7 @@ namespace test
         {
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            List<int> listaVazia = new List<int>();
+            List<string> listaVazia = new List<string>();
             var memoryStream = new MemoryStream();
 
             var retorno = escolaService.CadastrarEscolaViaPlanilha(memoryStream);

@@ -22,7 +22,7 @@ namespace app.Controllers
         public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
         {
 
-            List<int> escolasDuplicadas;
+            List<string> escolasNovas;
 
             try
             {
@@ -49,10 +49,10 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    escolasDuplicadas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                    escolasNovas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
                 }
 
-                return Ok(escolasDuplicadas);
+                return Ok(escolasNovas);
             }
             catch (Exception ex)
             {

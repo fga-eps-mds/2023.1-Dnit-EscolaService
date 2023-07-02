@@ -29,10 +29,9 @@ namespace service
             }
         }
 
-        public List<int> CadastrarEscolaViaPlanilha(MemoryStream planilha)
+        public List<string> CadastrarEscolaViaPlanilha(MemoryStream planilha)
         {
-            List<int> escolasDuplicadas = new List<int>();
-            int numero_linha = 2;
+            List<string> escolasNovas = new List<string>();
             using (var reader = new StreamReader(planilha))
             {
                 using (var parser = new TextFieldParser(reader))
@@ -53,12 +52,6 @@ namespace service
                         Escola escola = new Escola();
                         escola.NomeEscola = linha[0];
                         escola.CodigoEscola = int.Parse(linha[1]);
-                        if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
-                        {
-                            escolasDuplicadas.Add(numero_linha);
-                            numero_linha++;
-                            continue;
-                        }
                         escola.Cep = linha[2];
                         escola.Endereco = linha[3];
                         escola.Latitude = linha[4];
@@ -75,12 +68,18 @@ namespace service
                         escola.IdPorte = int.Parse(linha[15]);
                         escola.IdSituacao = int.Parse(linha[16]);
 
+                        if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
+                        {
+                            escolaRepositorio.AtualizarDadosPlanilha(escola);
+                            continue;
+                        }
+
+                        escolasNovas.Add(escola.NomeEscola);
                         escolaRepositorio.CadastrarEscola(escola);
-                        numero_linha++;
                     }
                 }
             }
-            return escolasDuplicadas;
+            return escolasNovas;
         }
 
         public void ExcluirEscola(int id)

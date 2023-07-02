@@ -247,5 +247,50 @@ namespace repositorio
 
             return quantidade > 0;
         }
+
+        public void AtualizarDadosPlanilha(Escola escola)
+        {
+            var sqlAtualizarEscola = @"
+                    UPDATE public.escola
+                    SET nome_escola = @Nome_escola,
+                        codigo_escola = @Codigo_escola,
+                        cep = @CEP,
+                        endereco = @Endereco,
+                        latitude = @Latitude,
+                        longitude = @Longitude,
+                        numero_total_de_alunos = @Numero_total_de_alunos,
+                        telefone = @Telefone,
+                        numero_total_de_docentes = @Numero_total_de_docentes,
+                        id_rede = @Id_rede,
+                        id_uf = @Id_uf,
+                        id_localizacao = @Id_localizacao,
+                        id_municipio = @Id_municipio,
+                        id_etapas_de_ensino = @Id_etapas_de_ensino,
+                        id_porte = @Id_porte,
+                        id_situacao = @Id_situacao
+                    WHERE codigo_escola = @Codigo_escola";
+
+            var parametrosEscola = new
+            {
+                Codigo_escola = escola.CodigoEscola,
+                Nome_escola = escola.NomeEscola,
+                Id_rede = escola.IdRede,
+                CEP = escola.Cep,
+                Id_uf = escola.IdUf,
+                Endereco = escola.Endereco,
+                Id_municipio = escola.IdMunicipio,
+                Id_localizacao = escola.IdLocalizacao,
+                Longitude = escola.Longitude,
+                Latitude = escola.Latitude,
+                Id_etapas_de_ensino = escola.IdEtapasDeEnsino,
+                Numero_total_de_alunos = escola.NumeroTotalDeAlunos,
+                Id_situacao = escola.IdSituacao,
+                Id_porte = escola.IdPorte,
+                Telefone = escola.Telefone,
+                Numero_total_de_docentes = escola.NumeroTotalDeAlunos
+            };
+
+            contexto?.Conexao.Execute(sqlAtualizarEscola, parametrosEscola);
+        }
     }
 }
