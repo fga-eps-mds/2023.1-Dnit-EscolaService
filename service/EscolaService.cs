@@ -5,6 +5,12 @@ using repositorio.Interfaces;
 using service.Interfaces;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
+using System;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace service
 {
@@ -114,6 +120,21 @@ namespace service
         {
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
+        public async Task<Endereco>ObterEndereco(int cep)
+        {
+            var uriBuilder = new UriBuilder($"https://viacep.com.br/ws/{cep}/json");
+
+            string url = uriBuilder.ToString();
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage response = await httpClient.GetAsync(url);
+            string conteudo = await response.Content.ReadAsStringAsync();
+
+           
+            var endereco = JsonConvert.DeserializeObject<Endereco>(conteudo);
+
+            return endereco;
+        }
+
     }
 }
 

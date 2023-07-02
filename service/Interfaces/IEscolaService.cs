@@ -1,6 +1,7 @@
 using System.IO;
 using System.Collections.Generic;
 using dominio;
+using System.Threading.Tasks;
 
 namespace service.Interfaces
 {
@@ -14,6 +15,7 @@ namespace service.Interfaces
         public Escola Listar(int idEscola);
         public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO);
         public void RemoverSituacaoEscola(int idEscola);
+        public Task<Endereco> ObterEndereco(int cep);
     }
 
 }
