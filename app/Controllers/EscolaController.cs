@@ -137,5 +137,12 @@ namespace app.Controllers
             return Ok();
         }
 
+        [HttpPut("alterarNumeroDeDocentes")]
+        public IActionResult AlterarNumeroDeDocentes([FromQuery] int idEscola, int numeroDeDocentes)
+        {
+            escolaService.AlterarNumeroDeDocentes(idEscola, numeroDeDocentes);
+            return Ok();
+        }
+
     }
 }
