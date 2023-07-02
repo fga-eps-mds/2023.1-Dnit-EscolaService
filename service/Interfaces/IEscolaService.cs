@@ -16,6 +16,7 @@ namespace service.Interfaces
         public void RemoverSituacaoEscola(int idEscola);
         public void AlterarTelefone(int idEscola, string telefone);
         public void AlterarLatitude(int idEscola, string latitude);
+        public void AlterarLongitude(int idEscola, string longitude);
     }
 }
 

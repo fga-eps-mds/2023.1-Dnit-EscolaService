@@ -123,5 +123,12 @@ namespace app.Controllers
             return Ok();
         }
 
+        [HttpPut("alterarLongitude")]
+        public IActionResult AlterarLongitude([FromQuery] int idEscola, string longitude)
+        {
+            escolaService.AlterarLongitude(idEscola, longitude);
+            return Ok();
+        }
+
     }
 }

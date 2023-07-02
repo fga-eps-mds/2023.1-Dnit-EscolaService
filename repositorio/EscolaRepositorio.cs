@@ -273,5 +273,18 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+
+        public void AlterarLongitude(int idEscola, string longitude)
+        {
+            var sql = @"UPDATE public.escola SET longitude = @Longitude WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = idEscola,
+                Longitude = longitude
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
     }
 }
