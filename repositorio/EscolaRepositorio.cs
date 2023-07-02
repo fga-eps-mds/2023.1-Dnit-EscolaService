@@ -260,5 +260,18 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+
+        public void AlterarLatitude (int idEscola, string latitude)
+        {
+            var sql = @"UPDATE public.escola SET latitude = @Latitude WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = idEscola,
+                Latitude = latitude
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
     }
 }

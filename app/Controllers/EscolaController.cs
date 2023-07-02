@@ -116,5 +116,12 @@ namespace app.Controllers
             return Ok();
         }
 
+        [HttpPut("alterarLatitude")]
+        public IActionResult AlterarLatitude([FromQuery] int idEscola, string latitude)
+        {
+            escolaService.AlterarLatitude(idEscola, latitude);
+            return Ok();
+        }
+
     }
 }
