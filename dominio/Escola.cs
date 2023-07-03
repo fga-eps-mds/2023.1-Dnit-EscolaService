@@ -24,5 +24,6 @@ namespace dominio
         public string Telefone { get; set; }
         public int NumeroTotalDeDocentes{ get; set; }
         public string SiglaUf { get; set; }
+        public string Observacao {get; set; }
     }
 }

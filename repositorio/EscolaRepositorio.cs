@@ -99,6 +99,7 @@ namespace repositorio
                     e.numero_total_de_alunos as NumeroTotalDeAlunos,
 	                e.telefone as Telefone, 
 	                e.numero_total_de_docentes as NumeroTotalDeDocentes,
+                    e.observacao as Observacao,
                     e.id_escola as IdEscola,
 	                e.id_rede as IdRede,
 	                e.id_uf as IdUf,
@@ -182,7 +183,8 @@ namespace repositorio
                     id_municipio idMunicipio,
                     id_etapas_de_ensino idEtapasDeEnsino,
                     id_porte idPorte,
-                    id_situacao idSituacao
+                    id_situacao idSituacao,
+                    observacao
                 FROM
                     public.escola
                 WHERE
