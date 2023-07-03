@@ -312,5 +312,18 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+
+        public void AdicionarObservacao(int idEscola, string observacao)
+        {
+            var sql = @"UPDATE public.escola SET observacao = @Observacao WHERE id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = idEscola,
+                Observacao = observacao
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
     }
 }

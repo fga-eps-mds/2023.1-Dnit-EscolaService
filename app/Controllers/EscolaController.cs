@@ -144,5 +144,12 @@ namespace app.Controllers
             return Ok();
         }
 
+        [HttpPut("adicionarObservacao")]
+        public IActionResult AdicionarObservacao([FromQuery] int idEscola, string observacao)
+        {
+            escolaService.AdicionarObservacao(idEscola, observacao);
+            return Ok();
+        }
+
     }
 }

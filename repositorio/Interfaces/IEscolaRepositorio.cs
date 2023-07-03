@@ -17,5 +17,6 @@ namespace repositorio.Interfaces
         public void AlterarLongitude(int idEscola, string longitude);
         public void AlterarNumeroDeAlunos(int idEscola, int numeroDeAlunos);
         public void AlterarNumeroDeDocentes(int idEscola, int numeroTotalDeDocentes);
+        public void AdicionarObservacao(int idEscola, string observacao);
     }
 }

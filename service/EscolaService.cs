@@ -139,6 +139,11 @@ namespace service
         {
             escolaRepositorio.AlterarNumeroDeDocentes(idEscola, numeroDeDocentes);
         }
+
+        public void AdicionarObservacao(int idEscola, string observacao)
+        {
+            escolaRepositorio.AdicionarObservacao(idEscola, observacao);
+        }
     }
 }
 
