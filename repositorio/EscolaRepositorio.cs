@@ -140,9 +140,9 @@ namespace repositorio
             if (pesquisaEscolaFiltro.Nome != null)
                 where.Append(" AND LOWER(e.nome_escola) LIKE '%' || LOWER(@NomeEscola) || '%' ");
             if (pesquisaEscolaFiltro.IdSituacao != null)
-                where.Append(" AND e.id_situacao  = @IdSituacao");
+                where.Append(" AND e.id_situacao = @IdSituacao");
             if (pesquisaEscolaFiltro.IdEtapaEnsino != null)
-                where.Append(" AND e.id_etapas_de_ensino = @IdEtapasEnsino");
+                where.Append(" AND etde.id_etapas_de_ensino = ANY(@IdEtapasEnsino)");
             if (pesquisaEscolaFiltro.IdMunicipio != null)
                 where.Append(" AND e.id_municipio = @IdMunicipio");
             if (pesquisaEscolaFiltro.IdUf != null)
