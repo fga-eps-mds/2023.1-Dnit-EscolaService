@@ -16,7 +16,7 @@ namespace Test
             int idEscolaTest = 41;
 
             escolaService.ExcluirEscola(idEscolaTest);
-            escolaRepositorio.Verify(x => x.ExcluirEscola(idEscolaTest), Times.Once);
+            escolaRepositorio.Verify(x => x.ExcluirEscola(idEscolaTest),Times.Once);
         }
     }
 }

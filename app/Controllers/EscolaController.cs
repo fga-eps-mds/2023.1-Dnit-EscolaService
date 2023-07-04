@@ -112,11 +112,5 @@ namespace app.Controllers
             escolaService.RemoverSituacaoEscola(idEscola);
             return Ok();
         }
-        [HttpPost("endereco")]
-        public async Task<Endereco> ObterEndereco([FromQuery] int cep)
-        {
-            var endereco = await escolaService.ObterEndereco(cep);
-            return endereco;
-        }
     }
 }

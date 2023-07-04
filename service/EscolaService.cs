@@ -120,20 +120,6 @@ namespace service
         {
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
-        public async Task<Endereco>ObterEndereco(int cep)
-        {
-            var uriBuilder = new UriBuilder($"https://viacep.com.br/ws/{cep}/json");
-
-            string url = uriBuilder.ToString();
-            HttpClient httpClient = new HttpClient();
-            HttpResponseMessage response = await httpClient.GetAsync(url);
-            string conteudo = await response.Content.ReadAsStringAsync();
-
-           
-            var endereco = JsonConvert.DeserializeObject<Endereco>(conteudo);
-
-            return endereco;
-        }
 
     }
 }
