@@ -8,7 +8,7 @@ namespace service.Interfaces
     public interface IEscolaService
     {
         public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO);
-        public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro);
+        public ListaPaginada<EscolaCorreta> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro);
         public void ExcluirEscola(int id);
         public bool SuperaTamanhoMaximo(MemoryStream planilha);
         public List<int> CadastrarEscolaViaPlanilha(MemoryStream planilha);

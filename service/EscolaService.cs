@@ -126,7 +126,7 @@ namespace service
             escolaRepositorio.RemoverSituacaoEscola(idEscola);
         }
 
-        public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public ListaPaginada<EscolaCorreta> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using static repositorio.Contexto.ResolverContexto;
+using System.Data;
 
 namespace repositorio
 {
@@ -100,7 +101,7 @@ namespace repositorio
             contexto?.Conexao.Execute(sql, parametros);
         }
 
-        public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public ListaPaginada<EscolaCorreta> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
 
             StringBuilder sql = new(@$"
@@ -118,19 +119,20 @@ namespace repositorio
 	                e.id_uf as IdUf,
 	                e.id_localizacao as IdLocalizacao,
 	                e.id_municipio as IdMunicipio,
-                    e.id_etapas_de_ensino as IdEtapasDeEnsino,
 	                e.id_porte as IdPorte,
 	                e.id_situacao as IdSituacao,
                     s.descricao_situacao as DescricaoSituacao,
-	                ede.descricao_etapas_de_ensino as DescricaoEtapasEnsino,
 	                m.nome as NomeMunicipio,
 	                uf.descricao as DescricaoUf,
-                    uf.sigla as SiglaUf
+                    uf.sigla as SiglaUf,
+                    etde.id_etapas_de_ensino as IdEtapasDeEnsino,
+	                ede.descricao_etapas_de_ensino as DescricaoEtapasEnsino
                 FROM public.escola as e
                     LEFT JOIN situacao as s ON e.id_situacao = s.id_situacao
-                    LEFT JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
                     LEFT JOIN municipio as m ON m.id_municipio = e.id_municipio
-                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf ");
+                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf 
+                    LEFT JOIN escola_etapas_de_ensino as etde ON etde.id_escola = e.id_escola
+                    LEFT JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = etde.id_etapas_de_ensino");
 
 
             StringBuilder where = new StringBuilder();
@@ -156,8 +158,6 @@ namespace repositorio
 
             var parametros = new
             {
-                Pagina = pesquisaEscolaFiltro.Pagina,
-                TamanhoPagina = pesquisaEscolaFiltro.TamanhoPagina,
                 NomeEscola = pesquisaEscolaFiltro.Nome,
                 IdSituacao = pesquisaEscolaFiltro.IdSituacao,
                 IdEtapasEnsino = pesquisaEscolaFiltro.IdEtapaEnsino,
@@ -166,12 +166,38 @@ namespace repositorio
 
             };
 
-            var resultados = contexto?.Conexao.Query<Escola>(sql.ToString(), parametros);
+            var escolasCorretas = new Dictionary<int, EscolaCorreta>();
 
-            int? total = resultados.Count();
-            resultados = resultados.Skip((pesquisaEscolaFiltro.Pagina - 1) * pesquisaEscolaFiltro.TamanhoPagina).Take(pesquisaEscolaFiltro.TamanhoPagina);
+            var resultados = contexto?.Conexao.Query<EscolaCorreta, int?, string?, EscolaCorreta>(
+                sql.ToString(),
+                (escola, idEtapasDeEnsino, descricaoEtapasEnsino) =>
+                {
+                    if (!escolasCorretas.TryGetValue(escola.IdEscola, out var escolaCorreta))
+                    {
+                        escolaCorreta = escola;
+                        escolaCorreta.EtapaEnsino = new Dictionary<int, string>();
+                        escolasCorretas.Add(escola.IdEscola, escolaCorreta);
+                    }
 
-            ListaPaginada<Escola> listaEscolaPagina = new(resultados, pesquisaEscolaFiltro.Pagina, pesquisaEscolaFiltro.TamanhoPagina, total ?? 0);
+                    if (descricaoEtapasEnsino != null && !escolaCorreta.EtapaEnsino.ContainsKey((int)idEtapasDeEnsino))
+                    {
+                        escolaCorreta.EtapaEnsino.Add((int)idEtapasDeEnsino, descricaoEtapasEnsino);
+                    }
+
+                    return escolaCorreta;
+                },
+                param: parametros,
+                splitOn: "IdEtapasDeEnsino, DescricaoEtapasEnsino",
+                commandType: CommandType.Text
+                );
+
+
+            List<EscolaCorreta> listaEscolaSemDuplicacao = resultados.Distinct().ToList();
+
+            int? total = listaEscolaSemDuplicacao.Count();
+            resultados = listaEscolaSemDuplicacao.Skip((pesquisaEscolaFiltro.Pagina - 1) * pesquisaEscolaFiltro.TamanhoPagina).Take(pesquisaEscolaFiltro.TamanhoPagina);
+
+            ListaPaginada<EscolaCorreta> listaEscolaPagina = new(resultados, pesquisaEscolaFiltro.Pagina, pesquisaEscolaFiltro.TamanhoPagina, total ?? 0);
 
             return listaEscolaPagina;
         }
