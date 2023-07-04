@@ -18,7 +18,7 @@ namespace dominio
         public int? IdLocalizacao { get; set; }
         public string Longitude { get; set; }
         public string Latitude { get; set; }
-        public int? IdEtapasDeEnsino { get; set; }
+        public List<int>? IdEtapasDeEnsino { get; set; }
         public int NumeroTotalDeAlunos { get; set; }
         public int? IdSituacao { get; set; }
         public int? IdPorte { get; set; }
