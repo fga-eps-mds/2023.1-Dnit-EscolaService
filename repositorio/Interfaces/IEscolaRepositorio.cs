@@ -8,7 +8,6 @@ namespace repositorio.Interfaces
         public void ExcluirEscola(int Id);
         public Escola Obter(int idEscola);
         public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro);
-        public void AdicionarSituacao(int idSituacao, int idEscola);
         public void RemoverSituacaoEscola(int idEscola);
         public void CadastrarEscola(Escola escola);
         public bool EscolaJaExiste(int codigoEscola);

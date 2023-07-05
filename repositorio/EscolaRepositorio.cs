@@ -216,19 +216,6 @@ namespace repositorio
 
         }
 
-        public void AdicionarSituacao(int idSituacao, int idEscola)
-        {
-            var sql = @"UPDATE public.escola SET id_situacao = @IdSituacao WHERE id_escola = @IdEscola";
-
-            var parametro = new
-            {
-                IdSituacao = idSituacao,
-                IdEscola = idEscola
-            };
-
-            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
-        }
-
         public void RemoverSituacaoEscola(int idEscola)
         {
             var sql = @"UPDATE public.escola SET id_situacao = NULL WHERE id_escola = @IdEscola";

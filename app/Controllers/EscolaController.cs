@@ -88,12 +88,6 @@ namespace app.Controllers
             }
         }
 
-        [HttpPost("adicionarSituacao")]
-        public IActionResult AdicionarSituacao([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
-        {
-            escolaService.AdicionarSituacao(atualizarDadosEscolaDTO);
-            return Ok();
-        }
 
         [HttpPost("cadastrarEscola")]
         public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO cadastroEscolaDTO)
