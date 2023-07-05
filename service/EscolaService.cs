@@ -6,6 +6,10 @@ using service.Interfaces;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
 using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace service
 {
@@ -66,7 +70,11 @@ namespace service
                             escola.IdRede = int.Parse(linha[10]);
                             escola.IdUf = int.Parse(linha[11]);
                             escola.IdLocalizacao = int.Parse(linha[12]);
-                            escola.IdMunicipio = int.Parse(linha[13]);
+
+                            string municipio = ObterCodigoMunicipioPorCEP(escola.Cep).GetAwaiter().GetResult();
+                            if (municipio == null) { throw new Exception("Erro. A leitura do arquivo parou na escola: "+escola.NomeEscola+", CEP inválido!"); } 
+                            else { escola.IdMunicipio = int.Parse(municipio); }
+
                             escola.IdEtapasDeEnsino = int.Parse(linha[14]);
                             escola.IdPorte = int.Parse(linha[15]);
                             escola.IdSituacao = int.Parse(linha[16]);
@@ -80,7 +88,7 @@ namespace service
                             escolasNovas.Add(escola.NomeEscola);
                             escolaRepositorio.CadastrarEscola(escola);
                         }
-                        catch (Exception ex)
+                        catch (FormatException ex)
                         {
                             throw new Exception("Planilha com formato incompatível.");
                         }
@@ -121,6 +129,36 @@ namespace service
         {
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
+
+        public async Task<string> ObterCodigoMunicipioPorCEP(string cep)
+        {
+            string url = $"https://viacep.com.br/ws/{cep}/json/";
+
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    var response = await httpClient.GetAsync(url);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var conteudo = await response.Content.ReadAsStringAsync();
+                        dynamic resultado = JObject.Parse(conteudo);
+
+                        return resultado.ibge;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+        }
+
     }
 }
 
