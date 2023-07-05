@@ -5,6 +5,7 @@ using repositorio.Interfaces;
 using service.Interfaces;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
+using System;
 
 namespace service
 {
@@ -43,39 +44,46 @@ namespace service
 
                     while (!parser.EndOfData)
                     {
-                        string[] linha = parser.ReadFields();
-                        if (!primeiralinha)
+                        try
                         {
-                            primeiralinha = true;
-                            continue;
-                        }
-                        Escola escola = new Escola();
-                        escola.NomeEscola = linha[0];
-                        escola.CodigoEscola = int.Parse(linha[1]);
-                        escola.Cep = linha[2];
-                        escola.Endereco = linha[3];
-                        escola.Latitude = linha[4];
-                        escola.Longitude = linha[5];
-                        escola.NumeroTotalDeAlunos = int.Parse(linha[6]);
-                        escola.Telefone = linha[7];
-                        escola.NumeroTotalDeDocentes = int.Parse(linha[8]);
-                        escola.IdEscola = int.Parse(linha[9]);
-                        escola.IdRede = int.Parse(linha[10]);
-                        escola.IdUf = int.Parse(linha[11]);
-                        escola.IdLocalizacao = int.Parse(linha[12]);
-                        escola.IdMunicipio = int.Parse(linha[13]);
-                        escola.IdEtapasDeEnsino = int.Parse(linha[14]);
-                        escola.IdPorte = int.Parse(linha[15]);
-                        escola.IdSituacao = int.Parse(linha[16]);
+                            string[] linha = parser.ReadFields();
+                            if (!primeiralinha)
+                            {
+                                primeiralinha = true;
+                                continue;
+                            }
+                            Escola escola = new Escola();
+                            escola.NomeEscola = linha[0];
+                            escola.CodigoEscola = int.Parse(linha[1]);
+                            escola.Cep = linha[2];
+                            escola.Endereco = linha[3];
+                            escola.Latitude = linha[4];
+                            escola.Longitude = linha[5];
+                            escola.NumeroTotalDeAlunos = int.Parse(linha[6]);
+                            escola.Telefone = linha[7];
+                            escola.NumeroTotalDeDocentes = int.Parse(linha[8]);
+                            escola.IdEscola = int.Parse(linha[9]);
+                            escola.IdRede = int.Parse(linha[10]);
+                            escola.IdUf = int.Parse(linha[11]);
+                            escola.IdLocalizacao = int.Parse(linha[12]);
+                            escola.IdMunicipio = int.Parse(linha[13]);
+                            escola.IdEtapasDeEnsino = int.Parse(linha[14]);
+                            escola.IdPorte = int.Parse(linha[15]);
+                            escola.IdSituacao = int.Parse(linha[16]);
 
-                        if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
+                            if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
+                            {
+                                escolaRepositorio.AtualizarDadosPlanilha(escola);
+                                continue;
+                            }
+
+                            escolasNovas.Add(escola.NomeEscola);
+                            escolaRepositorio.CadastrarEscola(escola);
+                        }
+                        catch (Exception ex)
                         {
-                            escolaRepositorio.AtualizarDadosPlanilha(escola);
-                            continue;
+                            throw new Exception("Planilha com formato incompatível.");
                         }
-
-                        escolasNovas.Add(escola.NomeEscola);
-                        escolaRepositorio.CadastrarEscola(escola);
                     }
                 }
             }
