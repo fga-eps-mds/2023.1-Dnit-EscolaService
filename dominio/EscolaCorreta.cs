@@ -1,6 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace dominio
 {
-    public class Escola
+    public class EscolaCorreta
     {
         public int IdEscola { get; set; }
         public int CodigoEscola { get; set; }
@@ -15,14 +21,13 @@ namespace dominio
         public int? IdLocalizacao { get; set; }
         public string Longitude { get; set; }
         public string Latitude { get; set; }
-        public int? IdEtapasDeEnsino { get; set;} 
-        public string DescricaoEtapasEnsino { get; set; }
+        public Dictionary<int, string>? EtapaEnsino { get; set; }
         public int? NumeroTotalDeAlunos { get; set; }
         public int? IdSituacao { get; set; }
         public string DescricaoSituacao { get; set; }
         public int? IdPorte { get; set; }
         public string Telefone { get; set; }
-        public int NumeroTotalDeDocentes{ get; set; }
+        public int NumeroTotalDeDocentes { get; set; }
         public string SiglaUf { get; set; }
     }
 }
