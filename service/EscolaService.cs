@@ -115,36 +115,6 @@ namespace service
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
 
-        public void AlterarTelefone(int idEscola, string telefone)
-        {
-            escolaRepositorio.AlterarTelefone(idEscola, telefone);
-        }
-
-        public void AlterarLatitude(int idEscola, string latitude)
-        {
-            escolaRepositorio.AlterarLatitude(idEscola, latitude);
-        }
-
-        public void AlterarLongitude(int idEscola, string longitude)
-        {
-            escolaRepositorio.AlterarLongitude(idEscola, longitude);
-        }
-
-        public void AlterarNumeroDeAlunos(int idEscola, int numeroDeAlunos)
-        {
-            escolaRepositorio.AlterarNumeroDeAlunos(idEscola, numeroDeAlunos);
-        }
-
-        public void AlterarNumeroDeDocentes(int idEscola, int numeroDeDocentes)
-        {
-            escolaRepositorio.AlterarNumeroDeDocentes(idEscola, numeroDeDocentes);
-        }
-
-        public void AdicionarObservacao(int idEscola, string observacao)
-        {
-            escolaRepositorio.AdicionarObservacao(idEscola, observacao);
-        }
-
         public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
             escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
