@@ -12,12 +12,6 @@ namespace repositorio.Interfaces
         public void RemoverSituacaoEscola(int idEscola);
         public void CadastrarEscola(Escola escola);
         public bool EscolaJaExiste(int codigoEscola);
-        public void AlterarTelefone(int idEscola, string telefone);
-        public void AlterarLatitude(int idEscola, string latitude);
-        public void AlterarLongitude(int idEscola, string longitude);
-        public void AlterarNumeroDeAlunos(int idEscola, int numeroDeAlunos);
-        public void AlterarNumeroDeDocentes(int idEscola, int numeroTotalDeDocentes);
-        public void AdicionarObservacao(int idEscola, string observacao);
         public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
     }
 }
