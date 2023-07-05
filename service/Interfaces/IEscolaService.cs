@@ -17,6 +17,7 @@ namespace service.Interfaces
         public void RemoverSituacaoEscola(int idEscola);
         public Task<string> ObterCodigoMunicipioPorCEP(string cep);
         public int ObterEstadoPelaSigla(string UF);
+        public int ObterPortePeloId(string Porte);
     }
 
 }

@@ -89,7 +89,13 @@ namespace service
                             }
 
                             escola.IdEtapasDeEnsino = int.Parse(linha[14]);
-                            escola.IdPorte = int.Parse(linha[15]);
+                            escola.IdPorte = ObterPortePeloId(linha[15]);
+
+                            if (escola.IdPorte == 0)
+                            {
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
+                            }
+
                             escola.IdSituacao = int.Parse(linha[16]);
 
                             if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
@@ -207,7 +213,25 @@ namespace service
 
             foreach (var estado in estados)
             {
-                if(estado.Value == UF) return estado.Key;
+                if(estado.Value == UF.ToUpper()) return estado.Key;
+            }
+            return 0;
+        }
+
+        public int ObterPortePeloId(string Porte)
+        {
+            Dictionary<int, string> porte = new Dictionary<int, string>()
+            {
+                { 1, "Até 50 matrículas de escolarização"},
+                { 2, "Entre 201 e 500 matrículas de escolarização"},
+                { 3, "Entre 501 e 1000 matrículas de escolarização"},
+                { 4, "Entre 51 e 200 matrículas de escolarização"},
+                { 5, "Mais de 1000 matrículas de escolarização"},
+            };
+
+            foreach (var descricao in porte)
+            {
+                if (descricao.Value == Porte) return descricao.Key;
             }
             return 0;
         }
