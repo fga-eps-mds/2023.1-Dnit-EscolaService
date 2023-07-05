@@ -68,12 +68,25 @@ namespace service
                             escola.NumeroTotalDeDocentes = int.Parse(linha[8]);
                             escola.IdEscola = int.Parse(linha[9]);
                             escola.IdRede = int.Parse(linha[10]);
-                            escola.IdUf = int.Parse(linha[11]);
+                            escola.IdUf = ObterEstadoPelaSigla(linha[11]);
+
+                            if (escola.IdUf == 0)
+                            {
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
+                            }
+
                             escola.IdLocalizacao = int.Parse(linha[12]);
 
                             string municipio = ObterCodigoMunicipioPorCEP(escola.Cep).GetAwaiter().GetResult();
-                            if (municipio == null) { throw new Exception("Erro. A leitura do arquivo parou na escola: "+escola.NomeEscola+", CEP inválido!"); } 
-                            else { escola.IdMunicipio = int.Parse(municipio); }
+
+                            if (municipio == null) 
+                            { 
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: "+escola.NomeEscola+", CEP inválido!"); 
+                            } 
+                            else 
+                            { 
+                                escola.IdMunicipio = int.Parse(municipio); 
+                            }
 
                             escola.IdEtapasDeEnsino = int.Parse(linha[14]);
                             escola.IdPorte = int.Parse(linha[15]);
@@ -159,6 +172,45 @@ namespace service
             }
         }
 
+        public int ObterEstadoPelaSigla(string UF)
+        {
+            Dictionary<int, string> estados = new Dictionary<int, string>()
+            {
+                { 1, "AC"},
+                { 2, "AL"},
+                { 3, "AP"},
+                { 4, "AM"},
+                { 5, "BA"},
+                { 6, "CE"},
+                { 7, "ES"},
+                { 8, "GO"},
+                { 9, "MA"},
+                { 10, "MT"},
+                { 11, "MS"},
+                { 12, "MG"},
+                { 13, "PA"},
+                { 14, "PB"},
+                { 15, "PR"},
+                { 16, "PR"},
+                { 17, "PI"},
+                { 18, "RJ"},
+                { 19, "RN"},
+                { 20, "RS"},
+                { 21, "RO"},
+                { 22, "RR"},
+                { 23, "SC"},
+                { 24, "SP"},
+                { 25, "SE"},
+                { 26, "TO"},
+                { 27, "DF"}
+            };
+
+            foreach (var estado in estados)
+            {
+                if(estado.Value == UF) return estado.Key;
+            }
+            return 0;
+        }
     }
 }
 
