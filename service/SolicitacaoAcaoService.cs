@@ -28,6 +28,8 @@ namespace service
 
             string mensagem = $"Nova solicitação de ação em escola.\n\n" +
                             $"Escola: {solicitacaoAcaoDTO.Escola}\n" +
+                            $"UF: {solicitacaoAcaoDTO.UF}\n" +
+                            $"Municipio: {solicitacaoAcaoDTO.Municipio}\n" +
                             $"Nome do Solicitante: {solicitacaoAcaoDTO.NomeSolicitante}\n" +
                             $"Vínculo com a escola: {solicitacaoAcaoDTO.VinculoEscola}\n" +
                             $"Email: {solicitacaoAcaoDTO.Email}\n" +
@@ -53,17 +55,13 @@ namespace service
             _smtpClientWrapper.Send(mensagem);
         }
 
-        public async Task<IEnumerable<EscolaInep>> ObterEscolas(string nome, string estado)
+        public async Task<IEnumerable<EscolaInep>> ObterEscolas(int municipio)
         {
             var uriBuilder = new UriBuilder("http://educacao.dadosabertosbr.com/api/escolas/buscaavancada");
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
-            query["nome"] = nome;
-            if (estado != null)
-            {
-                query["estado"] = estado;
-            }
-           
+            query["cidade"] = municipio.ToString();
+
             uriBuilder.Query = query.ToString();
             string url = uriBuilder.ToString();
 
@@ -73,6 +71,7 @@ namespace service
 
             var jArray = JArray.Parse(conteudo);
             var escolas = jArray[1].ToObject<IEnumerable<EscolaInep>>();
+
 
             return escolas;
         }
