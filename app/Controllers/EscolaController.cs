@@ -89,9 +89,9 @@ namespace app.Controllers
         }
 
         [HttpPost("adicionarSituacao")]
-        public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
+        public IActionResult AdicionarSituacao([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
-            escolaService.AdicionarSituacao(atualizarSituacaoDTO);
+            escolaService.AdicionarSituacao(atualizarDadosEscolaDTO);
             return Ok();
         }
 

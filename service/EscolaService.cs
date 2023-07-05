@@ -95,9 +95,9 @@ namespace service
             return escola;
         }
 
-        public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO)
+        public void AdicionarSituacao(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
-            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
+            escolaRepositorio.AdicionarSituacao(atualizarDadosEscolaDTO.IdSituacao, atualizarDadosEscolaDTO.IdEscola);
         }
 
         public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
