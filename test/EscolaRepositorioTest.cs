@@ -46,7 +46,6 @@ namespace test
             filtro.Nome = "CEM";
             filtro.IdUf = 1;
             filtro.IdSituacao = 1;
-            filtro.IdEtapaEnsino = 1;
             filtro.IdMunicipio = 1;
 
             var listaPaginada = repositorio.ObterEscolas(filtro);

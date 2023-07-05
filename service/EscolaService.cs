@@ -5,6 +5,12 @@ using repositorio.Interfaces;
 using service.Interfaces;
 using System.Collections.Generic;
 using Microsoft.VisualBasic.FileIO;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
+using System;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace service
 {
@@ -102,7 +108,17 @@ namespace service
 
         public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
-            escolaRepositorio.CadastrarEscola(cadastroEscolaDTO);
+            int idEscola = escolaRepositorio.CadastrarEscola(cadastroEscolaDTO) ?? 0;
+
+            if(idEscola == 0)
+            {
+                throw new Exception("Erro ao realizar cadastro de escola");
+            }
+
+            foreach(int idSituacao in cadastroEscolaDTO.IdEtapasDeEnsino)
+            {
+                escolaRepositorio.CadastrarEtapasDeEnsino(idEscola, idSituacao);
+            }
         }
 
         public void RemoverSituacaoEscola(int idEscola)
@@ -110,10 +126,11 @@ namespace service
             escolaRepositorio.RemoverSituacaoEscola(idEscola);
         }
 
-        public ListaPaginada<Escola> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public ListaPaginada<EscolaCorreta> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
+
     }
 }
 

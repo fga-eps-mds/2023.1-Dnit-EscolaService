@@ -59,11 +59,11 @@ namespace app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-   
+
         [HttpGet("obter")]
         public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            ListaPaginada<Escola> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
+            ListaPaginada<EscolaCorreta> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
 
             return new OkObjectResult(listaEscolaPaginada);
         }
@@ -82,7 +82,8 @@ namespace app.Controllers
             {
                 Escola escola = escolaService.Listar(idEscola);
                 return Ok(escola);
-            } catch (InvalidOperationException)
+            }
+            catch (InvalidOperationException)
             {
                 return NotFound("Não foi encontrada escola com o id fornecido.");
             }
@@ -111,6 +112,5 @@ namespace app.Controllers
             escolaService.RemoverSituacaoEscola(idEscola);
             return Ok();
         }
-
     }
 }
