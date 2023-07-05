@@ -144,6 +144,11 @@ namespace service
         {
             escolaRepositorio.AdicionarObservacao(idEscola, observacao);
         }
+
+        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        {
+            escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
+        }
     }
 }
 

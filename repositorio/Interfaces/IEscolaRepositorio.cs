@@ -18,5 +18,6 @@ namespace repositorio.Interfaces
         public void AlterarNumeroDeAlunos(int idEscola, int numeroDeAlunos);
         public void AlterarNumeroDeDocentes(int idEscola, int numeroTotalDeDocentes);
         public void AdicionarObservacao(int idEscola, string observacao);
+        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
     }
 }

@@ -151,5 +151,12 @@ namespace app.Controllers
             return Ok();
         }
 
+        [HttpPut("alterarDadosEscola")]
+        public IActionResult AlterarDadosEscola([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        {
+            escolaService.AlterarDadosEscola(atualizarDadosEscolaDTO);
+            return Ok();
+        }
+
     }
 }

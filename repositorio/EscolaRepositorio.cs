@@ -327,5 +327,33 @@ namespace repositorio
 
             contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
+
+        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        {
+            var sql = @"Update public.escola SET
+            id_situacao = @IdSituacao,
+            telefone = @Telefone,
+            longitude = @Longitude,
+            latitude = @Latitude,
+            numero_total_de_alunos = @NumeroTotalDeAlunos,
+            numero_total_de_docentes = @NumeroTotalDeDocentes,
+            observacao = @Observacao
+            WHERE
+            id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = atualizarDadosEscolaDTO.IdEscola,
+                IdSituacao = atualizarDadosEscolaDTO.IdSituacao,
+                Telefone = atualizarDadosEscolaDTO.Telefone,
+                Longitude = atualizarDadosEscolaDTO.Longitude,
+                Latitude = atualizarDadosEscolaDTO.Latitude,
+                NumeroTotalDeAlunos = atualizarDadosEscolaDTO.NumeroTotalDeAlunos,
+                NumeroTotalDeDocentes = atualizarDadosEscolaDTO.NumeroTotalDeDocentes,
+                Observacao = atualizarDadosEscolaDTO.Observacao
+            };
+
+            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+        }
     }
 }
