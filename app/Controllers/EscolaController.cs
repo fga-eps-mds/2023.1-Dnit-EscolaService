@@ -109,48 +109,6 @@ namespace app.Controllers
             return Ok();
         }
 
-        [HttpPut("alterarTelefone")]
-        public IActionResult AlterarTelefone([FromQuery] int idEscola, string telefone)
-        {
-            escolaService.AlterarTelefone(idEscola, telefone);
-            return Ok();
-        }
-
-        [HttpPut("alterarLatitude")]
-        public IActionResult AlterarLatitude([FromQuery] int idEscola, string latitude)
-        {
-            escolaService.AlterarLatitude(idEscola, latitude);
-            return Ok();
-        }
-
-        [HttpPut("alterarLongitude")]
-        public IActionResult AlterarLongitude([FromQuery] int idEscola, string longitude)
-        {
-            escolaService.AlterarLongitude(idEscola, longitude);
-            return Ok();
-        }
-
-        [HttpPut("alterarNumeroDeAlunos")]
-        public IActionResult AlterarNumeroDeAlunos([FromQuery] int idEscola, int numeroDeAlunos)
-        {
-            escolaService.AlterarNumeroDeAlunos(idEscola, numeroDeAlunos);
-            return Ok();
-        }
-
-        [HttpPut("alterarNumeroDeDocentes")]
-        public IActionResult AlterarNumeroDeDocentes([FromQuery] int idEscola, int numeroDeDocentes)
-        {
-            escolaService.AlterarNumeroDeDocentes(idEscola, numeroDeDocentes);
-            return Ok();
-        }
-
-        [HttpPut("adicionarObservacao")]
-        public IActionResult AdicionarObservacao([FromQuery] int idEscola, string observacao)
-        {
-            escolaService.AdicionarObservacao(idEscola, observacao);
-            return Ok();
-        }
-
         [HttpPut("alterarDadosEscola")]
         public IActionResult AlterarDadosEscola([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
