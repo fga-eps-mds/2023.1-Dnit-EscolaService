@@ -165,5 +165,24 @@ namespace Test
 
             Assert.Equal(codigo_brasiilia, codigo);
         }
+
+        [Fact]
+        public void ObterEstadoPelaSigla_QuandoSiglaValidaForPassada_DeveRetornarIdCorreto()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string sigla = "AC";
+            int idCorreto = 1;
+            var id = escolaService.ObterEstadoPelaSigla(sigla);
+
+            Assert.Equal(idCorreto, id);
+
+            sigla = "MG";
+            idCorreto = 12;
+            id = escolaService.ObterEstadoPelaSigla(sigla);
+
+            Assert.Equal(idCorreto, id);
+        }
     }
 }
