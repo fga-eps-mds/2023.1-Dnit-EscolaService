@@ -165,5 +165,56 @@ namespace Test
 
             Assert.Equal(codigo_brasiilia, codigo);
         }
+
+        [Fact]
+        public void ObterEstadoPelaSigla_QuandoSiglaValidaForPassada_DeveRetornarIdCorreto()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string sigla = "AC";
+            int idCorreto = 1;
+            var id = escolaService.ObterEstadoPelaSigla(sigla);
+
+            Assert.Equal(idCorreto, id);
+
+            sigla = "MG";
+            idCorreto = 12;
+            id = escolaService.ObterEstadoPelaSigla(sigla);
+
+            Assert.Equal(idCorreto, id);
+        }
+
+        [Fact]
+        public void ObterEstadoPelaSigla_QuandoSiglaValidaMinusculaForPassada_DeveRetornarIdCorreto()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string sigla = "pB";
+            int idCorreto = 14;
+            var id = escolaService.ObterEstadoPelaSigla(sigla);
+
+            Assert.Equal(idCorreto, id);
+
+            sigla = "df";
+            idCorreto = 27;
+            id = escolaService.ObterEstadoPelaSigla(sigla);
+
+            Assert.Equal(idCorreto, id);
+        }
+
+        [Fact]
+        public void ObterEstadoPelaSigla_QuandoSiglaInvalidaForPassada_DeveRetornarZero()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string sigla = "xx";
+            int idCorreto = 0;
+            var id = escolaService.ObterEstadoPelaSigla(sigla);
+
+            Assert.Equal(idCorreto, id);
+        }
     }
 }
