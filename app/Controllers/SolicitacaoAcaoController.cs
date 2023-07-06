@@ -23,16 +23,18 @@ namespace app.Controllers
             {
                 solicitacaoAcaoService.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
                 return Ok();
-            } catch(SmtpException)
+            }
+            catch (SmtpException)
             {
                 return StatusCode(500, "Falha no envio do email.");
+                // return StatusCode(500, "Falha no envio do email.");
             }
         }
 
         [HttpGet("escolas")]
-        public async Task<IEnumerable<EscolaInep>> ObterEscolas([FromQuery] string nome, string? estado)
+        public async Task<IEnumerable<EscolaInep>> ObterEscolas([FromQuery] int municipio)
         {
-            var escolas = await solicitacaoAcaoService.ObterEscolas(nome, estado);
+            var escolas = await solicitacaoAcaoService.ObterEscolas(municipio);
             return escolas;
         }
     }
