@@ -30,17 +30,19 @@ namespace test
 
             service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
-            string mensagemEsperada = "Nova solicitação de ação em escola.\n\n" +
-                                      "Escola: Escola Teste\n" +
-                                      "Nome do Solicitante: João Testador\n" +
-                                      "Vínculo com a escola: Professor\n" +
-                                      "Email: joao@email.com\n" +
-                                      "Telefone: 123123123\n" +
-                                      "Ciclos de ensino: \n" +
-                                      "    > Ensino Médio\n" +
-                                      "    > Ensino Fundamental\n" +
-                                      "Quantidade de alunos: 503\n" +
-                                      "Observações: Teste de Solicitação\n";
+            string mensagemEsperada =   "Nova solicitação de ação em escola.\n\n" +
+                                        "Escola: Escola Teste\n" +
+                                        "UF: DF\n" +
+                                        "Municipio: Brasília\n" +
+                                        "Nome do Solicitante: João Testador\n" +
+                                        "Vínculo com a escola: Professor\n" +
+                                        "Email: joao@email.com\n" +
+                                        "Telefone: 123123123\n" +
+                                        "Ciclos de ensino: \n" +
+                                        "    > Ensino Médio\n" +
+                                        "    > Ensino Fundamental\n" +
+                                        "Quantidade de alunos: 503\n" +
+                                        "Observações: Teste de Solicitação\n";
 
             smtpClientWrapperMock.Verify(wrapper =>
                 wrapper.Send(It.Is<MailMessage>(msg => msg.Body == mensagemEsperada)), Times.Once);
@@ -92,10 +94,12 @@ namespace test
                 ""cod"": 12345678,
                 ""nome"": ""Escola A"",
                 ""estado"": ""DF"",
+                ""cidade"": 100
             }, {
                 ""cod"": 87654321,
                 ""nome"": ""Escola B"",
                 ""estado"": ""DF"",
+                ""cidade"": 100
             }]]";
 
             var handlerMock = new Mock<HttpMessageHandler>();
@@ -122,7 +126,8 @@ namespace test
 
             ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
 
-            var escolas = await service.ObterEscolas("Escola", "DF");
+            int municipio = 100;
+            var escolas = await service.ObterEscolas(municipio);
 
             Assert.Equal(12345678, escolas.ElementAt(0).Cod);
             Assert.Equal("Escola A", escolas.ElementAt(0).Nome);

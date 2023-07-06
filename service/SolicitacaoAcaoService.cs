@@ -68,7 +68,7 @@ namespace service
             uriBuilder.Query = query.ToString();
             string url = uriBuilder.ToString();
 
-            var httpClient = this.httpClient.CreateClient();
+            var httpClient = this.httpClientFactory.CreateClient();
 
             HttpResponseMessage response = await httpClient.GetAsync(url);
             string conteudo = await response.Content.ReadAsStringAsync();
