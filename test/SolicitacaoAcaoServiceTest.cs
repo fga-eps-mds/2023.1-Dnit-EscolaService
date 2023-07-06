@@ -1,10 +1,10 @@
 ﻿using Moq;
 using service;
 using service.Interfaces;
-using System;
+using System.Net;
 using System.Net.Mail;
 using test.Stub;
-using Xunit;
+using Moq.Protected;
 
 namespace test
 {
@@ -21,7 +21,9 @@ namespace test
         public void EnviarSolicitacaoAcao_QuandoSolicitacaoForPassada_DeveEnviarMensagemEsperada()
         {
             Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object);
+            Mock<IHttpClientFactory> httpClientFactoryMock = new();
+
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
 
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
@@ -48,7 +50,9 @@ namespace test
         public void EnviarEmail_QuandoDestinatarioForPassado_DeveEnviarEmail()
         {
             Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object);
+            Mock<IHttpClientFactory> httpClientFactoryMock = new();
+
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
 
             string emailDestinatario = "dnit@email.com";
             string assunto = "Solicitação de ação";
@@ -68,13 +72,65 @@ namespace test
         public void EnviarEmail_QuandoDestinatarioForVazio_DeveLancarExcecao()
         {
             Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object);
+            Mock<IHttpClientFactory> httpClientFactoryMock = new();
+
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
 
             string emailDestinatario = "";
             string assunto = "Solicitação de ação";
             string corpo = "Nova solicitação de ação";
 
             Assert.Throws<ArgumentException>(() => service.EnviarEmail(emailDestinatario, assunto, corpo));
+        }
+
+        [Fact]
+        public async Task ObterEscolas_QuandoRequisicaoForFeita_DeveRetornarListaDeEscolas()
+        {
+            Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
+
+            var resposta = @"[2,[{
+                ""cod"": 12345678,
+                ""nome"": ""Escola A"",
+                ""estado"": ""DF"",
+            }, {
+                ""cod"": 87654321,
+                ""nome"": ""Escola B"",
+                ""estado"": ""DF"",
+            }]]";
+
+            var handlerMock = new Mock<HttpMessageHandler>();
+            var httpClient = new HttpClient(handlerMock.Object);
+
+            var httpClientFactoryMock = new Mock<IHttpClientFactory>();
+            httpClientFactoryMock
+                .Setup(x => x.CreateClient(It.IsAny<string>()))
+                .Returns(httpClient);
+
+            handlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                    "SendAsync",
+                    ItExpr.IsAny<HttpRequestMessage>(),
+                    ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(resposta)
+                })
+                .Verifiable();
+
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
+
+            var escolas = await service.ObterEscolas("Escola", "DF");
+
+            Assert.Equal(12345678, escolas.ElementAt(0).Cod);
+            Assert.Equal("Escola A", escolas.ElementAt(0).Nome);
+            Assert.Equal("DF", escolas.ElementAt(0).Estado);
+
+            Assert.Equal(87654321, escolas.ElementAt(1).Cod);
+            Assert.Equal("Escola B", escolas.ElementAt(1).Nome);
+            Assert.Equal("DF", escolas.ElementAt(1).Estado);
         }
     }
 }

@@ -10,16 +10,19 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Web;
+using Microsoft.Extensions.Http;
 
 namespace service
 {
     public class SolicitacaoAcaoService : ISolicitacaoAcaoService
     {
         private readonly ISmtpClientWrapper _smtpClientWrapper;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper)
+        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory)
         {
             _smtpClientWrapper = smtpClientWrapper;
+            this.httpClientFactory = httpClientFactory;
         }
 
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO)
@@ -67,7 +70,8 @@ namespace service
             uriBuilder.Query = query.ToString();
             string url = uriBuilder.ToString();
 
-            HttpClient httpClient = new HttpClient();
+            var httpClient = this.httpClient.CreateClient();
+
             HttpResponseMessage response = await httpClient.GetAsync(url);
             string conteudo = await response.Content.ReadAsStringAsync();
 
