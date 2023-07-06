@@ -1,5 +1,6 @@
 ﻿﻿using dominio;
 using Moq;
+using repositorio;
 using repositorio.Interfaces;
 using service;
 using service.Interfaces;
@@ -129,6 +130,40 @@ namespace Test
 
             escolaService.Listar(IdEscola);
             mockEscolaRepositorio.Verify(x => x.Obter(IdInexistente), Times.Never);
+        }
+
+        [Fact]
+        public void ObterCodigoMunicipioPorCEP_QuandoCEPNullForPassado_DeveRetornarNull()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+            string cep = null;
+            var codigo = escolaService.ObterCodigoMunicipioPorCEP(cep).GetAwaiter().GetResult();
+
+            Assert.Null(codigo);
+        }
+
+        [Fact]
+        public void ObterCodigoMunicipioPorCEP_QuandoCEPInvalidoForPassado_DeveRetornarNull()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+            string cep = "cep invalido";
+            var codigo = escolaService.ObterCodigoMunicipioPorCEP(cep).GetAwaiter().GetResult();
+
+            Assert.Null(codigo);
+        }
+
+        [Fact]
+        public void ObterCodigoMunicipioPorCEP_QuandoCEPValidoForPassado_DeveRetornarValorReal()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+            string cep = "71687214";
+            string codigo_brasiilia = "5300108";
+            var codigo = escolaService.ObterCodigoMunicipioPorCEP(cep).GetAwaiter().GetResult();
+
+            Assert.Equal(codigo_brasiilia, codigo);
         }
     }
 }
