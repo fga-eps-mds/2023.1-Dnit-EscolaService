@@ -216,5 +216,50 @@ namespace Test
 
             Assert.Equal(idCorreto, id);
         }
+
+        [Fact]
+        public void ObterPortePeloId_QuandoPorteCorretoForPassado_DeveRetornarIdCorreto()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string porte1 = "Até 50 matrículas de escolarização";
+            var id1 = escolaService.ObterPortePeloId(porte1);
+            int idPorte1 = 1;
+
+            string porte2 = "Entre 201 e 500 matrículas de escolarização";
+            var id2 = escolaService.ObterPortePeloId(porte2);
+            int idPorte2 = 2;
+
+            string porte3 = "Entre 501 e 1000 matrículas de escolarização";
+            var id3 = escolaService.ObterPortePeloId(porte3);
+            int idPorte3 = 3;
+
+            string porte4 = "Entre 51 e 200 matrículas de escolarização";
+            var id4 = escolaService.ObterPortePeloId(porte4);
+            int idPorte4 = 4;
+
+            string porte5 = "Mais de 1000 matrículas de escolarização";
+            var id5 = escolaService.ObterPortePeloId(porte5);
+            int idPorte5 = 5;
+
+            Assert.Equal(idPorte1, id1);
+            Assert.Equal(idPorte2, id2);
+            Assert.Equal(idPorte3, id3);
+            Assert.Equal(idPorte4, id4);
+            Assert.Equal(idPorte5, id5);
+        }
+
+        [Fact]
+        public void ObterPortePeloId_QuandoPassadoPorteInvalido_DeveRetornarZero()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string porte = "Porte teste";
+            int id = escolaService.ObterPortePeloId(porte);
+
+            Assert.Equal(0, id);
+        }
     }
 }
