@@ -112,12 +112,16 @@ namespace repositorio
 	                ede.descricao_etapas_de_ensino as DescricaoEtapasEnsino,
 	                m.nome as NomeMunicipio,
 	                uf.descricao as DescricaoUf,
-                    uf.sigla as SiglaUf
+                    uf.sigla as SiglaUf,
+                    r.descricao_rede as DescricaoRede,
+                    l.descricao_localizacao as DescricaoLocalizacao
                 FROM public.escola as e
                     LEFT JOIN situacao as s ON e.id_situacao = s.id_situacao
                     LEFT JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = e.id_etapas_de_ensino
                     LEFT JOIN municipio as m ON m.id_municipio = e.id_municipio
-                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf ");
+                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf
+                    LEFT JOIN rede as r ON e.id_rede = r.id_rede
+                    LEFT JOIN localizacao as l ON l.id_localizacao = e.id_localizacao");
 
 
             StringBuilder where = new StringBuilder();
@@ -163,46 +167,6 @@ namespace repositorio
             return listaEscolaPagina;
         }
 
-        public Escola Obter(int idEscola)
-        {
-            var sql = @"
-                SELECT
-                    nome_escola nomeEscola,
-                    codigo_escola codigoEscola,
-                    cep,
-                    endereco,
-                    latitude,
-                    longitude,
-                    numero_total_de_alunos numeroTotalDeAlunos,
-                    telefone,
-                    numero_total_de_docentes numeroTotalDeDocentes,
-                    id_escola idEscola,
-                    id_rede idRede,
-                    id_uf idUf,
-                    id_localizacao idLocalizacao,
-                    id_municipio idMunicipio,
-                    id_etapas_de_ensino idEtapasDeEnsino,
-                    id_porte idPorte,
-                    id_situacao idSituacao,
-                    observacao
-                FROM
-                    public.escola
-                WHERE
-                    id_escola = @IdEscola";
-
-            var parametro = new
-            {
-                IdEscola = idEscola
-            };
-
-            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola?>(sql, parametro);
-
-            if (escola == null)
-                throw new InvalidOperationException("Não foi encontrada escola cadastrada com o id fornecido.");
-
-            return escola;
-
-        }
         public void ExcluirEscola(int id)
         {
             var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
@@ -262,7 +226,7 @@ namespace repositorio
                 Observacao = atualizarDadosEscolaDTO.Observacao
             };
 
-            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
+            contexto?.Conexao.Execute(sql, parametro);
         }
     }
 }

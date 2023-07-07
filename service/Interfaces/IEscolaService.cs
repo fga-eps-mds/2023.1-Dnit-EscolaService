@@ -11,7 +11,6 @@ namespace service.Interfaces
         public void ExcluirEscola(int id);
         public bool SuperaTamanhoMaximo(MemoryStream planilha);
         public List<int> CadastrarEscolaViaPlanilha(MemoryStream planilha);
-        public Escola Listar(int idEscola);
         public void RemoverSituacaoEscola(int idEscola);
         public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
     }
