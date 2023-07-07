@@ -125,6 +125,13 @@ namespace service
             if (atualizarDadosEscolaDTO.IdSituacao == 0) atualizarDadosEscolaDTO.IdSituacao = null;
             atualizarDadosEscolaDTO.UltimaAtualizacao = DateTime.Now;
             escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
+
+            escolaRepositorio.RemoverEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola);
+
+            foreach(int idEtapaEnsino in atualizarDadosEscolaDTO.IdEtapasDeEnsino)
+            {
+                escolaRepositorio.CadastrarEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola, idEtapaEnsino);
+            }
         }
     }
 }

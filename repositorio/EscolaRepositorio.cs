@@ -271,5 +271,17 @@ namespace repositorio
 
             contexto?.Conexao.Execute(sql, parametro);
         }
+        public void RemoverEtapasDeEnsino(int idEscola)
+        {
+            var sql = @"DELETE FROM public.escola_etapas_de_ensino WHERE
+                         id_escola = @IdEscola";
+
+            var parametros = new
+            {
+                IdEscola = idEscola
+            };
+
+            contexto?.Conexao.Execute(sql, parametros);
+        }
     }
 }

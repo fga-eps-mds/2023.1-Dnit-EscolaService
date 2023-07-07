@@ -12,5 +12,6 @@ namespace repositorio.Interfaces
         public bool EscolaJaExiste(int codigoEscola);
         public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
         public void CadastrarEtapasDeEnsino(int idEscola, int idEtapaEnsino);
+        public void RemoverEtapasDeEnsino(int idEscola);
     }
 }
