@@ -88,12 +88,6 @@ namespace service
             escolaRepositorio.ExcluirEscola(id);
 
         }
-        public Escola Listar(int idEscola)
-        {
-            Escola escola = escolaRepositorio.Obter(idEscola);
-
-            return escola;
-        }
 
         public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
@@ -112,6 +106,7 @@ namespace service
 
         public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
+            if (atualizarDadosEscolaDTO.IdSituacao == 0) atualizarDadosEscolaDTO.IdSituacao = null;
             escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
         }
     }
