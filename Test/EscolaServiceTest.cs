@@ -261,5 +261,35 @@ namespace Test
 
             Assert.Equal(0, id);
         }
+
+        [Fact]
+        public void SuperaTamanhoMaximo_QuandoPlanilhaComTamanhoMaiorQueOMaximoForPassada_DeveRetornarTrue()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string caminhoArquivo = "../../../Stub/planilha_maior_max.csv";
+
+            MemoryStream memoryStream = new MemoryStream(File.ReadAllBytes(caminhoArquivo));
+
+            bool resultado = escolaService.SuperaTamanhoMaximo(memoryStream);
+
+            Assert.True(resultado);
+        }
+
+        [Fact]
+        public void SuperaTamanhoMaximo_QuandoPlanilhaComTamanhoMenorQueOMaximoForPassada_DeveRetornarFalse()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string caminhoArquivo = "../../../Stub/planilha_menor_max.csv";
+
+            MemoryStream memoryStream = new MemoryStream(File.ReadAllBytes(caminhoArquivo));
+
+            bool resultado = escolaService.SuperaTamanhoMaximo(memoryStream);
+
+            Assert.False(resultado);
+        }
     }
 }
