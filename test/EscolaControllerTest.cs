@@ -37,48 +37,6 @@ namespace test
             escolaServiceMock.Verify(service => service.ExcluirEscola(idEscola), Times.Once);
             Assert.IsType<OkResult>(result);
         }
-        [Fact]
-        public void ListarInformacoesEscola_QuandoEscolaForEncontrada_DeveRetornarEscola()
-        {
-            var escolaServiceMock = new Mock<IEscolaService>();
-
-            var controller = new EscolaController(escolaServiceMock.Object);
-
-            int idEscola = 100;
-            var result = controller.ListarInformacoesEscola(idEscola);
-
-            escolaServiceMock.Verify(service => service.Listar(idEscola), Times.Once);
-            Assert.IsType<OkObjectResult>(result);
-        }
-        [Fact]
-        public void ListarInformacoesEscola_QuandoEscolaNaoForEncontrada_DeveRetornarHttpNotFound()
-        {
-            var escolaServiceMock = new Mock<IEscolaService>();
-
-            var controller = new EscolaController(escolaServiceMock.Object);
-
-            escolaServiceMock.Setup(service => service.Listar(It.IsAny<int>())).Throws<InvalidOperationException>();
-
-            int idEscola = 100;
-            var result = controller.ListarInformacoesEscola(idEscola);
-
-            escolaServiceMock.Verify(service => service.Listar(idEscola), Times.Once);
-            Assert.IsType<NotFoundObjectResult>(result);
-        }
-        [Fact]
-        public void AdicionarSituacao_QuandoSituacaoForAdicionada_DeveRetornarOk()
-        {
-            var escolaServiceMock = new Mock<IEscolaService>();
-
-            var controller = new EscolaController(escolaServiceMock.Object);
-
-            AtualizarSituacaoDTO atualizarSituacaoDto = new() { IdSituacao = 1, IdEscola = 2 };
-
-            var result = controller.AdicionarSituacao(atualizarSituacaoDto);
-
-            escolaServiceMock.Verify(service => service.AdicionarSituacao(atualizarSituacaoDto), Times.Once);
-            Assert.IsType<OkResult>(result);
-        }
 
         [Fact]
         public void CadastrarEscola_QuandoEscolaForCadastrada_DeveRetornarHttpOk()

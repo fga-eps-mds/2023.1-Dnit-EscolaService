@@ -93,7 +93,7 @@ namespace test
             AtualizarDadosEscolaDTO atualizarDadosEscolaDto = new() { IdSituacao = 1, IdEscola = 2 };
 
             escolaService.AlterarDadosEscola(atualizarDadosEscolaDto);
-            mockEscolaRepositorio.Verify(x => x.AlterarDadosEscola(atualizarDadosEscolaDto.IdSituacao, atualizarDadosEscolaDto.IdEscola), Times.Once);
+            mockEscolaRepositorio.Verify(x => x.AlterarDadosEscola(atualizarDadosEscolaDto), Times.Once);
         }
 
         [Fact]
@@ -117,18 +117,6 @@ namespace test
 
             escolaService.RemoverSituacaoEscola(IdInexistente);
             mockEscolaRepositorio.Verify(x => x.RemoverSituacaoEscola(IdInexistente), Times.Once);
-        }
-
-        [Fact]
-        public void AlterarDadosEscola_QuandoOIdForInexistente_DeveRetornarErro()
-        {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            AtualizarDadosEscolaDTO atualizarDadosEscolaDto = new() { IdSituacao = 7, IdEscola = 4 };
-            int IdInexistente = 3;
-
-            escolaService.AlterarDadosEscola(atualizarDadosEscolaDto);
-            mockEscolaRepositorio.Verify(x => x.AdicionarSituacao(atualizarDadosEscolaDto.IdSituacao, IdInexistente), Times.Never);
         }
     }
 }

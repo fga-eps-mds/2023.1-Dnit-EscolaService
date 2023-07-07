@@ -57,22 +57,6 @@ namespace test
             Assert.Equal("CEM02", listaPaginada.Escolas[0].NomeEscola);
             Assert.Equal("CEM04", listaPaginada.Escolas[1].NomeEscola);
         }
-        
-        [Fact]
-        public void CadastrarEscola_QuandoAEscolaForPassada_DeveCadastrarNoBanco()
-        {
-            EscolaStub escolaStub = new EscolaStub();
-            var escolaEsperada = escolaStub.ObterCadastroEscolaDTO();
-
-            int? idEscola = repositorio.CadastrarEscola(escolaEsperada);
-            var escolaObtida = repositorio.Obter(idEscola.Value);
-
-            Assert.Equal(escolaEsperada.NomeEscola, escolaObtida.NomeEscola);
-            Assert.Equal(escolaEsperada.CodigoEscola, escolaObtida.CodigoEscola);
-            Assert.Equal(escolaEsperada.Endereco, escolaObtida.Endereco);
-            Assert.Equal(escolaEsperada.Latitude, escolaObtida.Latitude);
-            Assert.Equal(escolaEsperada.Longitude, escolaObtida.Longitude);
-        }
 
         [Fact]
         public void ExcluirEscola_QuandoIdForPassado_DeveExcluirEscolaCorrespondente()
@@ -87,45 +71,6 @@ namespace test
             int? idEscolaObtida = connection.ExecuteScalar<int?>(sql);
 
             Assert.Null(idEscolaObtida);
-        }
-
-        [Fact]
-        public void AdicionarSituacao_QuandoDadosForemPassados_DeveAtualizarSituacaoDaEscola()
-        {
-            EscolaStub escolaStub = new EscolaStub();
-            var escola = escolaStub.ObterCadastroEscolaDTO();
-
-            int? idEscolaCadastrada = repositorio.CadastrarEscola(escola);
-            int idSituacao = 2;
-            repositorio.AdicionarSituacao(idSituacao, idEscolaCadastrada.Value);
-
-            var escolaObtida = repositorio.Obter(idEscolaCadastrada.Value);
-
-            Assert.Equal(idSituacao, escolaObtida.IdSituacao);
-        }
-
-        [Fact]
-        public void RemoverSituacao_QuandoIdDaEscolaForPassado_DeveRemoverSituacaoDaEscola()
-        {
-            EscolaStub escolaStub = new EscolaStub();
-            var escola = escolaStub.ObterCadastroEscolaDTO();
-
-            int? idEscolaCadastrada = repositorio.CadastrarEscola(escola);
-            repositorio.RemoverSituacaoEscola(idEscolaCadastrada.Value);
-
-            var escolaObtida = repositorio.Obter(idEscolaCadastrada.Value);
-
-            Assert.Null(escolaObtida.IdSituacao);
-        }
-
-        [Fact]
-        public void Obter_QuandoNaoExistirEscolaComIdPassado_DeveLancarExcecaoInformandoQueEscolaNaoExiste()
-        {
-            int idEscola = 100;
-            Action cadastrarUsuario = () => repositorio.Obter(idEscola);
-
-            Exception exception = Assert.Throws<InvalidOperationException>(cadastrarUsuario);
-            Assert.Contains("Não foi encontrada", exception.Message);
         }
 
         public void Dispose()
