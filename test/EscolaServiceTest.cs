@@ -1,10 +1,11 @@
-﻿using dominio;
+using dominio;
 using Moq;
 using repositorio.Interfaces;
 using service;
 using service.Interfaces;
+using test.Stub;
 
-namespace Test
+namespace test
 {
     public class EscolaServiceTest
     {
@@ -47,11 +48,33 @@ namespace Test
         {
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            CadastroEscolaDTO cadastroEscolaDTO = new();
+            EscolaStub escolaStub = new();
+            CadastroEscolaDTO cadastroEscolaDTO = escolaStub.ObterCadastroEscolaDTO();
+            int idEscola = 1;
+            mockEscolaRepositorio.Setup(repositorio => repositorio.CadastrarEscola(cadastroEscolaDTO)).Returns(idEscola);
+
 
             escolaService.CadastrarEscola(cadastroEscolaDTO);
             mockEscolaRepositorio.Verify(x => x.CadastrarEscola(cadastroEscolaDTO), Times.Once);
+            mockEscolaRepositorio.Verify(x => x.CadastrarEtapasDeEnsino(idEscola, cadastroEscolaDTO.IdEtapasDeEnsino[0]), Times.Once);
         }
+        [Fact]
+        public void CadastrarEscola_QuandoCadastroFalhar_DeveChamarORepositorioUmaVez()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+            EscolaStub escolaStub = new();
+            CadastroEscolaDTO cadastroEscolaDTO = escolaStub.ObterCadastroEscolaDTO();
+            int idEscola = 0;
+            mockEscolaRepositorio.Setup(repositorio => repositorio.CadastrarEscola(cadastroEscolaDTO)).Returns(idEscola);
+
+
+            Action cadastrarEscola = () => escolaService.CadastrarEscola(cadastroEscolaDTO);
+            Assert.Throws<Exception>(cadastrarEscola);
+            mockEscolaRepositorio.Verify(x => x.CadastrarEscola(cadastroEscolaDTO), Times.Once);
+            mockEscolaRepositorio.Verify(x => x.CadastrarEtapasDeEnsino(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+        }
+
         [Fact]
         public void Obter_QuandoForChamado_DeveChamarORepositorioUmaVez()
         {

@@ -26,7 +26,7 @@ namespace test.Stub
                 IdUf = 1,
                 IdLocalizacao = 2,
                 IdMunicipio = 1,
-                IdEtapasDeEnsino = 2,
+                IdEtapasDeEnsino = new List<int> { 2 },
                 IdPorte = 2,
                 IdSituacao = 1
             };

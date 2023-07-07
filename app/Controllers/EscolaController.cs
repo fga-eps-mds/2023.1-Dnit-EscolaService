@@ -59,11 +59,11 @@ namespace app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-   
+
         [HttpGet("obter")]
         public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            ListaPaginada<Escola> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
+            ListaPaginada<EscolaCorreta> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
 
             return new OkObjectResult(listaEscolaPaginada);
         }

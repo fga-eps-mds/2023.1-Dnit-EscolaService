@@ -46,6 +46,12 @@ namespace test
                     id_situacao INTEGER PRIMARY KEY AUTOINCREMENT,
                     descricao_situacao TEXT
                 );
+                  
+                CREATE TABLE public.escola_etapas_de_ensino (
+                    id_escola INTEGER,
+                    id_etapas_de_ensino INTEGER
+               );
+                
 
                 INSERT INTO public.etapas_de_ensino(descricao_etapas_de_ensino)
                 VALUES ('Educação Infantil'), ('Ensino Fundamental');
@@ -66,6 +72,7 @@ namespace test
                        ('CEM04', 4, '891245', '7012364', '9214589', '8412971', 19, '5555555', 21, 1, 1, 1, 1, 1, 1, 1),
                        ('CEM03', 3, '264462', '5848692', '897891', '124569', 15, '4444444', 18, 2, 1, 2, 1, 1, 2, 2);
             ";
+
 
             Conexao.Execute(sql);
         }
