@@ -10,8 +10,9 @@ namespace repositorio.Interfaces
         public ListaPaginada<Escola> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro);
         public void AdicionarSituacao(int idSituacao, int idEscola);
         public void RemoverSituacaoEscola(int idEscola);
-        public void CadastrarEscola(Escola escola);
+        public int? CadastrarEscola(Escola escola);
         public bool EscolaJaExiste(int codigoEscola);
         public void AtualizarDadosPlanilha(Escola escola);
+        public void CadastrarEtapasDeEnsino(int? idEscola, int? idEtapa);
     }
 }

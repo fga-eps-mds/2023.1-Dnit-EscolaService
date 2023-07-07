@@ -91,8 +91,7 @@ namespace service
                                 escola.IdMunicipio = int.Parse(municipio); 
                             }
 
-                            //escola.IdEtapasDeEnsino = int.Parse(linha[14]);
-                            List<int> teste = EtapasParaIds(linha[14]);
+                            List<int> etapas_lista = EtapasParaIds(linha[14]);
                             escola.IdPorte = ObterPortePeloId(linha[15]);
 
                             if (escola.IdPorte == 0)
@@ -109,7 +108,12 @@ namespace service
                             }
 
                             escolasNovas.Add(escola.NomeEscola);
-                            escolaRepositorio.CadastrarEscola(escola);
+                            int? id = escolaRepositorio.CadastrarEscola(escola);
+
+                            foreach (var id_etapa in etapas_lista)
+                            {
+                                escolaRepositorio.CadastrarEtapasDeEnsino(id, id_etapa);
+                            }
                         }
                         catch (FormatException ex)
                         {

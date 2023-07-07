@@ -20,14 +20,14 @@ namespace repositorio
             contexto = resolverContexto(ContextoBancoDeDados.Postgresql);
         }
 
-        public void CadastrarEscola(Escola escola)
+        public int? CadastrarEscola(Escola escola)
         {
             var sqlInserirEscola = @"INSERT INTO public.escola(nome_escola, codigo_escola, cep, endereco, latitude, longitude, numero_total_de_alunos, telefone,
             numero_total_de_docentes, id_rede, id_uf, id_localizacao, id_municipio, id_etapas_de_ensino, id_porte, id_situacao)
             VALUES(@Nome_escola, @Codigo_escola, @CEP, @Endereco, 
             @Latitude, @Longitude, @Numero_total_de_alunos, @Telefone, @Numero_total_de_docentes, 
             @Id_rede, @Id_uf, @Id_localizacao, @Id_municipio,   
-            @Id_etapas_de_ensino, @Id_porte, @Id_situacao)";
+            @Id_etapas_de_ensino, @Id_porte, @Id_situacao) RETURNING id_escola";
 
             var parametrosEscola = new
             {
@@ -49,7 +49,8 @@ namespace repositorio
                 Numero_total_de_docentes = escola.NumeroTotalDeAlunos
             };
 
-            contexto?.Conexao.Execute(sqlInserirEscola, parametrosEscola);
+            int? idEscola = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametrosEscola);
+            return idEscola;
         }
 
         public int? CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
@@ -291,6 +292,19 @@ namespace repositorio
             };
 
             contexto?.Conexao.Execute(sqlAtualizarEscola, parametrosEscola);
+        }
+
+        public void CadastrarEtapasDeEnsino(int? idEscola, int? idEtapa)
+        {
+            var sqlCadastrar = @"INSERT INTO public.escola_etapas_de_ensino(id_escola, id_etapas_de_ensino) VALUES(@IdEscola, @IdEtapa)";
+
+            var Parametros = new
+            {
+                IdEscola = idEscola,
+                IdEtapa = idEtapa,
+            };
+
+            contexto?.Conexao.Execute(sqlCadastrar, Parametros);
         }
     }
 }
