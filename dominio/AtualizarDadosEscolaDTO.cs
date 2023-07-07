@@ -11,6 +11,6 @@ namespace dominio
         public int NumeroTotalDeDocentes {get; set;}
         public string Observacao {get; set;}
         public DateTime UltimaAtualizacao{get;set;}
-        public List<int>? IdEtapasDeEnsino { get; set; }
+        //public List<int>? IdEtapasDeEnsino { get; set; }
     }
 }

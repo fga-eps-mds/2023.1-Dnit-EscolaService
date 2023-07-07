@@ -126,12 +126,12 @@ namespace service
             atualizarDadosEscolaDTO.UltimaAtualizacao = DateTime.Now;
             escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
 
-            escolaRepositorio.RemoverEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola);
+            //escolaRepositorio.RemoverEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola);
 
-            foreach(int idEtapaEnsino in atualizarDadosEscolaDTO.IdEtapasDeEnsino)
-            {
-                escolaRepositorio.CadastrarEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola, idEtapaEnsino);
-            }
+            // foreach(int idEtapaEnsino in atualizarDadosEscolaDTO.IdEtapasDeEnsino)
+            // {
+            //     escolaRepositorio.CadastrarEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola, idEtapaEnsino);
+            // }
         }
     }
 }
