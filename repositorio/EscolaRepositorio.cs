@@ -115,6 +115,7 @@ namespace repositorio
 	                e.telefone as Telefone, 
 	                e.numero_total_de_docentes as NumeroTotalDeDocentes,
                     e.observacao as Observacao,
+                    e.ultima_atualizacao as UltimaAtualizacao,
                     e.id_escola as IdEscola,
 	                e.id_rede as IdRede,
 	                e.id_uf as IdUf,
@@ -127,7 +128,7 @@ namespace repositorio
 	                uf.descricao as DescricaoUf,
                     uf.sigla as SiglaUf,
                     r.descricao_rede as DescricaoRede,
-                    l.descricao_localizacao as DescricaoLocalizacao
+                    l.descricao_localizacao as DescricaoLocalizacao,
                     etde.id_etapas_de_ensino as IdEtapasDeEnsino,
 	                ede.descricao_etapas_de_ensino as DescricaoEtapasEnsino
                 FROM public.escola as e
@@ -136,7 +137,6 @@ namespace repositorio
                     LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf
                     LEFT JOIN rede as r ON e.id_rede = r.id_rede
                     LEFT JOIN localizacao as l ON l.id_localizacao = e.id_localizacao
-                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf 
                     LEFT JOIN escola_etapas_de_ensino as etde ON etde.id_escola = e.id_escola
                     LEFT JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = etde.id_etapas_de_ensino");
 
@@ -251,7 +251,8 @@ namespace repositorio
             latitude = @Latitude,
             numero_total_de_alunos = @NumeroTotalDeAlunos,
             numero_total_de_docentes = @NumeroTotalDeDocentes,
-            observacao = @Observacao
+            observacao = @Observacao,
+            ultima_atualizacao= @UltimaAtualizacao
             WHERE
             id_escola = @IdEscola";
 
@@ -264,7 +265,8 @@ namespace repositorio
                 Latitude = atualizarDadosEscolaDTO.Latitude,
                 NumeroTotalDeAlunos = atualizarDadosEscolaDTO.NumeroTotalDeAlunos,
                 NumeroTotalDeDocentes = atualizarDadosEscolaDTO.NumeroTotalDeDocentes,
-                Observacao = atualizarDadosEscolaDTO.Observacao
+                Observacao = atualizarDadosEscolaDTO.Observacao,
+                UltimaAtualizacao = atualizarDadosEscolaDTO.UltimaAtualizacao
             };
 
             contexto?.Conexao.Execute(sql, parametro);

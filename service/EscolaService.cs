@@ -123,6 +123,7 @@ namespace service
         public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
             if (atualizarDadosEscolaDTO.IdSituacao == 0) atualizarDadosEscolaDTO.IdSituacao = null;
+            atualizarDadosEscolaDTO.UltimaAtualizacao = DateTime.Now;
             escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
         }
     }
