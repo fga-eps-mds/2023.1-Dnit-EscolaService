@@ -10,6 +10,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
+using dominio.Dominio;
+using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
 
 namespace service
 {
@@ -88,7 +91,8 @@ namespace service
                                 escola.IdMunicipio = int.Parse(municipio); 
                             }
 
-                            escola.IdEtapasDeEnsino = int.Parse(linha[14]);
+                            //escola.IdEtapasDeEnsino = int.Parse(linha[14]);
+                            List<int> teste = EtapasParaIds(linha[14]);
                             escola.IdPorte = ObterPortePeloId(linha[15]);
 
                             if (escola.IdPorte == 0)
@@ -234,6 +238,36 @@ namespace service
                 if (descricao.Value == Porte) return descricao.Key;
             }
             return 0;
+        }
+
+        public List<int> EtapasParaIds(string etapas)
+        {
+            List<int> ids = new List<int>();
+
+            //char[] delimitadores = { ',', ' ' };
+            List<string> etapas_separadas = etapas.Split(',').Select(item => item.Trim()).ToList();
+
+            Dictionary<int, string> descricao_etapas = new Dictionary<int, string>()
+            {
+                { 1, "Educação Infantil"},
+                { 2, "Ensino Fundamental"},
+                { 3, "Ensino Médio"},
+                { 4, "Educação de Jovens Adultos"},
+                { 5, "Educação Profissional"},
+            };
+
+            foreach (var nome in etapas_separadas)
+            {
+                foreach (var etapa in descricao_etapas)
+                {
+                    if(etapa.Value == nome)
+                    {
+                        ids.Add(etapa.Key); 
+                        break;
+                    }
+                }
+            }
+            return ids;
         }
     }
 }
