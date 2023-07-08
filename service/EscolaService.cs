@@ -70,7 +70,13 @@ namespace service
                             escola.Telefone = linha[7];
                             escola.NumeroTotalDeDocentes = int.Parse(linha[8]);
                             escola.IdEscola = int.Parse(linha[9]);
-                            escola.IdRede = int.Parse(linha[10]);
+                            escola.IdRede = ObterRedePeloId(linha[10]);
+
+                            if (escola.IdRede == 0)
+                            {
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
+                            }
+
                             escola.IdUf = ObterEstadoPelaSigla(linha[11]);
 
                             if (escola.IdUf == 0)
@@ -248,7 +254,6 @@ namespace service
         {
             List<int> ids = new List<int>();
 
-            //char[] delimitadores = { ',', ' ' };
             List<string> etapas_separadas = etapas.Split(',').Select(item => item.Trim()).ToList();
 
             Dictionary<int, string> descricao_etapas = new Dictionary<int, string>()
@@ -272,6 +277,22 @@ namespace service
                 }
             }
             return ids;
+        }
+
+        public int ObterRedePeloId(string Rede)
+        {
+            Dictionary<int, string> redes = new Dictionary<int, string>()
+            {
+                { 1, "Municipal"},
+                { 2, "Estadual"},
+                { 3, "Privada"},
+            };
+
+            foreach (var descricao in redes)
+            {
+                if (descricao.Value.ToLower() == Rede.ToLower()) return descricao.Key;
+            }
+            return 0;
         }
     }
 }

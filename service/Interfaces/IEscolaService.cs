@@ -18,6 +18,7 @@ namespace service.Interfaces
         public Task<string> ObterCodigoMunicipioPorCEP(string cep);
         public int ObterEstadoPelaSigla(string UF);
         public int ObterPortePeloId(string Porte);
+        public int ObterRedePeloId(string Rede);
     }
 
 }
