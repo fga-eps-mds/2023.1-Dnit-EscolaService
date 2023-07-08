@@ -291,5 +291,44 @@ namespace Test
 
             Assert.False(resultado);
         }
+
+        [Fact]
+        public void EtapasParaIds_QuandoNenhumaEtapaForPassada_DeveRetornarException()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string etapas = "";
+            string nome = "Nome escola";
+
+            Assert.Throws<Exception>(() => escolaService.EtapasParaIds(etapas, nome));
+        }
+
+        [Fact]
+        public void EtapasParaIds_QuandoAlgumaEtapaErradaForPassada_DeveRetornarException()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string etapas = "Educação infantil, ensino errado";
+            string nome = "Nome escola";
+
+            Assert.Throws<Exception>(() => escolaService.EtapasParaIds(etapas, nome));
+        }
+
+        [Fact]
+        public void EtapasParaIds_QuandoEtapaComLetraMinusculaForPassada_DeveRetornarListaComTamanhoIgualAQuantidadeDeEtapasPassadas()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string etapas = "Educação Infantil, EDUCAÇÃO profissional";
+            int quantidade_etapas = etapas.Split(',').Select(item => item.Trim()).ToList().Count;
+
+            string nome = "Nome escola";
+            int quantidade_ids = escolaService.EtapasParaIds(etapas, nome).Count;
+
+            Assert.Equal(quantidade_etapas, quantidade_ids);
+        }
     }
 }

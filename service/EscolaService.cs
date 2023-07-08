@@ -221,7 +221,7 @@ namespace service
                 { 13, "PA"},
                 { 14, "PB"},
                 { 15, "PR"},
-                { 16, "PR"},
+                { 16, "PE"},
                 { 17, "PI"},
                 { 18, "RJ"},
                 { 19, "RN"},
@@ -279,7 +279,7 @@ namespace service
             {
                 foreach (var etapa in descricao_etapas)
                 {
-                    if (etapa.Value == nome)
+                    if (etapa.Value.ToLower() == nome.ToLower())
                     {
                         ids.Add(etapa.Key);
                         break;
