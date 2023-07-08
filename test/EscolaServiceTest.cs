@@ -1,9 +1,12 @@
-?using dominio;
+using dominio;
 using Moq;
 using repositorio;
 using repositorio.Interfaces;
 using service;
 using service.Interfaces;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using test.Stub;
 
 namespace test
