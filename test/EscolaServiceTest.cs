@@ -1,11 +1,12 @@
-ï»¿ï»¿using dominio;
+?using dominio;
 using Moq;
 using repositorio;
 using repositorio.Interfaces;
 using service;
 using service.Interfaces;
+using test.Stub;
 
-namespace Test
+namespace test
 {
     public class EscolaServiceTest
     {
@@ -48,11 +49,33 @@ namespace Test
         {
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-            CadastroEscolaDTO cadastroEscolaDTO = new();
+            EscolaStub escolaStub = new();
+            CadastroEscolaDTO cadastroEscolaDTO = escolaStub.ObterCadastroEscolaDTO();
+            int idEscola = 1;
+            mockEscolaRepositorio.Setup(repositorio => repositorio.CadastrarEscola(cadastroEscolaDTO)).Returns(idEscola);
+
 
             escolaService.CadastrarEscola(cadastroEscolaDTO);
             mockEscolaRepositorio.Verify(x => x.CadastrarEscola(cadastroEscolaDTO), Times.Once);
+            mockEscolaRepositorio.Verify(x => x.CadastrarEtapasDeEnsino(idEscola, cadastroEscolaDTO.IdEtapasDeEnsino[0]), Times.Once);
         }
+        [Fact]
+        public void CadastrarEscola_QuandoCadastroFalhar_DeveChamarORepositorioUmaVez()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+            EscolaStub escolaStub = new();
+            CadastroEscolaDTO cadastroEscolaDTO = escolaStub.ObterCadastroEscolaDTO();
+            int idEscola = 0;
+            mockEscolaRepositorio.Setup(repositorio => repositorio.CadastrarEscola(cadastroEscolaDTO)).Returns(idEscola);
+
+
+            Action cadastrarEscola = () => escolaService.CadastrarEscola(cadastroEscolaDTO);
+            Assert.Throws<Exception>(cadastrarEscola);
+            mockEscolaRepositorio.Verify(x => x.CadastrarEscola(cadastroEscolaDTO), Times.Once);
+            mockEscolaRepositorio.Verify(x => x.CadastrarEtapasDeEnsino(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+        }
+
         [Fact]
         public void Obter_QuandoForChamado_DeveChamarORepositorioUmaVez()
         {
@@ -223,23 +246,23 @@ namespace Test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
-            string porte1 = "AtÃ© 50 matrÃ­culas de escolarizaÃ§Ã£o";
+            string porte1 = "Até 50 matrículas de escolarização";
             var id1 = escolaService.ObterPortePeloId(porte1);
             int idPorte1 = 1;
 
-            string porte2 = "Entre 201 e 500 matrÃ­culas de escolarizaÃ§Ã£o";
+            string porte2 = "Entre 201 e 500 matrículas de escolarização";
             var id2 = escolaService.ObterPortePeloId(porte2);
             int idPorte2 = 2;
 
-            string porte3 = "Entre 501 e 1000 matrÃ­culas de escolarizaÃ§Ã£o";
+            string porte3 = "Entre 501 e 1000 matrículas de escolarização";
             var id3 = escolaService.ObterPortePeloId(porte3);
             int idPorte3 = 3;
 
-            string porte4 = "Entre 51 e 200 matrÃ­culas de escolarizaÃ§Ã£o";
+            string porte4 = "Entre 51 e 200 matrículas de escolarização";
             var id4 = escolaService.ObterPortePeloId(porte4);
             int idPorte4 = 4;
 
-            string porte5 = "Mais de 1000 matrÃ­culas de escolarizaÃ§Ã£o";
+            string porte5 = "Mais de 1000 matrículas de escolarização";
             var id5 = escolaService.ObterPortePeloId(porte5);
             int idPorte5 = 5;
 
@@ -310,7 +333,7 @@ namespace Test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
-            string etapas = "EducaÃ§Ã£o infantil, ensino errado";
+            string etapas = "Educação infantil, ensino errado";
             string nome = "Nome escola";
 
             Assert.Throws<Exception>(() => escolaService.EtapasParaIds(etapas, nome));
@@ -322,7 +345,7 @@ namespace Test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
-            string etapas = "EducaÃ§Ã£o Infantil, EDUCAÃ‡ÃƒO profissional";
+            string etapas = "Educação Infantil, EDUCAÇÃO profissional";
             int quantidade_etapas = etapas.Split(',').Select(item => item.Trim()).ToList().Count;
 
             string nome = "Nome escola";

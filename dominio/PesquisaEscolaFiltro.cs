@@ -13,7 +13,7 @@ namespace dominio
         public int TamanhoPagina { get; set; }
         public int? IdUf { get; set; }
         public int? IdSituacao { get; set; }
-        public int? IdEtapaEnsino { get; set; }
+        public List<int>? IdEtapaEnsino { get; set; }
         public int? IdMunicipio { get; set; }
     }
 }
