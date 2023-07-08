@@ -269,19 +269,35 @@ namespace repositorio
                 UltimaAtualizacao = atualizarDadosEscolaDTO.UltimaAtualizacao
             };
 
-            contexto?.Conexao.Execute(sql, parametro);
+            using (var conexao = contexto.Conexao) {
+                conexao.Open();
+
+                using (var transacao = conexao.BeginTransaction()) {
+                    RemoverEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola);
+
+                    foreach(int idEtapaEnsino in atualizarDadosEscolaDTO.IdEtapasDeEnsino!)
+                    {
+                        CadastrarEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola, idEtapaEnsino);
+                    }
+
+                    contexto?.Conexao.Execute(sql, parametro);
+
+                    transacao.Commit();
+                }
+            }
+
         }
-        // public void RemoverEtapasDeEnsino(int idEscola)
-        // {
-        //     var sql = @"DELETE FROM public.escola_etapas_de_ensino WHERE
-        //                  id_escola = @IdEscola";
+         public void RemoverEtapasDeEnsino(int idEscola)
+         {
+             var sql = @"DELETE FROM public.escola_etapas_de_ensino WHERE
+                          id_escola = @IdEscola";
 
-        //     var parametros = new
-        //     {
-        //         IdEscola = idEscola
-        //     };
+             var parametros = new
+             {
+                 IdEscola = idEscola
+             };
 
-        //     contexto?.Conexao.Execute(sql, parametros);
-        // }
+             contexto?.Conexao.Execute(sql, parametros);
+         }
     }
 }
