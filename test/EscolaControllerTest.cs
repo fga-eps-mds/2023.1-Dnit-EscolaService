@@ -67,5 +67,21 @@ namespace test
             escolaServiceMock.Verify(service => service.RemoverSituacaoEscola(idEscola), Times.Once);
             Assert.IsType<OkResult>(result);
         }
+        [Fact]
+        public void AlterarDadosEscola_QuandoAlterarDadosDaEscola_DeveRetornarOK()
+        {
+            var escolaServiceMock = new Mock<IEscolaService>();
+
+            var controller = new EscolaController(escolaServiceMock.Object);
+
+            int idEscola = 1;
+            EscolaStub escolaStub = new EscolaStub();
+            var escola = escolaStub.ObterAtualizarDadosEscolaDTO();
+            var result = controller.AlterarDadosEscola(escola);
+
+
+            escolaServiceMock.Verify(service => service.AlterarDadosEscola(escola), Times.Once);
+            Assert.IsType<OkResult>(result);
+        }
     }
 }

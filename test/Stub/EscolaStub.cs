@@ -31,5 +31,20 @@ namespace test.Stub
                 IdSituacao = 1
             };
         }
+        public AtualizarDadosEscolaDTO ObterAtualizarDadosEscolaDTO()
+        {
+            return new AtualizarDadosEscolaDTO
+            {
+                IdEscola = 1234,
+                IdSituacao = 586,
+                Telefone = "72154365",
+                Latitude = "4654",
+                Longitude = "5468",
+                NumeroTotalDeAlunos = 400,
+                NumeroTotalDeDocentes = 50,
+                Observacao = "teste",
+                IdEtapasDeEnsino = new List<int> { 2 },
+            };
+        }
     }
 }
