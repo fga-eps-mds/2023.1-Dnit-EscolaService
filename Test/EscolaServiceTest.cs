@@ -330,5 +330,49 @@ namespace Test
 
             Assert.Equal(quantidade_etapas, quantidade_ids);
         }
+
+        [Fact]
+        public void ObterRedePeloId_QuandoRedeErradaForPassada_DeveRetornarZero()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string rede = "erro";
+            int id = 0;
+
+            Assert.Equal(id, escolaService.ObterRedePeloId(rede));
+        }
+
+        [Fact]
+        public void ObterRedePeloId_QuandoNenhumaRedeForPassada_DeveRetornarZero()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string rede = "";
+            int id = 0;
+
+            Assert.Equal(id, escolaService.ObterRedePeloId(rede));
+        }
+
+        [Fact]
+        public void ObterRedePeloId_QuandoRedesCorretasForemPassadas_DeveRetornarIdCerto()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string rede1 = "municipal";
+            int id1 = 1;
+
+            string rede2 = "estadual";
+            int id2 = 2;
+
+            string rede3 = "privada";
+            int id3 = 3;
+
+            Assert.Equal(id1, escolaService.ObterRedePeloId(rede1));
+            Assert.Equal(id2, escolaService.ObterRedePeloId(rede2));
+            Assert.Equal(id3, escolaService.ObterRedePeloId(rede3));
+        }
     }
 }

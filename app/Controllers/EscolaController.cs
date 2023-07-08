@@ -29,8 +29,6 @@ namespace app.Controllers
                 if (arquivo == null || arquivo.Length == 0)
                     return BadRequest("Nenhum arquivo enviado.");
 
-                await Console.Out.WriteLineAsync(arquivo.ContentType);
-
                 if (arquivo.ContentType.ToLower() != "text/csv")
                 {
                     return BadRequest("O arquivo deve estar no formato CSV.");
