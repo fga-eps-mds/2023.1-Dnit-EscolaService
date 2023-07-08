@@ -58,10 +58,10 @@ namespace repositorio
 
             var sqlInserirEscola = @"INSERT INTO public.escola(nome_escola, codigo_escola, cep, endereco, 
             latitude, longitude, numero_total_de_alunos, telefone, numero_total_de_docentes, 
-            id_rede, id_uf, id_localizacao, id_municipio, id_porte, id_situacao) 
+            id_rede, id_uf, id_localizacao, id_municipio, id_porte, id_situacao,ultima_atualizacao) 
             VALUES(@Nome, @Codigo, @CEP, @Endereco, @Latitude, 
             @Longitude, @NumeroTotalDeAlunos, @Telefone, @NumeroTotalDeDocentes, 
-            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdPorte, @IdSituacao) RETURNING id_escola";
+            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdPorte, @IdSituacao, @UltimaAtualizacao) RETURNING id_escola";
 
             var parametroEscola = new
             {
@@ -79,8 +79,9 @@ namespace repositorio
                 IdLocalizacao = cadastroEscolaDTO.IdLocalizacao,
                 IdMunicipio = cadastroEscolaDTO.IdMunicipio,
                 IdPorte = cadastroEscolaDTO.IdPorte,
-                IdSituacao = cadastroEscolaDTO.IdSituacao
-            };
+                IdSituacao = cadastroEscolaDTO.IdSituacao,
+                UltimaAtualizacao = cadastroEscolaDTO.UltimaAtualizacao
+        };
 
             int? idEscola = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametroEscola);
 

@@ -97,6 +97,8 @@ namespace service
 
         public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
+            cadastroEscolaDTO.UltimaAtualizacao = DateTime.Now;
+
             int idEscola = escolaRepositorio.CadastrarEscola(cadastroEscolaDTO) ?? 0;
 
             if(idEscola == 0)
