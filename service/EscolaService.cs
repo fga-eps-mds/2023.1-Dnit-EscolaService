@@ -25,7 +25,7 @@ namespace service
         }
 
         public bool SuperaTamanhoMaximo(MemoryStream planilha)
-        { 
+        {
             using (var reader = new StreamReader(planilha))
             {
                 int tamanho_max = 5000;
@@ -60,57 +60,62 @@ namespace service
                                 continue;
                             }
                             Escola escola = new Escola();
-                            escola.NomeEscola = linha[0];
-                            escola.CodigoEscola = int.Parse(linha[1]);
-                            escola.Cep = linha[2];
-                            escola.Endereco = linha[3];
-                            escola.Latitude = linha[4];
-                            escola.Longitude = linha[5];
-                            escola.NumeroTotalDeAlunos = int.Parse(linha[6]);
-                            escola.Telefone = linha[7];
-                            escola.NumeroTotalDeDocentes = int.Parse(linha[8]);
-                            escola.IdEscola = int.Parse(linha[9]);
-                            escola.IdRede = ObterRedePeloId(linha[10]);
+                            escola.CodigoEscola = int.Parse(linha[2]);
+                            escola.NomeEscola = linha[3];
+                            escola.IdRede = ObterRedePeloId(linha[4]);
+                            escola.IdPorte = ObterPortePeloId(linha[5]);
+                            escola.Endereco = linha[6];
+                            escola.Cep = linha[7];
+                            escola.IdUf = ObterEstadoPelaSigla(linha[9]);
+                            escola.IdLocalizacao = ObterLocalizacaoPeloId(linha[10]);
+                            escola.Latitude = linha[11];
+                            escola.Longitude = linha[12];
+                            escola.Telefone = linha[13] + linha[14];
+                            List<int> etapas_lista = EtapasParaIds(linha[15], escola.NomeEscola);
+                            escola.NumeroTotalDeAlunos = 0;
+                            for (int i = 16; i <= 25; i++)
+                            {
+                                string alunos = linha[i];
+                                int quantidade;
+                                if (int.TryParse(alunos, out quantidade)) escola.NumeroTotalDeAlunos += quantidade;
+                            }
+                            escola.NumeroTotalDeDocentes = int.Parse(linha[26]);
+
+                            //Lançando exceções para erro nas colunas da planilha inserida
+
+                            string municipio = ObterCodigoMunicipioPorCEP(escola.Cep).GetAwaiter().GetResult();
+                            int codigoMunicipio;
+                            if (int.TryParse(municipio, out codigoMunicipio))
+                            {
+                                escola.IdMunicipio = int.Parse(municipio);
+                            }
+                            else
+                            {
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
+                            }
 
                             if (escola.IdRede == 0)
                             {
                                 throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
                             }
 
-                            escola.IdUf = ObterEstadoPelaSigla(linha[11]);
-
                             if (escola.IdUf == 0)
                             {
                                 throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
                             }
-
-                            escola.IdLocalizacao = ObterLocalizacaoPeloId(linha[12]);
 
                             if (escola.IdLocalizacao == 0)
                             {
                                 throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
                             }
 
-                            string municipio = ObterCodigoMunicipioPorCEP(escola.Cep).GetAwaiter().GetResult();
-
-                            if (municipio == null) 
-                            { 
-                                throw new Exception("Erro. A leitura do arquivo parou na escola: "+escola.NomeEscola+", CEP inválido!"); 
-                            } 
-                            else 
-                            { 
-                                escola.IdMunicipio = int.Parse(municipio); 
-                            }
-
-                            List<int> etapas_lista = EtapasParaIds(linha[14]);
-                            escola.IdPorte = ObterPortePeloId(linha[15]);
-
                             if (escola.IdPorte == 0)
                             {
                                 throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
                             }
 
-                            escola.IdSituacao = int.Parse(linha[16]);
+
+                             //Atualizando ou inserindo escolas no banco de dados
 
                             if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
                             {
@@ -232,7 +237,7 @@ namespace service
 
             foreach (var estado in estados)
             {
-                if(estado.Value == UF.ToUpper()) return estado.Key;
+                if (estado.Value == UF.ToUpper()) return estado.Key;
             }
             return 0;
         }
@@ -255,7 +260,7 @@ namespace service
             return 0;
         }
 
-        public List<int> EtapasParaIds(string etapas)
+        public List<int> EtapasParaIds(string etapas, string nomeEscola)
         {
             List<int> ids = new List<int>();
 
@@ -274,12 +279,16 @@ namespace service
             {
                 foreach (var etapa in descricao_etapas)
                 {
-                    if(etapa.Value == nome)
+                    if (etapa.Value == nome)
                     {
-                        ids.Add(etapa.Key); 
+                        ids.Add(etapa.Key);
                         break;
                     }
                 }
+            }
+            if (ids.Count == 0 || ids.Count != etapas_separadas.Count)
+            {
+                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descrição das etapas de ensino inválida!");
             }
             return ids;
         }

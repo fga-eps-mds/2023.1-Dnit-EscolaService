@@ -288,7 +288,7 @@ namespace repositorio
                 Id_situacao = escola.IdSituacao,
                 Id_porte = escola.IdPorte,
                 Telefone = escola.Telefone,
-                Numero_total_de_docentes = escola.NumeroTotalDeAlunos
+                Numero_total_de_docentes = escola.NumeroTotalDeDocentes,
             };
 
             contexto?.Conexao.Execute(sqlAtualizarEscola, parametrosEscola);

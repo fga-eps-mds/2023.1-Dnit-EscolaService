@@ -20,6 +20,7 @@ namespace service.Interfaces
         public int ObterPortePeloId(string Porte);
         public int ObterRedePeloId(string Rede);
         public int ObterLocalizacaoPeloId(string Localizacao);
+        public List<int> EtapasParaIds(string etapas, string nomeEscola);
     }
 
 }
