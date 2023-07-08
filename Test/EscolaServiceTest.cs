@@ -374,5 +374,45 @@ namespace Test
             Assert.Equal(id2, escolaService.ObterRedePeloId(rede2));
             Assert.Equal(id3, escolaService.ObterRedePeloId(rede3));
         }
+
+        [Fact]
+        public void ObterLocalizacaoPeloId_QuandoLocalizacaoCorretaForPassada_DeveRetornarIdCerto()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string loc1 = "rural";
+            int id1 = 1;
+
+            string loc2 = "urbana";
+            int id2 = 2;
+
+            Assert.Equal(id1, escolaService.ObterLocalizacaoPeloId(loc1));
+            Assert.Equal(id2, escolaService.ObterLocalizacaoPeloId(loc2));
+        }
+
+        [Fact]
+        public void ObterLocalizacaoPeloId_QuandoLocalizacaoErradaForPassada_DeveRetornarZero()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string loc = "erro";
+            int id = 0;
+
+            Assert.Equal(id, escolaService.ObterLocalizacaoPeloId(loc));
+        }
+
+        [Fact]
+        public void ObterLocalizacaoPeloId_QuandoNenhumaLocalizacaoForPassada_DeveRetornarZero()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            string loc = "";
+            int id = 0;
+
+            Assert.Equal(id, escolaService.ObterRedePeloId(loc));
+        }
     }
 }
