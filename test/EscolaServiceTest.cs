@@ -7,6 +7,7 @@ using service.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using test.Stub;
 
 namespace test
@@ -439,6 +440,86 @@ namespace test
             int id = 0;
 
             Assert.Equal(id, escolaService.ObterRedePeloId(loc));
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoCepInvalidoForPassado_DeveRetornarExceptionComMensagem()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;cep_errado;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, CEP inválido!", exception.Message);
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoRedeInvalidaForPassada_DeveRetornarExceptionComMensagem()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;rede errada;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, rede inválida!", exception.Message);
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoUFInvalidaForPassada_DeveRetornarExceptionComMensagem()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;xx;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, UF inválida!", exception.Message);
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoLocalizacaoInvalidaForPassada_DeveRetornarExceptionComMensagem()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;localizacao errada;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, localização inválida!", exception.Message);
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoPorteInvalidoForPassado_DeveRetornarExceptionComMensagem()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;porte errado;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, descrição do porte inválida!", exception.Message);
         }
     }
 }
