@@ -12,6 +12,7 @@ namespace dominio
         public int CodigoEscola { get; set; }
         public string NomeEscola { get; set; }
         public int? IdRede { get; set; }
+        public string? DescricaoRede { get; set; }
         public string Cep { get; set; }
         public int? IdUf { get; set; }
         public string DescricaoUf { get; set; }
@@ -19,6 +20,7 @@ namespace dominio
         public int? IdMunicipio { get; set; }
         public string NomeMunicipio { get; set; }
         public int? IdLocalizacao { get; set; }
+        public string? DescricaoLocalizacao { get; set; }
         public string Longitude { get; set; }
         public string Latitude { get; set; }
         public Dictionary<int, string>? EtapaEnsino { get; set; }
@@ -29,6 +31,7 @@ namespace dominio
         public string Telefone { get; set; }
         public int NumeroTotalDeDocentes { get; set; }
         public string SiglaUf { get; set; }
+        public string Observacao { get; set; }
         public DateTime UltimaAtualizacao { get; set; }
     }
 }
