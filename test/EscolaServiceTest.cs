@@ -250,23 +250,23 @@ namespace test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
-            string porte1 = "Até 50 matrículas de escolarização";
+            string porte1 = "Atï¿½ 50 matrï¿½culas de escolarizaï¿½ï¿½o";
             var id1 = escolaService.ObterPortePeloId(porte1);
             int idPorte1 = 1;
 
-            string porte2 = "Entre 201 e 500 matrículas de escolarização";
+            string porte2 = "Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o";
             var id2 = escolaService.ObterPortePeloId(porte2);
             int idPorte2 = 2;
 
-            string porte3 = "Entre 501 e 1000 matrículas de escolarização";
+            string porte3 = "Entre 501 e 1000 matrï¿½culas de escolarizaï¿½ï¿½o";
             var id3 = escolaService.ObterPortePeloId(porte3);
             int idPorte3 = 3;
 
-            string porte4 = "Entre 51 e 200 matrículas de escolarização";
+            string porte4 = "Entre 51 e 200 matrï¿½culas de escolarizaï¿½ï¿½o";
             var id4 = escolaService.ObterPortePeloId(porte4);
             int idPorte4 = 4;
 
-            string porte5 = "Mais de 1000 matrículas de escolarização";
+            string porte5 = "Mais de 1000 matrï¿½culas de escolarizaï¿½ï¿½o";
             var id5 = escolaService.ObterPortePeloId(porte5);
             int idPorte5 = 5;
 
@@ -337,7 +337,7 @@ namespace test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
-            string etapas = "Educação infantil, ensino errado";
+            string etapas = "Educaï¿½ï¿½o infantil, ensino errado";
             string nome = "Nome escola";
 
             Assert.Throws<Exception>(() => escolaService.EtapasParaIds(etapas, nome));
@@ -349,7 +349,7 @@ namespace test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
-            string etapas = "Educação Infantil, EDUCAÇÃO profissional";
+            string etapas = "Educaï¿½ï¿½o Infantil, EDUCAï¿½ï¿½O profissional";
             int quantidade_etapas = etapas.Split(',').Select(item => item.Trim()).ToList().Count;
 
             string nome = "Nome escola";
@@ -449,13 +449,13 @@ namespace test
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
             var planilha = new StringBuilder();
-            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
-            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;cep_errado;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;cep_errado;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, CEP inválido!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, CEP invï¿½lido!", exception.Message);
         }
 
         [Fact]
@@ -465,13 +465,13 @@ namespace test
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
             var planilha = new StringBuilder();
-            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
-            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;rede errada;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;rede errada;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, rede inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, rede invï¿½lida!", exception.Message);
         }
 
         [Fact]
@@ -481,13 +481,13 @@ namespace test
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
             var planilha = new StringBuilder();
-            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
-            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;xx;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;xx;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, UF inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, UF invï¿½lida!", exception.Message);
         }
 
         [Fact]
@@ -497,13 +497,13 @@ namespace test
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
             var planilha = new StringBuilder();
-            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
-            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;localizacao errada;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;localizacao errada;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, localização inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, localizaï¿½ï¿½o invï¿½lida!", exception.Message);
         }
 
         [Fact]
@@ -513,13 +513,62 @@ namespace test
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
             var planilha = new StringBuilder();
-            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
-            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;porte errado;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;porte errado;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, descrição do porte inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, descriï¿½ï¿½o do porte invï¿½lida!", exception.Message);
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoPlanilhaInvalidaForPassada_DeveRetornarExceptionComMensagem()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;codigo errado;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
+            Assert.Equal("Planilha com formato incompatï¿½vel.", exception.Message);
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoEscolasJaCadastradasNoBancoForemPassadas_DevePassarPeloRepositorio()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            var retorno = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+            mockEscolaRepositorio.Verify(mock => mock.AtualizarDadosPlanilha(It.IsAny<Escola>()), Times.Never);
+        }
+
+        [Fact]
+        public void CadastrarEscolaViaPlanilha_QuandoEtapasDasEscolasForemCadastradas_DevePassarPeloRepositorio()
+        {
+            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
+            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
+
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituiï¿½ï¿½o de Ensino;Rede;Porte da Instituiï¿½ï¿½o de Ensino;Endereï¿½o;CEP;Cidade;UF;Localizaï¿½ï¿½o;Latitude;Longitude;DDD;Telefone da instituiï¿½ï¿½o;Etapas de Ensino Contempladas;Nï¿½ de Matrï¿½culas Ensino Infantil;Nï¿½ de Matrï¿½culas 1ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 2ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 3ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 4ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 5ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 6ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 7ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 8ï¿½ ano Ensino Fundamental;Nï¿½ de Matrï¿½culas 9ï¿½ ano Ensino Fundamental;Nï¿½ de Docentes");
+            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrï¿½culas de escolarizaï¿½ï¿½o;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educaï¿½ï¿½o de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126");
+
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
+
+            var retorno = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+            mockEscolaRepositorio.Verify(mock => mock.CadastrarEtapasDeEnsino(It.IsAny<int>(), It.IsAny<int>()),Times.Never);
         }
     }
 }
