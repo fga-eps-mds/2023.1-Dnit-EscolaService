@@ -19,6 +19,7 @@ namespace service.Interfaces
         public int ObterEstadoPelaSigla(string UF);
         public int ObterPortePeloId(string Porte);
         public int ObterRedePeloId(string Rede);
+        public int ObterLocalizacaoPeloId(string Localizacao);
     }
 
 }

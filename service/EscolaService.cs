@@ -84,7 +84,12 @@ namespace service
                                 throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
                             }
 
-                            escola.IdLocalizacao = int.Parse(linha[12]);
+                            escola.IdLocalizacao = ObterLocalizacaoPeloId(linha[12]);
+
+                            if (escola.IdLocalizacao == 0)
+                            {
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
+                            }
 
                             string municipio = ObterCodigoMunicipioPorCEP(escola.Cep).GetAwaiter().GetResult();
 
@@ -291,6 +296,18 @@ namespace service
             foreach (var descricao in redes)
             {
                 if (descricao.Value.ToLower() == Rede.ToLower()) return descricao.Key;
+            }
+            return 0;
+        }
+
+        public int ObterLocalizacaoPeloId(string Localizacao)
+        {
+            if(Localizacao.ToLower() == "rural")
+            {
+                return 1;
+            } else if(Localizacao.ToLower() == "urbana")
+            {
+                return 2;
             }
             return 0;
         }
