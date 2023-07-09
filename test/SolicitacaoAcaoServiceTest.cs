@@ -1,78 +1,81 @@
-﻿using Moq;
-using service;
+using app.Controllers;
+using dominio;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using service.Interfaces;
+using System.Collections.Generic;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using test.Stub;
 
 namespace test
 {
-    public class SolicitacaoAcaoServiceTest
+    public class SolicitacaoAcaoControllerTest
     {
-        public SolicitacaoAcaoServiceTest()
-        {
-            Environment.SetEnvironmentVariable("EMAIL_SERVICE_ADDRESS", "teste_email@exemplo.com");
-            Environment.SetEnvironmentVariable("EMAIL_SERVICE_PASSWORD", "teste");
-            Environment.SetEnvironmentVariable("EMAIL_DNIT", "teste_email@exemplo.com");
-        }
+        const int INTERNAL_SERVER_ERROR = 500;
 
         [Fact]
-        public void EnviarSolicitacaoAcao_QuandoSolicitacaoForPassada_DeveEnviarMensagemEsperada()
+        public void EnviarSolicitacaoAcao_QuandoSolicitacaoForEnviada_DeveRetornarOk()
         {
-            Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object);
-
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
 
-            service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
+            var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
 
-            string mensagemEsperada = "Nova solicitação de ação em escola.\n\n" +
-                                      "Escola: Escola Teste\n" +
-                                      "Nome do Solicitante: João Testador\n" +
-                                      "Vínculo com a escola: Professor\n" +
-                                      "Email: joao@email.com\n" +
-                                      "Telefone: 123123123\n" +
-                                      "Ciclos de ensino: \n" +
-                                      "    > Ensino Médio\n" +
-                                      "    > Ensino Fundamental\n" +
-                                      "Quantidade de alunos: 503\n" +
-                                      "Observações: Teste de Solicitação\n";
+            var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
-            smtpClientWrapperMock.Verify(wrapper =>
-                wrapper.Send(It.Is<MailMessage>(msg => msg.Body == mensagemEsperada)), Times.Once);
+            var result = controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
+
+            solicitacaoAcaoServiceMock.Verify(service => service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO), Times.Once);
+            Assert.IsType<OkResult>(result);
         }
 
         [Fact]
-        public void EnviarEmail_QuandoDestinatarioForPassado_DeveEnviarEmail()
+        public void EnviarSolicitacaoAcao_QuandoEnvioDoEmailFalhar_DeveRetornarErro()
         {
-            Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object);
+            SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
+            var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
 
-            string emailDestinatario = "dnit@email.com";
-            string assunto = "Solicitação de ação";
-            string corpo = "Nova solicitação de ação";
+            var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
+            solicitacaoAcaoServiceMock.Setup(x => x.EnviarSolicitacaoAcao(solicitacaoAcaoDTO)).Throws<SmtpException>();
 
-            service.EnviarEmail(emailDestinatario, assunto, corpo);
+            var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
-            smtpClientWrapperMock.Verify(wrapper =>
-                wrapper.Send(It.Is<MailMessage>(msg =>
-                    msg.Subject == assunto &&
-                    msg.Body == corpo &&
-                    msg.To.Contains(new MailAddress(emailDestinatario))
-            )), Times.Once);
+            var result = controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
+
+            solicitacaoAcaoServiceMock.Verify(service => service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO), Times.Once);
+            var objeto = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(INTERNAL_SERVER_ERROR, objeto.StatusCode);
         }
 
         [Fact]
-        public void EnviarEmail_QuandoDestinatarioForVazio_DeveLancarExcecao()
+        public async Task ObterEscolas_QuandoEscolasForemObtidas_DeveRetornarListaEscolas()
         {
-            Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object);
+            var solicitacaoAcaoServiceMock = new Mock<ISolicitacaoAcaoService>();
 
-            string emailDestinatario = "";
-            string assunto = "Solicitação de ação";
-            string corpo = "Nova solicitação de ação";
+            var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
-            Assert.Throws<ArgumentException>(() => service.EnviarEmail(emailDestinatario, assunto, corpo));
+            List<EscolaInep> listaEscolas = new List<EscolaInep>
+            {
+                new EscolaInep { Cod = 1, Estado = "SP", Nome = "Escola A" },
+                new EscolaInep { Cod = 2, Estado = "SP", Nome = "Escola B" },
+                new EscolaInep { Cod = 3, Estado = "SP", Nome = "Escola C" }
+            };
+
+            var task = Task.FromResult<IEnumerable<EscolaInep>>(listaEscolas);
+
+            solicitacaoAcaoServiceMock.Setup(service => service.ObterEscolas(It.IsAny<int>())).Returns(task);
+
+            int municipio = 1;
+            var result = await controller.ObterEscolas(municipio);
+
+            solicitacaoAcaoServiceMock.Verify(service => service.ObterEscolas(municipio), Times.Once);
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IEnumerable<EscolaInep>>(result);
+
+            var listaRetornada = result as IEnumerable<EscolaInep>;
+            Assert.Equal(listaEscolas, listaRetornada);
         }
     }
 }

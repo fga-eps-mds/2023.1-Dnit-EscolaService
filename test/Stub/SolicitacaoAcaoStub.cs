@@ -9,6 +9,8 @@ namespace test.Stub
             return new SolicitacaoAcaoDTO
             {
                 Escola = "Escola Teste",
+                UF = "DF",
+                Municipio = "Brasília",
                 NomeSolicitante = "João Testador",
                 VinculoEscola = "Professor",
                 Email = "joao@email.com",
