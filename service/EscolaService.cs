@@ -94,20 +94,11 @@ namespace service
             escolaRepositorio.ExcluirEscola(id);
 
         }
-        public Escola Listar(int idEscola)
-        {
-            Escola escola = escolaRepositorio.Obter(idEscola);
-
-            return escola;
-        }
-
-        public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO)
-        {
-            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
-        }
 
         public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
+            cadastroEscolaDTO.UltimaAtualizacao = DateTime.Now;
+
             int idEscola = escolaRepositorio.CadastrarEscola(cadastroEscolaDTO) ?? 0;
 
             if(idEscola == 0)
@@ -131,6 +122,12 @@ namespace service
             return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
         }
 
+        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        {
+            if (atualizarDadosEscolaDTO.IdSituacao == 0) atualizarDadosEscolaDTO.IdSituacao = null;
+            atualizarDadosEscolaDTO.UltimaAtualizacao = DateTime.Now;
+            escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
+        }
     }
 }
 

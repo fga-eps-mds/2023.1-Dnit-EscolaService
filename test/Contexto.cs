@@ -1,12 +1,6 @@
-﻿using Xunit;
-using repositorio;
-using repositorio.Interfaces;
-using dominio;
-using Microsoft.Data.Sqlite;
-using System.Data;
+﻿using System.Data;
 using repositorio.Contexto;
 using Dapper;
-using System;
 
 namespace test
 {
@@ -19,11 +13,6 @@ namespace test
 
             string sql = @"
                 ATTACH DATABASE ':memory:' AS public;
-
-                CREATE TABLE public.escola(nome_escola TEXT, codigo_escola INTEGER, cep TEXT, endereco TEXT,
-                    latitude TEXT, longitude TEXT, numero_total_de_alunos INTEGER, telefone TEXT, numero_total_de_docentes INTEGER,
-                    id_escola INTEGER PRIMARY KEY AUTOINCREMENT, id_rede INTEGER, id_uf INTEGER, id_localizacao INTEGER,
-                    id_municipio INTEGER, id_etapas_de_ensino INTEGER, id_porte INTEGER, id_situacao INTEGER);
 
                 CREATE TABLE public.etapas_de_ensino (
                     descricao_etapas_de_ensino TEXT,
@@ -50,8 +39,23 @@ namespace test
                 CREATE TABLE public.escola_etapas_de_ensino (
                     id_escola INTEGER,
                     id_etapas_de_ensino INTEGER
-               );
-                
+                );
+
+                CREATE TABLE public.rede (
+                    id_rede INTEGER PRIMARY KEY AUTOINCREMENT,
+                    descricao_rede TEXT
+                );
+
+                CREATE TABLE public.localizacao (
+                    id_localizacao INTEGER PRIMARY KEY AUTOINCREMENT,
+                    descricao_localizacao TEXT
+                );
+
+                CREATE TABLE public.escola(nome_escola TEXT, codigo_escola INTEGER, cep TEXT, endereco TEXT,
+                    latitude TEXT, longitude TEXT, numero_total_de_alunos INTEGER, telefone TEXT, numero_total_de_docentes INTEGER,
+                    id_escola INTEGER PRIMARY KEY AUTOINCREMENT, id_rede INTEGER, id_uf INTEGER, id_localizacao INTEGER,
+                    id_municipio INTEGER, id_etapas_de_ensino INTEGER, id_porte INTEGER, id_situacao INTEGER, observacao TEXT, ultima_atualizacao DATETIME
+                );
 
                 INSERT INTO public.etapas_de_ensino(descricao_etapas_de_ensino)
                 VALUES ('Educação Infantil'), ('Ensino Fundamental');

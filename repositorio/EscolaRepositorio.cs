@@ -58,10 +58,10 @@ namespace repositorio
 
             var sqlInserirEscola = @"INSERT INTO public.escola(nome_escola, codigo_escola, cep, endereco, 
             latitude, longitude, numero_total_de_alunos, telefone, numero_total_de_docentes, 
-            id_rede, id_uf, id_localizacao, id_municipio, id_porte, id_situacao) 
+            id_rede, id_uf, id_localizacao, id_municipio, id_porte, id_situacao,ultima_atualizacao) 
             VALUES(@Nome, @Codigo, @CEP, @Endereco, @Latitude, 
             @Longitude, @NumeroTotalDeAlunos, @Telefone, @NumeroTotalDeDocentes, 
-            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdPorte, @IdSituacao) RETURNING id_escola";
+            @IdRede, @IdUf, @IdLocalizacao, @IdMunicipio, @IdPorte, @IdSituacao, @UltimaAtualizacao) RETURNING id_escola";
 
             var parametroEscola = new
             {
@@ -79,8 +79,9 @@ namespace repositorio
                 IdLocalizacao = cadastroEscolaDTO.IdLocalizacao,
                 IdMunicipio = cadastroEscolaDTO.IdMunicipio,
                 IdPorte = cadastroEscolaDTO.IdPorte,
-                IdSituacao = cadastroEscolaDTO.IdSituacao
-            };
+                IdSituacao = cadastroEscolaDTO.IdSituacao,
+                UltimaAtualizacao = cadastroEscolaDTO.UltimaAtualizacao
+        };
 
             int? idEscola = contexto?.Conexao.ExecuteScalar<int>(sqlInserirEscola, parametroEscola);
 
@@ -114,6 +115,8 @@ namespace repositorio
                     e.numero_total_de_alunos as NumeroTotalDeAlunos,
 	                e.telefone as Telefone, 
 	                e.numero_total_de_docentes as NumeroTotalDeDocentes,
+                    e.observacao as Observacao,
+                    e.ultima_atualizacao as UltimaAtualizacao,
                     e.id_escola as IdEscola,
 	                e.id_rede as IdRede,
 	                e.id_uf as IdUf,
@@ -125,12 +128,16 @@ namespace repositorio
 	                m.nome as NomeMunicipio,
 	                uf.descricao as DescricaoUf,
                     uf.sigla as SiglaUf,
+                    r.descricao_rede as DescricaoRede,
+                    l.descricao_localizacao as DescricaoLocalizacao,
                     etde.id_etapas_de_ensino as IdEtapasDeEnsino,
 	                ede.descricao_etapas_de_ensino as DescricaoEtapasEnsino
                 FROM public.escola as e
                     LEFT JOIN situacao as s ON e.id_situacao = s.id_situacao
                     LEFT JOIN municipio as m ON m.id_municipio = e.id_municipio
-                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf 
+                    LEFT JOIN unidade_federativa as uf ON uf.id = e.id_uf
+                    LEFT JOIN rede as r ON e.id_rede = r.id_rede
+                    LEFT JOIN localizacao as l ON l.id_localizacao = e.id_localizacao
                     LEFT JOIN escola_etapas_de_ensino as etde ON etde.id_escola = e.id_escola
                     LEFT JOIN etapas_de_ensino as ede ON ede.id_etapas_de_ensino = etde.id_etapas_de_ensino");
 
@@ -202,45 +209,6 @@ namespace repositorio
             return listaEscolaPagina;
         }
 
-        public Escola Obter(int idEscola)
-        {
-            var sql = @"
-                SELECT
-                    nome_escola nomeEscola,
-                    codigo_escola codigoEscola,
-                    cep,
-                    endereco,
-                    latitude,
-                    longitude,
-                    numero_total_de_alunos numeroTotalDeAlunos,
-                    telefone,
-                    numero_total_de_docentes numeroTotalDeDocentes,
-                    id_escola idEscola,
-                    id_rede idRede,
-                    id_uf idUf,
-                    id_localizacao idLocalizacao,
-                    id_municipio idMunicipio,
-                    id_etapas_de_ensino idEtapasDeEnsino,
-                    id_porte idPorte,
-                    id_situacao idSituacao
-                FROM
-                    public.escola
-                WHERE
-                    id_escola = @IdEscola";
-
-            var parametro = new
-            {
-                IdEscola = idEscola
-            };
-
-            var escola = contexto?.Conexao.QuerySingleOrDefault<Escola?>(sql, parametro);
-
-            if (escola == null)
-                throw new InvalidOperationException("Não foi encontrada escola cadastrada com o id fornecido.");
-
-            return escola;
-
-        }
         public void ExcluirEscola(int id)
         {
             var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
@@ -252,19 +220,6 @@ namespace repositorio
 
             contexto?.Conexao.Execute(sql, parametro);
 
-        }
-
-        public void AdicionarSituacao(int idSituacao, int idEscola)
-        {
-            var sql = @"UPDATE public.escola SET id_situacao = @IdSituacao WHERE id_escola = @IdEscola";
-
-            var parametro = new
-            {
-                IdSituacao = idSituacao,
-                IdEscola = idEscola
-            };
-
-            contexto?.Conexao.QuerySingleOrDefault<Escola>(sql, parametro);
         }
 
         public void RemoverSituacaoEscola(int idEscola)
@@ -287,5 +242,68 @@ namespace repositorio
 
             return quantidade > 0;
         }
+
+        public int? AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        {
+            var sql = @"UPDATE public.escola SET
+                            id_situacao = @IdSituacao,
+                            telefone = @Telefone,
+                            longitude = @Longitude,
+                            latitude = @Latitude,
+                            numero_total_de_alunos = @NumeroTotalDeAlunos,
+                            numero_total_de_docentes = @NumeroTotalDeDocentes,
+                            observacao = @Observacao,
+                            ultima_atualizacao= @UltimaAtualizacao
+                        WHERE
+                            id_escola = @IdEscola";
+
+            var parametro = new
+            {
+                IdEscola = atualizarDadosEscolaDTO.IdEscola,
+                IdSituacao = atualizarDadosEscolaDTO.IdSituacao,
+                Telefone = atualizarDadosEscolaDTO.Telefone,
+                Longitude = atualizarDadosEscolaDTO.Longitude,
+                Latitude = atualizarDadosEscolaDTO.Latitude,
+                NumeroTotalDeAlunos = atualizarDadosEscolaDTO.NumeroTotalDeAlunos,
+                NumeroTotalDeDocentes = atualizarDadosEscolaDTO.NumeroTotalDeDocentes,
+                Observacao = atualizarDadosEscolaDTO.Observacao,
+                UltimaAtualizacao = atualizarDadosEscolaDTO.UltimaAtualizacao
+            };
+
+            int? linhasAfetadas = 0;
+
+            using (var conexao = contexto.Conexao)
+            {
+                conexao.Open();
+
+                using (var transacao = conexao.BeginTransaction())
+                {
+                    RemoverEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola);
+
+                    foreach (int idEtapaEnsino in atualizarDadosEscolaDTO.IdEtapasDeEnsino!)
+                    {
+                        CadastrarEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola, idEtapaEnsino);
+                    }
+
+                    linhasAfetadas = contexto?.Conexao.Execute(sql, parametro);
+
+                    transacao.Commit();
+                }
+
+                return linhasAfetadas!;
+            }
+        }
+         public void RemoverEtapasDeEnsino(int idEscola)
+         {
+             var sql = @"DELETE FROM public.escola_etapas_de_ensino WHERE
+                          id_escola = @IdEscola";
+
+             var parametros = new
+             {
+                 IdEscola = idEscola
+             };
+
+             contexto?.Conexao.Execute(sql, parametros);
+         }
     }
 }
