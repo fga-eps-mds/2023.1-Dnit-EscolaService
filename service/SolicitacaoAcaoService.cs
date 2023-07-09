@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Web;
-using Microsoft.Extensions.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace service
 {
@@ -18,11 +18,13 @@ namespace service
     {
         private readonly ISmtpClientWrapper _smtpClientWrapper;
         private readonly IHttpClientFactory httpClientFactory;
+        private readonly IConfiguration configuration;
 
-        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory)
+        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _smtpClientWrapper = smtpClientWrapper;
             this.httpClientFactory = httpClientFactory;
+            this.configuration = configuration;
         }
 
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO)
@@ -60,7 +62,7 @@ namespace service
 
         public async Task<IEnumerable<EscolaInep>> ObterEscolas(int municipio)
         {
-            var uriBuilder = new UriBuilder("http://educacao.dadosabertosbr.com/api/escolas/buscaavancada");
+            var uriBuilder = new UriBuilder(configuration["ApiInepUrl"]);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
             query["cidade"] = municipio.ToString();
