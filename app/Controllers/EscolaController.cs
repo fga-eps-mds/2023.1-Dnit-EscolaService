@@ -92,8 +92,19 @@ namespace app.Controllers
         [HttpPut("alterarDadosEscola")]
         public IActionResult AlterarDadosEscola([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
-            escolaService.AlterarDadosEscola(atualizarDadosEscolaDTO);
-            return Ok();
+            try
+            {
+                escolaService.AlterarDadosEscola(atualizarDadosEscolaDTO);
+                return Ok();
+            }
+            catch (Npgsql.PostgresException ex)
+            {
+                if(ex.SqlState == "23503")
+                {
+                    return Conflict("A chave estrangeira é inválida.");
+                }
+                return StatusCode(500, "Houve um erro interno no servidor.");
+            }
         }
 
     }

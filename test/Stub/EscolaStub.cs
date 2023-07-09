@@ -1,9 +1,4 @@
 ﻿using dominio;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace test.Stub
 {
@@ -36,7 +31,7 @@ namespace test.Stub
             return new AtualizarDadosEscolaDTO
             {
                 IdEscola = 1234,
-                IdSituacao = 586,
+                IdSituacao = 1,
                 Telefone = "72154365",
                 Latitude = "4654",
                 Longitude = "5468",
