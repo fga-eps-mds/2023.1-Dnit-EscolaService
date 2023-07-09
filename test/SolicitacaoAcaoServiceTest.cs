@@ -1,10 +1,8 @@
 ﻿using Moq;
 using service;
 using service.Interfaces;
-using System;
 using System.Net.Mail;
 using test.Stub;
-using Xunit;
 
 namespace test
 {

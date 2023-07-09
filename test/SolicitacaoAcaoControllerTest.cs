@@ -4,7 +4,6 @@ using Moq;
 using service.Interfaces;
 using System.Net.Mail;
 using test.Stub;
-using Xunit;
 
 namespace test
 {
