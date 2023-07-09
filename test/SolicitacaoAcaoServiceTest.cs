@@ -6,6 +6,10 @@ using System.Net.Mail;
 using test.Stub;
 using Moq.Protected;
 using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace test
 {
