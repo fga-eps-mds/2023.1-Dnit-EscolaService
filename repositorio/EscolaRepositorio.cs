@@ -243,19 +243,19 @@ namespace repositorio
             return quantidade > 0;
         }
 
-        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        public int? AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
-            var sql = @"Update public.escola SET
-            id_situacao = @IdSituacao,
-            telefone = @Telefone,
-            longitude = @Longitude,
-            latitude = @Latitude,
-            numero_total_de_alunos = @NumeroTotalDeAlunos,
-            numero_total_de_docentes = @NumeroTotalDeDocentes,
-            observacao = @Observacao,
-            ultima_atualizacao= @UltimaAtualizacao
-            WHERE
-            id_escola = @IdEscola";
+            var sql = @"UPDATE public.escola SET
+                            id_situacao = @IdSituacao,
+                            telefone = @Telefone,
+                            longitude = @Longitude,
+                            latitude = @Latitude,
+                            numero_total_de_alunos = @NumeroTotalDeAlunos,
+                            numero_total_de_docentes = @NumeroTotalDeDocentes,
+                            observacao = @Observacao,
+                            ultima_atualizacao= @UltimaAtualizacao
+                        WHERE
+                            id_escola = @IdEscola";
 
             var parametro = new
             {
@@ -270,23 +270,28 @@ namespace repositorio
                 UltimaAtualizacao = atualizarDadosEscolaDTO.UltimaAtualizacao
             };
 
-            using (var conexao = contexto.Conexao) {
+            int? linhasAfetadas = 0;
+
+            using (var conexao = contexto.Conexao)
+            {
                 conexao.Open();
 
-                using (var transacao = conexao.BeginTransaction()) {
+                using (var transacao = conexao.BeginTransaction())
+                {
                     RemoverEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola);
 
-                    foreach(int idEtapaEnsino in atualizarDadosEscolaDTO.IdEtapasDeEnsino!)
+                    foreach (int idEtapaEnsino in atualizarDadosEscolaDTO.IdEtapasDeEnsino!)
                     {
                         CadastrarEtapasDeEnsino(atualizarDadosEscolaDTO.IdEscola, idEtapaEnsino);
                     }
 
-                    contexto?.Conexao.Execute(sql, parametro);
+                    linhasAfetadas = contexto?.Conexao.Execute(sql, parametro);
 
                     transacao.Commit();
                 }
-            }
 
+                return linhasAfetadas!;
+            }
         }
          public void RemoverEtapasDeEnsino(int idEscola)
          {

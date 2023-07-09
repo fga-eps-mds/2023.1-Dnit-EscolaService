@@ -10,7 +10,7 @@ namespace repositorio.Interfaces
         public void RemoverSituacaoEscola(int idEscola);
         public void CadastrarEscola(Escola escola);
         public bool EscolaJaExiste(int codigoEscola);
-        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
+        public int? AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
         public void CadastrarEtapasDeEnsino(int idEscola, int idEtapaEnsino);
         public void RemoverEtapasDeEnsino(int idEscola);
     }

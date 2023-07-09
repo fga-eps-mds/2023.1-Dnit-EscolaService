@@ -1,5 +1,4 @@
-﻿
-using repositorio;
+﻿using repositorio;
 using repositorio.Interfaces;
 using dominio;
 using Microsoft.Data.Sqlite;
@@ -65,12 +64,27 @@ namespace test
             var escola = escolaStub.ObterCadastroEscolaDTO();
 
             int? idEscolaCadastrada = repositorio.CadastrarEscola(escola);
-            repositorio.ExcluirEscola(idEscolaCadastrada.Value);
+            repositorio.ExcluirEscola(idEscolaCadastrada!.Value);
 
             string sql = $"SELECT id_escola FROM public.escola WHERE id_escola = {idEscolaCadastrada.Value}";
             int? idEscolaObtida = connection.ExecuteScalar<int?>(sql);
 
             Assert.Null(idEscolaObtida);
+        }
+
+        [Fact]
+        public void AlterarDadosEscola_QuandoDadosDaEscolaForemAlterados_DeveRetornarVerdadeiro()
+        {
+            EscolaStub escolaStub = new EscolaStub();
+            var cadastroEscolaDTO = escolaStub.ObterCadastroEscolaDTO();
+            var atualizarDadosEscolaDTO = escolaStub.ObterAtualizarDadosEscolaDTO();
+
+            int? idEscolaCadastrada = repositorio.CadastrarEscola(cadastroEscolaDTO);
+            atualizarDadosEscolaDTO.IdEscola = idEscolaCadastrada!.Value;
+            var linhasAfetadas = repositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
+
+            int linhasEsperadas = 1;
+            Assert.Equal(linhasEsperadas, linhasAfetadas);
         }
 
         public void Dispose()
