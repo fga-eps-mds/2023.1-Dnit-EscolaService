@@ -1,6 +1,5 @@
 ﻿using dominio;
 using Microsoft.AspNetCore.Mvc;
-using service;
 using service.Interfaces;
 using System.Net.Mail;
 
@@ -27,7 +26,6 @@ namespace app.Controllers
             catch (SmtpException)
             {
                 return StatusCode(500, "Falha no envio do email.");
-                // return StatusCode(500, "Falha no envio do email.");
             }
         }
 
