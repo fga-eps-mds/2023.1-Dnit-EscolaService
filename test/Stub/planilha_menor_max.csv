@@ -1,0 +1,11 @@
+NomeEscola;CodigoEscola;Cep;Endereco;Latitude;Longitude;NumeroTotalDeAlunos;Telefone;NumeroTotalDeDocentes;IdEscola;IdRede;IdUf;IdLocalizacao;IdMunicipio;IdEtapasDeEnsino;IdPorte;IdSituacao
+Escola1;1;CEP1;Endereco1;Latitude1;Longitude1;1;Telefone1;1;1;1;1;1;1;1;1;1
+Escola2;2;CEP2;Endereco2;Latitude2;Longitude2;2;Telefone2;2;2;1;1;1;1;1;1;1
+Escola3;3;CEP3;Endereco3;Latitude3;Longitude3;3;Telefone3;3;3;1;1;1;1;1;1;1
+Escola4;4;CEP4;Endereco4;Latitude4;Longitude4;4;Telefone4;4;4;1;1;1;1;1;1;1
+Escola5;5;CEP5;Endereco5;Latitude5;Longitude5;5;Telefone5;5;5;1;1;1;1;1;1;1
+Escola6;6;CEP6;Endereco6;Latitude6;Longitude6;6;Telefone6;6;6;1;1;1;1;1;1;1
+Escola7;7;CEP7;Endereco7;Latitude7;Longitude7;7;Telefone7;7;7;1;1;1;1;1;1;1
+Escola8;8;CEP8;Endereco8;Latitude8;Longitude8;8;Telefone8;8;8;1;1;1;1;1;1;1
+Escola9;9;CEP9;Endereco9;Latitude9;Longitude9;9;Telefone9;9;9;1;1;1;1;1;1;1
+Escola10;10;CEP10;Endereco10;Latitude10;Longitude10;10;Telefone10;10;10;1;1;1;1;1;1;1

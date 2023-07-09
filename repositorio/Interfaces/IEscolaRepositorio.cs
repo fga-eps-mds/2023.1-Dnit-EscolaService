@@ -8,8 +8,9 @@ namespace repositorio.Interfaces
         public void ExcluirEscola(int Id);
         public ListaPaginada<EscolaCorreta> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro);
         public void RemoverSituacaoEscola(int idEscola);
-        public void CadastrarEscola(Escola escola);
+        public int CadastrarEscola(Escola escola);
         public bool EscolaJaExiste(int codigoEscola);
+        public void AtualizarDadosPlanilha(Escola escola);
         public int? AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
         public void CadastrarEtapasDeEnsino(int idEscola, int idEtapaEnsino);
         public void RemoverEtapasDeEnsino(int idEscola);

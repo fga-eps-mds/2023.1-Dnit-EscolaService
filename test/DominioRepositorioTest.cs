@@ -2,6 +2,7 @@
 using repositorio.Interfaces;
 using Microsoft.Data.Sqlite;
 using Dapper;
+using System.Linq;
 
 namespace test
 {
