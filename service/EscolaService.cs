@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using dominio.Dominio;
 using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
+using System.Diagnostics;
 
 namespace service
 {
@@ -59,27 +60,59 @@ namespace service
                                 primeiralinha = true;
                                 continue;
                             }
+
+                            Dictionary<string, int> colunas = new Dictionary<string, int>
+                            {
+                                {"ano_senso", 0 },
+                                {"id", 1 },
+                                {"codigo_inep", 2 },
+                                {"nome_escola", 3 },
+                                {"rede", 4 },
+                                {"porte", 5 },
+                                {"endereco", 6 },
+                                {"cep", 7 },
+                                {"cidade", 8 },
+                                {"uf", 9 },
+                                {"localizacao", 10 },
+                                {"latitude", 11 },
+                                {"longitude", 12 },
+                                {"ddd", 13 },
+                                {"telefone", 14 },
+                                {"etapas_ensino", 15 },
+                                {"qtd_ensino_infantil", 16 },
+                                {"qtd_ensino_fund_1ano", 17 },
+                                {"qtd_ensino_fund_2ano", 18 },
+                                {"qtd_ensino_fund_3ano", 19 },
+                                {"qtd_ensino_fund_4ano", 20 },
+                                {"qtd_ensino_fund_5ano", 21 },
+                                {"qtd_ensino_fund_6ano", 22 },
+                                {"qtd_ensino_fund_7ano", 23 },
+                                {"qtd_ensino_fund_8ano", 24 },
+                                {"qtd_ensino_fund_9ano", 25 },
+                                {"qtd_docentes", 26 },
+                            };
+
                             Escola escola = new Escola();
-                            escola.CodigoEscola = int.Parse(linha[2]);
-                            escola.NomeEscola = linha[3];
-                            escola.IdRede = ObterRedePeloId(linha[4]);
-                            escola.IdPorte = ObterPortePeloId(linha[5]);
-                            escola.Endereco = linha[6];
-                            escola.Cep = linha[7];
-                            escola.IdUf = ObterEstadoPelaSigla(linha[9]);
-                            escola.IdLocalizacao = ObterLocalizacaoPeloId(linha[10]);
-                            escola.Latitude = linha[11];
-                            escola.Longitude = linha[12];
-                            escola.Telefone = linha[13] + linha[14];
-                            List<int> etapas_lista = EtapasParaIds(linha[15], escola.NomeEscola);
+                            escola.CodigoEscola = int.Parse(linha[colunas["codigo_inep"]]);
+                            escola.NomeEscola = linha[colunas["nome_escola"]];
+                            escola.IdRede = ObterRedePeloId(linha[colunas["rede"]]);
+                            escola.IdPorte = ObterPortePeloId(linha[colunas["porte"]]);
+                            escola.Endereco = linha[colunas["endereco"]];
+                            escola.Cep = linha[colunas["cep"]];
+                            escola.IdUf = ObterEstadoPelaSigla(linha[colunas["uf"]]);
+                            escola.IdLocalizacao = ObterLocalizacaoPeloId(linha[colunas["localizacao"]]);
+                            escola.Latitude = linha[colunas["latitude"]];
+                            escola.Longitude = linha[colunas["longitude"]];
+                            escola.Telefone = linha[colunas["ddd"]] + linha[colunas["telefone"]];
+                            List<int> etapas_lista = EtapasParaIds(linha[colunas["etapas_ensino"]], escola.NomeEscola);
                             escola.NumeroTotalDeAlunos = 0;
-                            for (int i = 16; i <= 25; i++)
+                            for (int i = colunas["qtd_ensino_infantil"]; i <= colunas["qtd_ensino_fund_9ano"]; i++)
                             {
                                 string alunos = linha[i];
                                 int quantidade;
                                 if (int.TryParse(alunos, out quantidade)) escola.NumeroTotalDeAlunos += quantidade;
                             }
-                            escola.NumeroTotalDeDocentes = int.Parse(linha[26]);
+                            escola.NumeroTotalDeDocentes = int.Parse(linha[colunas["qtd_docentes"]]);
 
                             //Lançando exceções para erro nas colunas da planilha inserida
 
