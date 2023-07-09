@@ -134,15 +134,20 @@ namespace test
             ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
             int municipio = 100;
+            int codEscolaA = 12345678;
+            int codEscolaB = 87654321;
+            int primeiraPosicao = 0;
+            int segundaPosicao = 1;
+            
             var escolas = await service.ObterEscolas(municipio);
 
-            Assert.Equal(12345678, escolas.ElementAt(0).Cod);
-            Assert.Equal("Escola A", escolas.ElementAt(0).Nome);
-            Assert.Equal("DF", escolas.ElementAt(0).Estado);
+            Assert.Equal(codEscolaA, escolas.ElementAt(primeiraPosicao).Cod);
+            Assert.Equal("Escola A", escolas.ElementAt(primeiraPosicao).Nome);
+            Assert.Equal("DF", escolas.ElementAt(primeiraPosicao).Estado);
 
-            Assert.Equal(87654321, escolas.ElementAt(1).Cod);
-            Assert.Equal("Escola B", escolas.ElementAt(1).Nome);
-            Assert.Equal("DF", escolas.ElementAt(1).Estado);
+            Assert.Equal(codEscolaB, escolas.ElementAt(segundaPosicao).Cod);
+            Assert.Equal("Escola B", escolas.ElementAt(segundaPosicao).Nome);
+            Assert.Equal("DF", escolas.ElementAt(segundaPosicao).Estado);
         }
     }
 }
