@@ -10,6 +10,7 @@ namespace app.DI
             services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IEscolaService, EscolaService>();
+            services.AddHttpClient();
         }
     }
 }

@@ -6,20 +6,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using System.Reflection;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using System.Web;
+using Microsoft.Extensions.Configuration;
 
 namespace service
 {
     public class SolicitacaoAcaoService : ISolicitacaoAcaoService
     {
         private readonly ISmtpClientWrapper _smtpClientWrapper;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly IConfiguration configuration;
 
-        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper)
+        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _smtpClientWrapper = smtpClientWrapper;
+            this.httpClientFactory = httpClientFactory;
+            this.configuration = configuration;
         }
 
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO)
@@ -28,6 +33,8 @@ namespace service
 
             string mensagem = $"Nova solicitação de ação em escola.\n\n" +
                             $"Escola: {solicitacaoAcaoDTO.Escola}\n" +
+                            $"UF: {solicitacaoAcaoDTO.UF}\n" +
+                            $"Municipio: {solicitacaoAcaoDTO.Municipio}\n" +
                             $"Nome do Solicitante: {solicitacaoAcaoDTO.NomeSolicitante}\n" +
                             $"Vínculo com a escola: {solicitacaoAcaoDTO.VinculoEscola}\n" +
                             $"Email: {solicitacaoAcaoDTO.Email}\n" +
@@ -51,6 +58,28 @@ namespace service
             mensagem.Body = corpo;
 
             _smtpClientWrapper.Send(mensagem);
+        }
+
+        public async Task<IEnumerable<EscolaInep>> ObterEscolas(int municipio)
+        {
+            var uriBuilder = new UriBuilder(configuration["ApiInepUrl"]);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+            query["cidade"] = municipio.ToString();
+
+            uriBuilder.Query = query.ToString();
+            string url = uriBuilder.ToString();
+
+            var httpClient = this.httpClientFactory.CreateClient();
+
+            HttpResponseMessage response = await httpClient.GetAsync(url);
+            string conteudo = await response.Content.ReadAsStringAsync();
+
+            var jArray = JArray.Parse(conteudo);
+            var escolas = jArray[1].ToObject<IEnumerable<EscolaInep>>();
+
+
+            return escolas;
         }
     }
 }

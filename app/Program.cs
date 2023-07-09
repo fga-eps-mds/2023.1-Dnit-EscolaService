@@ -1,5 +1,6 @@
 using app.DI;
 using Microsoft.OpenApi.Models;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,8 @@ builder.Services.AddCors(options =>
                    .AllowAnyHeader();
         });
 });
+
+DotNetEnv.Env.Load();
 
 var app = builder.Build();
 
