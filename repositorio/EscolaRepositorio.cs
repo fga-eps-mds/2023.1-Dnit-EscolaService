@@ -213,12 +213,14 @@ namespace repositorio
         public void ExcluirEscola(int id)
         {
             var sql = @"DELETE FROM public.escola WHERE id_escola = @IdEscola";
+            var sqlExclusaoEtapa = @"DELETE FROM public.escola_etapas_de_ensino WHERE id_escola = @IdEscola";
 
             var parametro = new
             {
                 IdEscola = id,
             };
 
+            contexto?.Conexao.Execute(sqlExclusaoEtapa, parametro);
             contexto?.Conexao.Execute(sql, parametro);
 
         }
