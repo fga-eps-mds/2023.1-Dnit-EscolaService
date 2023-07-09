@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Mail;
 using test.Stub;
 using Moq.Protected;
+using Microsoft.Extensions.Configuration;
 
 namespace test
 {
@@ -22,8 +23,9 @@ namespace test
         {
             Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
             Mock<IHttpClientFactory> httpClientFactoryMock = new();
+            Mock<IConfiguration> configurationMock = new();
 
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
@@ -53,8 +55,9 @@ namespace test
         {
             Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
             Mock<IHttpClientFactory> httpClientFactoryMock = new();
+            Mock<IConfiguration> configurationMock = new();
 
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
             string emailDestinatario = "dnit@email.com";
             string assunto = "Solicitação de ação";
@@ -75,8 +78,9 @@ namespace test
         {
             Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
             Mock<IHttpClientFactory> httpClientFactoryMock = new();
+            Mock<IConfiguration> configurationMock = new();
 
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
             string emailDestinatario = "";
             string assunto = "Solicitação de ação";
@@ -89,6 +93,9 @@ namespace test
         public async Task ObterEscolas_QuandoRequisicaoForFeita_DeveRetornarListaDeEscolas()
         {
             Mock<ISmtpClientWrapper> smtpClientWrapperMock = new();
+            Mock<IConfiguration> configurationMock = new();
+
+            configurationMock.Setup(x => x["ApiInepUrl"]).Returns("teste");
 
             var resposta = @"[2,[{
                 ""cod"": 12345678,
@@ -124,7 +131,7 @@ namespace test
                 })
                 .Verifiable();
 
-            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object);
+            ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
             int municipio = 100;
             var escolas = await service.ObterEscolas(municipio);
