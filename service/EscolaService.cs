@@ -115,7 +115,7 @@ namespace service
                             }
 
 
-                             //Atualizando ou inserindo escolas no banco de dados
+                            //Atualizando ou inserindo escolas no banco de dados
 
                             if (escolaRepositorio.EscolaJaExiste(escola.CodigoEscola))
                             {
@@ -124,7 +124,8 @@ namespace service
                             }
 
                             escolasNovas.Add(escola.NomeEscola);
-                            int? id = escolaRepositorio.CadastrarEscola(escola);
+
+                            int id = escolaRepositorio.CadastrarEscola(escola);
 
                             foreach (var id_etapa in etapas_lista)
                             {
@@ -146,28 +147,19 @@ namespace service
             escolaRepositorio.ExcluirEscola(id);
 
         }
-        public Escola Listar(int idEscola)
-        {
-            Escola escola = escolaRepositorio.Obter(idEscola);
-
-            return escola;
-        }
-
-        public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO)
-        {
-            escolaRepositorio.AdicionarSituacao(atualizarSituacaoDTO.IdSituacao, atualizarSituacaoDTO.IdEscola);
-        }
 
         public void CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
         {
+            cadastroEscolaDTO.UltimaAtualizacao = DateTime.Now;
+
             int idEscola = escolaRepositorio.CadastrarEscola(cadastroEscolaDTO) ?? 0;
 
-            if(idEscola == 0)
+            if (idEscola == 0)
             {
                 throw new Exception("Erro ao realizar cadastro de escola");
             }
 
-            foreach(int idSituacao in cadastroEscolaDTO.IdEtapasDeEnsino)
+            foreach (int idSituacao in cadastroEscolaDTO.IdEtapasDeEnsino)
             {
                 escolaRepositorio.CadastrarEtapasDeEnsino(idEscola, idSituacao);
             }
@@ -321,14 +313,21 @@ namespace service
 
         public int ObterLocalizacaoPeloId(string Localizacao)
         {
-            if(Localizacao.ToLower() == "rural")
+            if (Localizacao.ToLower() == "rural")
             {
                 return 1;
-            } else if(Localizacao.ToLower() == "urbana")
+            }
+            else if (Localizacao.ToLower() == "urbana")
             {
                 return 2;
             }
             return 0;
+        }
+        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        {
+            if (atualizarDadosEscolaDTO.IdSituacao == 0) atualizarDadosEscolaDTO.IdSituacao = null;
+            atualizarDadosEscolaDTO.UltimaAtualizacao = DateTime.Now;
+            escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
         }
     }
 }

@@ -9,6 +9,8 @@ namespace test
 {
     public class EscolaControllerTest
     {
+        const int INTERNAL_SERVER_ERROR = 500;
+
         [Fact]
         public void ObterEscolas_QuandoMetodoForChamado_DeveRetornarListaDeEscolas()
         {
@@ -35,48 +37,6 @@ namespace test
             var result = controller.ExcluirEscola(idEscola);
 
             escolaServiceMock.Verify(service => service.ExcluirEscola(idEscola), Times.Once);
-            Assert.IsType<OkResult>(result);
-        }
-        [Fact]
-        public void ListarInformacoesEscola_QuandoEscolaForEncontrada_DeveRetornarEscola()
-        {
-            var escolaServiceMock = new Mock<IEscolaService>();
-
-            var controller = new EscolaController(escolaServiceMock.Object);
-
-            int idEscola = 100;
-            var result = controller.ListarInformacoesEscola(idEscola);
-
-            escolaServiceMock.Verify(service => service.Listar(idEscola), Times.Once);
-            Assert.IsType<OkObjectResult>(result);
-        }
-        [Fact]
-        public void ListarInformacoesEscola_QuandoEscolaNaoForEncontrada_DeveRetornarHttpNotFound()
-        {
-            var escolaServiceMock = new Mock<IEscolaService>();
-
-            var controller = new EscolaController(escolaServiceMock.Object);
-
-            escolaServiceMock.Setup(service => service.Listar(It.IsAny<int>())).Throws<InvalidOperationException>();
-
-            int idEscola = 100;
-            var result = controller.ListarInformacoesEscola(idEscola);
-
-            escolaServiceMock.Verify(service => service.Listar(idEscola), Times.Once);
-            Assert.IsType<NotFoundObjectResult>(result);
-        }
-        [Fact]
-        public void AdicionarSituacao_QuandoSituacaoForAdicionada_DeveRetornarOk()
-        {
-            var escolaServiceMock = new Mock<IEscolaService>();
-
-            var controller = new EscolaController(escolaServiceMock.Object);
-
-            AtualizarSituacaoDTO atualizarSituacaoDto = new() { IdSituacao = 1, IdEscola = 2 };
-
-            var result = controller.AdicionarSituacao(atualizarSituacaoDto);
-
-            escolaServiceMock.Verify(service => service.AdicionarSituacao(atualizarSituacaoDto), Times.Once);
             Assert.IsType<OkResult>(result);
         }
 
@@ -108,6 +68,59 @@ namespace test
 
             escolaServiceMock.Verify(service => service.RemoverSituacaoEscola(idEscola), Times.Once);
             Assert.IsType<OkResult>(result);
+        }
+        [Fact]
+        public void AlterarDadosEscola_QuandoAlterarDadosDaEscola_DeveRetornarOK()
+        {
+            var escolaServiceMock = new Mock<IEscolaService>();
+
+            var controller = new EscolaController(escolaServiceMock.Object);
+
+            EscolaStub escolaStub = new EscolaStub();
+            var escola = escolaStub.ObterAtualizarDadosEscolaDTO();
+            var result = controller.AlterarDadosEscola(escola);
+
+
+            escolaServiceMock.Verify(service => service.AlterarDadosEscola(escola), Times.Once);
+            Assert.IsType<OkResult>(result);
+        }
+        [Fact]
+        public void AlterarDadosEscola_QuandoIdDoAtributoNaoExistir_DeveRetornarConflict()
+        {
+            var escolaServiceMock = new Mock<IEscolaService>();
+            var excecao = new Npgsql.PostgresException("", "", "", "23503");
+
+            escolaServiceMock.Setup(service => service.AlterarDadosEscola(It.IsAny<AtualizarDadosEscolaDTO>())).Throws(excecao);
+
+            var controller = new EscolaController(escolaServiceMock.Object);
+
+            EscolaStub escolaStub = new();
+            AtualizarDadosEscolaDTO atualizarDadosEscolaDTO = escolaStub.ObterAtualizarDadosEscolaDTO();
+
+            var resultado = controller.AlterarDadosEscola(atualizarDadosEscolaDTO);
+
+            escolaServiceMock.Verify(service => service.AlterarDadosEscola(atualizarDadosEscolaDTO), Times.Once);
+            var objeto = Assert.IsType<ConflictObjectResult>(resultado);
+        }
+        [Fact]
+        public void AlterarDadosEscola_QuandoEscolaNaoForAlterada_DeveRetornarErroInterno()
+        {
+            var escolaServiceMock = new Mock<IEscolaService>();
+            var excecao = new Npgsql.PostgresException("", "", "", "");
+
+            escolaServiceMock.Setup(service => service.AlterarDadosEscola(It.IsAny<AtualizarDadosEscolaDTO>())).Throws(excecao);
+
+            var controller = new EscolaController(escolaServiceMock.Object);
+
+            EscolaStub escolaStub = new();
+            AtualizarDadosEscolaDTO atualizarDadosEscolaDTO = escolaStub.ObterAtualizarDadosEscolaDTO();
+
+            var resultado = controller.AlterarDadosEscola(atualizarDadosEscolaDTO);
+
+            escolaServiceMock.Verify(service => service.AlterarDadosEscola(atualizarDadosEscolaDTO), Times.Once);
+
+            var objeto = Assert.IsType<ObjectResult>(resultado);
+            Assert.Equal(INTERNAL_SERVER_ERROR, objeto.StatusCode);
         }
     }
 }

@@ -1,15 +1,8 @@
-﻿
-using Xunit;
-using repositorio;
+﻿using repositorio;
 using repositorio.Interfaces;
-using dominio;
 using Microsoft.Data.Sqlite;
-using System.Data;
-using repositorio.Contexto;
 using Dapper;
-using System;
 using System.Linq;
-using dominio.Dominio;
 
 namespace test
 {
@@ -67,7 +60,7 @@ namespace test
         }
 
         [Fact]
-        public void ObterSituacao_QuandoNaoHouverEtapasCadastradas_DeveRetornarListaVazia()
+        public void ObterSituacao_QuandoNaoHouverSituacoesCadastradas_DeveRetornarListaVazia()
         {
             string sql = "DELETE FROM public.situacao";
             connection.Execute(sql);
