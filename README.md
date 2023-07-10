@@ -6,6 +6,15 @@ Serviço responsavel pelas funcionalidades relacionados as escolas (cadastro, bu
 
 A forma de instalação é igual para todos os serviços, havendo diferenças apenas com base no sistema operacional.
 
+### Como instalar
+
+A forma de instalação é igual para todos os serviços, havendo diferenças apenas com base no sistema operacional.
+
+_Observação_: No EscolaServices, é necessario adicionar um arquivo ".env" dentro da pasta "app", com as seguintes informações:
+
+    - EMAIL_SERVICE_ADDRESS : email usado para enviar a mensagem.
+    - EMAIL_SERVICE_PASSWORD: senha do email acima.
+    - EMAIL_DNIT: email que receberá a mensagem.
 
 #### Windows e MacOs
 
