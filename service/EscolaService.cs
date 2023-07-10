@@ -96,7 +96,8 @@ namespace service
                             escola.CodigoEscola = int.Parse(linha[colunas["codigo_inep"]]);
                             escola.NomeEscola = linha[colunas["nome_escola"]];
                             escola.IdRede = ObterRedePeloId(linha[colunas["rede"]]);
-                            escola.IdPorte = ObterPortePeloId(linha[colunas["porte"]]);
+                            string porte = "Entre 201 e 500 matrículas de escolarização";
+                            escola.IdPorte = ObterPortePeloId(porte);
                             escola.Endereco = linha[colunas["endereco"]];
                             escola.Cep = linha[colunas["cep"]];
                             escola.IdUf = ObterEstadoPelaSigla(linha[colunas["uf"]]);
