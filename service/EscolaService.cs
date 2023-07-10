@@ -281,11 +281,11 @@ namespace service
         {
             Dictionary<int, string> porte = new Dictionary<int, string>()
             {
-                { 1, "Até 50 matrículas de escolarização"},
-                { 2, "Entre 201 e 500 matrículas de escolarização"},
-                { 3, "Entre 501 e 1000 matrículas de escolarização"},
-                { 4, "Entre 51 e 200 matrículas de escolarização"},
-                { 5, "Mais de 1000 matrículas de escolarização"},
+                { 1, "Até 50 matriculas de escolarizacao"},
+                { 2, "Entre 201 e 500 matriculas de escolarizacao"},
+                { 3, "Entre 501 e 1000 matriculas de escolarizacao"},
+                { 4, "Entre 51 e 200 matriculas de escolarizacao"},
+                { 5, "Mais de 1000 matriculas de escolarizacao"},
             };
 
             foreach (var descricao in porte)
@@ -303,11 +303,11 @@ namespace service
 
             Dictionary<int, string> descricao_etapas = new Dictionary<int, string>()
             {
-                { 1, "Educação Infantil"},
+                { 1, "Educacao Infantil"},
                 { 2, "Ensino Fundamental"},
-                { 3, "Ensino Médio"},
-                { 4, "Educação de Jovens Adultos"},
-                { 5, "Educação Profissional"},
+                { 3, "Ensino Medio"},
+                { 4, "Educacao de Jovens Adultos"},
+                { 5, "Educacao Profissional"},
             };
 
             foreach (var nome in etapas_separadas)
@@ -323,7 +323,7 @@ namespace service
             }
             if (ids.Count == 0 || ids.Count != etapas_separadas.Count)
             {
-                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descrição das etapas de ensino inválida!");
+                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descrição das etapas de ensino invalida!");
             }
             return ids;
         }
