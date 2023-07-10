@@ -11,15 +11,14 @@ namespace service.Interfaces
         public ListaPaginada<EscolaCorreta> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro);
         public void ExcluirEscola(int id);
         public bool SuperaTamanhoMaximo(MemoryStream planilha);
-        public List<int> CadastrarEscolaViaPlanilha(MemoryStream planilha);
-        public Escola Listar(int idEscola);
-        public void AdicionarSituacao(AtualizarSituacaoDTO atualizarSituacaoDTO);
+        public List<string> CadastrarEscolaViaPlanilha(MemoryStream planilha);
         public void RemoverSituacaoEscola(int idEscola);
-
+        public Task<string> ObterCodigoMunicipioPorCEP(string cep);
+        public int ObterEstadoPelaSigla(string UF);
+        public int ObterPortePeloId(string Porte);
+        public int ObterRedePeloId(string Rede);
+        public int ObterLocalizacaoPeloId(string Localizacao);
+        public List<int> EtapasParaIds(string etapas, string nomeEscola);
+        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
     }
-
 }
-
-  
-
-

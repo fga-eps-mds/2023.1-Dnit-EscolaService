@@ -3,7 +3,9 @@ using dominio;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using service.Interfaces;
+using System.Collections.Generic;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using test.Stub;
 
 namespace test

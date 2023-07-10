@@ -6,13 +6,13 @@ namespace repositorio.Interfaces
     {
         public int? CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO);
         public void ExcluirEscola(int Id);
-        public Escola Obter(int idEscola);
         public ListaPaginada<EscolaCorreta> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro);
-        public void AdicionarSituacao(int idSituacao, int idEscola);
         public void RemoverSituacaoEscola(int idEscola);
-        public void CadastrarEscola(Escola escola);
+        public int CadastrarEscola(Escola escola);
         public bool EscolaJaExiste(int codigoEscola);
+        public void AtualizarDadosPlanilha(Escola escola);
+        public int? AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO);
         public void CadastrarEtapasDeEnsino(int idEscola, int idEtapaEnsino);
-
+        public void RemoverEtapasDeEnsino(int idEscola);
     }
 }

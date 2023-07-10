@@ -22,7 +22,7 @@ namespace app.Controllers
         public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
         {
 
-            List<int> escolasDuplicadas;
+            List<string> escolasNovas;
 
             try
             {
@@ -49,10 +49,10 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    escolasDuplicadas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                    escolasNovas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
                 }
 
-                return Ok(escolasDuplicadas);
+                return Ok(escolasNovas);
             }
             catch (Exception ex)
             {
@@ -75,28 +75,6 @@ namespace app.Controllers
 
         }
 
-        [HttpGet("listarInformacoesEscola")]
-        public IActionResult ListarInformacoesEscola([FromQuery] int idEscola)
-        {
-            try
-            {
-                Escola escola = escolaService.Listar(idEscola);
-                return Ok(escola);
-            }
-            catch (InvalidOperationException)
-            {
-                return NotFound("Não foi encontrada escola com o id fornecido.");
-            }
-        }
-
-        [HttpPost("adicionarSituacao")]
-        public IActionResult AdicionarSituacao([FromBody] AtualizarSituacaoDTO atualizarSituacaoDTO)
-        {
-            escolaService.AdicionarSituacao(atualizarSituacaoDTO);
-            return Ok();
-        }
-
-
         [HttpPost("cadastrarEscola")]
         public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO cadastroEscolaDTO)
         {
@@ -104,13 +82,30 @@ namespace app.Controllers
             return Ok();
         }
 
-
-
         [HttpPost("removerSituacao")]
         public IActionResult RemoverSituacao([FromQuery] int idEscola)
         {
             escolaService.RemoverSituacaoEscola(idEscola);
             return Ok();
         }
+
+        [HttpPut("alterarDadosEscola")]
+        public IActionResult AlterarDadosEscola([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        {
+            try
+            {
+                escolaService.AlterarDadosEscola(atualizarDadosEscolaDTO);
+                return Ok();
+            }
+            catch (Npgsql.PostgresException ex)
+            {
+                if(ex.SqlState == "23503")
+                {
+                    return Conflict("A chave estrangeira é inválida.");
+                }
+                return StatusCode(500, "Houve um erro interno no servidor.");
+            }
+        }
+
     }
 }

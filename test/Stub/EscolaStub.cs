@@ -1,9 +1,5 @@
 ﻿using dominio;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace test.Stub
 {
@@ -29,6 +25,21 @@ namespace test.Stub
                 IdEtapasDeEnsino = new List<int> { 2 },
                 IdPorte = 2,
                 IdSituacao = 1
+            };
+        }
+        public AtualizarDadosEscolaDTO ObterAtualizarDadosEscolaDTO()
+        {
+            return new AtualizarDadosEscolaDTO
+            {
+                IdEscola = 1234,
+                IdSituacao = 1,
+                Telefone = "72154365",
+                Latitude = "4654",
+                Longitude = "5468",
+                NumeroTotalDeAlunos = 400,
+                NumeroTotalDeDocentes = 50,
+                Observacao = "teste",
+                IdEtapasDeEnsino = new List<int> { 2 },
             };
         }
     }
