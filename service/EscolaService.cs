@@ -124,27 +124,27 @@ namespace service
                             }
                             else
                             {
-                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP invalido!");
                             }
 
                             if (escola.IdRede == 0)
                             {
-                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede invalida!");
                             }
 
                             if (escola.IdUf == 0)
                             {
-                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF invalida!");
                             }
 
                             if (escola.IdLocalizacao == 0)
                             {
-                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localizacao invalida!");
                             }
 
                             if (escola.IdPorte == 0)
                             {
-                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
+                                throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descricao do porte invalida!");
                             }
 
 
@@ -281,7 +281,7 @@ namespace service
         {
             Dictionary<int, string> porte = new Dictionary<int, string>()
             {
-                { 1, "Até 50 matriculas de escolarizacao"},
+                { 1, "Ate 50 matriculas de escolarizacao"},
                 { 2, "Entre 201 e 500 matriculas de escolarizacao"},
                 { 3, "Entre 501 e 1000 matriculas de escolarizacao"},
                 { 4, "Entre 51 e 200 matriculas de escolarizacao"},
@@ -323,7 +323,7 @@ namespace service
             }
             if (ids.Count == 0 || ids.Count != etapas_separadas.Count)
             {
-                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descrição das etapas de ensino invalida!");
+                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descricao das etapas de ensino invalida!");
             }
             return ids;
         }
