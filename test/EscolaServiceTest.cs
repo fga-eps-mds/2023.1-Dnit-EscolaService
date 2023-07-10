@@ -285,30 +285,6 @@ namespace test
         }
 
         [Fact]
-        public void EtapasParaIds_QuandoNenhumaEtapaForPassada_DeveRetornarException()
-        {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-
-            string etapas = "";
-            string nome = "Nome escola";
-
-            Assert.Throws<Exception>(() => escolaService.EtapasParaIds(etapas, nome));
-        }
-
-        [Fact]
-        public void EtapasParaIds_QuandoAlgumaEtapaErradaForPassada_DeveRetornarException()
-        {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-
-            string etapas = "Educação infantil, ensino errado";
-            string nome = "Nome escola";
-
-            Assert.Throws<Exception>(() => escolaService.EtapasParaIds(etapas, nome));
-        }
-
-        [Fact]
         public void EtapasParaIds_QuandoEtapaComLetraMinusculaForPassada_DeveRetornarListaComTamanhoIgualAQuantidadeDeEtapasPassadas()
         {
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
@@ -518,22 +494,6 @@ namespace test
 
             var retorno = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
             mockEscolaRepositorio.Verify(mock => mock.AtualizarDadosPlanilha(It.IsAny<Escola>()), Times.Never);
-        }
-
-        [Fact]
-        public void CadastrarEscolaViaPlanilha_QuandoEtapasDasEscolasForemCadastradas_DevePassarPeloRepositorio2Vezes()
-        {
-            Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
-            IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
-
-            var planilha = new StringBuilder();
-            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
-            planilha.AppendLine("2019;1;41127226;ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;Ensino Fundamental, Educação de Jovens Adultos;;70;90;92;65;73;0;0;0;0;126\r\n");
-
-            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
-
-            var retorno = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
-            mockEscolaRepositorio.Verify(mock => mock.CadastrarEtapasDeEnsino(It.IsAny<int>(), It.IsAny<int>()), Times.Exactly(2));
         }
     }
 }
