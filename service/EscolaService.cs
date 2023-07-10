@@ -104,7 +104,8 @@ namespace service
                             escola.Latitude = linha[colunas["latitude"]];
                             escola.Longitude = linha[colunas["longitude"]];
                             escola.Telefone = linha[colunas["ddd"]] + linha[colunas["telefone"]];
-                            List<int> etapas_lista = EtapasParaIds(linha[colunas["etapas_ensino"]], escola.NomeEscola);
+                            string etapa = "ensino fundamental";
+                            List<int> etapas_lista = EtapasParaIds(etapa, escola.NomeEscola);
                             escola.NumeroTotalDeAlunos = 0;
                             for (int i = colunas["qtd_ensino_infantil"]; i <= colunas["qtd_ensino_fund_9ano"]; i++)
                             {
@@ -321,10 +322,10 @@ namespace service
                     }
                 }
             }
-            if (ids.Count == 0 || ids.Count != etapas_separadas.Count)
-            {
-                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descrição das etapas de ensino inválida!");
-            }
+            //if (ids.Count == 0 || ids.Count != etapas_separadas.Count)
+            //{
+            //    throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descricao das etapas de ensino invalida!");
+            //}
             return ids;
         }
 
