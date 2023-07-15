@@ -1,0 +1,8 @@
+version: "3.0"
+services:
+  escola-service:
+    build:
+      context: .
+    ports:
+      - "7084:7084"
+    container_name: escolaService
