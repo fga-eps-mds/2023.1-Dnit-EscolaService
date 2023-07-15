@@ -6,3 +6,5 @@ services:
     ports:
       - "7084:7084"
     container_name: escolaService
+    env_file:
+      - .env
