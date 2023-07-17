@@ -96,7 +96,7 @@ namespace service
                             escola.CodigoEscola = int.Parse(linha[colunas["codigo_inep"]]);
                             escola.NomeEscola = linha[colunas["nome_escola"]];
                             escola.IdRede = ObterRedePeloId(linha[colunas["rede"]]);
-                            escola.IdPorte = ObterPortePeloId(linha[colunas["porte"]]);
+                            escola.IdPorte = ObterPortePeloId(linha[colunas["porte"]], escola.NomeEscola);
                             escola.Endereco = linha[colunas["endereco"]];
                             escola.Cep = linha[colunas["cep"]];
                             escola.IdUf = ObterEstadoPelaSigla(linha[colunas["uf"]]);
@@ -277,9 +277,11 @@ namespace service
             return 0;
         }
 
-        public int ObterPortePeloId(string Porte)
+        public int ObterPortePeloId(string Porte, string nomeEscola)
         {
-            Dictionary<int, string> porte = new Dictionary<int, string>()
+            try
+            {
+                Dictionary<int, string> porte = new Dictionary<int, string>()
             {
                 { 1, "Ate 50 matriculas de escolarizacao"},
                 { 2, "Entre 201 e 500 matriculas de escolarizacao"},
@@ -288,20 +290,36 @@ namespace service
                 { 5, "Mais de 1000 matriculas de escolarizacao"},
             };
 
-            foreach (var descricao in porte)
-            {
-                if (descricao.Value == Porte) return descricao.Key;
+                // Devido a erros com caracteres especiais nas planilhas, vamos fazer as comparacoes abaixo pulando os cedilhas e acentuacoes presentes
+                int comeco = 0;
+                int tamanho = 17;
+
+                foreach (var descricao in porte)
+                {
+                    if (descricao.Value.Substring(comeco, tamanho).ToLower() == Porte.Substring(comeco, tamanho).ToLower()) return descricao.Key;
+                    else if (descricao.Value.Substring(3, 8).ToLower() == Porte.Substring(3, 8).ToLower()) return descricao.Key;
+                }
+
+                // O caso else if é parecido com o if mas é para tratar o caso da string "Ate 50 matriculas de escolarizacao", que pode ter caracteres
+                // especiais logo no comeco
+
+                return 0;
             }
-            return 0;
+            catch(ArgumentOutOfRangeException ex)
+            {
+                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descricao do porte invalida!");
+            }
         }
 
         public List<int> EtapasParaIds(string etapas, string nomeEscola)
         {
-            List<int> ids = new List<int>();
+            try
+            {
+                List<int> ids = new List<int>();
 
-            List<string> etapas_separadas = etapas.Split(',').Select(item => item.Trim()).ToList();
+                List<string> etapas_separadas = etapas.Split(',').Select(item => item.Trim()).ToList();
 
-            Dictionary<int, string> descricao_etapas = new Dictionary<int, string>()
+                Dictionary<int, string> descricao_etapas = new Dictionary<int, string>()
             {
                 { 1, "Educacao Infantil"},
                 { 2, "Ensino Fundamental"},
@@ -310,22 +328,36 @@ namespace service
                 { 5, "Educacao Profissional"},
             };
 
-            foreach (var nome in etapas_separadas)
-            {
-                foreach (var etapa in descricao_etapas)
+                // Teremos que fazer o mesmo tratamento para caracteres especiais da funcao anterior:
+                // Substring(0, 8): verificar se o comeco da string é igual a "ensino m" ou "ensino f"
+                // Substring(texto.Lenght - 8): verificar se os ultimos 5 elementos da string sao iguais a "infantil" ou "de jovens" ou "profissional"
+
+                foreach (var nome in etapas_separadas)
                 {
-                    if (etapa.Value.ToLower() == nome.ToLower())
+                    foreach (var etapa in descricao_etapas)
                     {
-                        ids.Add(etapa.Key);
-                        break;
+                        if (etapa.Value.Substring(0, 8).ToLower() == nome.Substring(0, 8).ToLower())
+                        {
+                            ids.Add(etapa.Key);
+                            break;
+                        }
+                        else if (etapa.Value.Substring(etapa.Value.Length - 8).ToLower() == nome.Substring(nome.Length - 8).ToLower())
+                        {
+                            ids.Add(etapa.Key);
+                            break;
+                        }
                     }
                 }
+                if (ids.Count == 0 || ids.Count != etapas_separadas.Count)
+                {
+                    throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descricao das etapas de ensino invalida!");
+                }
+                return ids;
             }
-            if (ids.Count == 0 || ids.Count != etapas_separadas.Count)
+            catch (ArgumentOutOfRangeException)
             {
                 throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descricao das etapas de ensino invalida!");
             }
-            return ids;
         }
 
         public int ObterRedePeloId(string Rede)
