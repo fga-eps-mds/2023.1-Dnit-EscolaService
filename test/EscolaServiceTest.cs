@@ -215,24 +215,26 @@ namespace test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
+            string nome = "Nome escola";
+
             string porte1 = "Até 50 matrículas de escolarização";
-            var id1 = escolaService.ObterPortePeloId(porte1);
+            var id1 = escolaService.ObterPortePeloId(porte1, nome);
             int idPorte1 = 1;
 
             string porte2 = "Entre 201 e 500 matrículas de escolarização";
-            var id2 = escolaService.ObterPortePeloId(porte2);
+            var id2 = escolaService.ObterPortePeloId(porte2, nome);
             int idPorte2 = 2;
 
             string porte3 = "Entre 501 e 1000 matrículas de escolarização";
-            var id3 = escolaService.ObterPortePeloId(porte3);
+            var id3 = escolaService.ObterPortePeloId(porte3, nome);
             int idPorte3 = 3;
 
             string porte4 = "Entre 51 e 200 matrículas de escolarização";
-            var id4 = escolaService.ObterPortePeloId(porte4);
+            var id4 = escolaService.ObterPortePeloId(porte4, nome);
             int idPorte4 = 4;
 
             string porte5 = "Mais de 1000 matrículas de escolarização";
-            var id5 = escolaService.ObterPortePeloId(porte5);
+            var id5 = escolaService.ObterPortePeloId(porte5, nome);
             int idPorte5 = 5;
 
             Assert.Equal(idPorte1, id1);
@@ -248,8 +250,9 @@ namespace test
             Mock<IEscolaRepositorio> mockEscolaRepositorio = new();
             IEscolaService escolaService = new EscolaService(mockEscolaRepositorio.Object);
 
-            string porte = "Porte teste";
-            int id = escolaService.ObterPortePeloId(porte);
+            string porte = "Porte para o teste";
+            string nome = "Nome escola";
+            int id = escolaService.ObterPortePeloId(porte, nome);
 
             Assert.Equal(0, id);
         }
@@ -420,7 +423,7 @@ namespace test
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, CEP inválido!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, CEP invalido!", exception.Message);
         }
 
         [Fact]
@@ -436,7 +439,7 @@ namespace test
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, rede inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, rede invalida!", exception.Message);
         }
 
         [Fact]
@@ -452,7 +455,7 @@ namespace test
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, UF inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, UF invalida!", exception.Message);
         }
 
         [Fact]
@@ -468,7 +471,7 @@ namespace test
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, localização inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, localizacao invalida!", exception.Message);
         }
 
         [Fact]
@@ -484,7 +487,7 @@ namespace test
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
             Exception exception = Assert.Throws<Exception>(() => escolaService.CadastrarEscolaViaPlanilha(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, descrição do porte inválida!", exception.Message);
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, descricao do porte invalida!", exception.Message);
         }
 
         [Fact]
