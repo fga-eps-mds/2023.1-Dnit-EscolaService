@@ -10,6 +10,7 @@ namespace app.Entidades
 
         public DbSet<UnidadeFederativa> UnidadesFederativas { get; set; }
         public DbSet<EtapaEnsino> EtapasEnsino { get; set; }
+        public DbSet<Situacao> Situacao { get; set; }
         public DbSet<Municipio> Municipios { get; set; }
 
         public AppDbContext (IConfiguration configuration)
@@ -26,6 +27,7 @@ namespace app.Entidades
 
             modelBuilder.Entity<UnidadeFederativa>().Property(u => u.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<EtapaEnsino>().Property(u => u.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Situacao>().Property(u => u.Id).ValueGeneratedOnAdd();
         }
     }
 }
