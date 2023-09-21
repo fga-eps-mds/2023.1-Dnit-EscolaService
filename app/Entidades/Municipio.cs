@@ -11,7 +11,6 @@ namespace app.Entidades
         public int Nome { get; set; }
 
         [Required]
-        public short UfId { get; set; }
-        public UnidadeFederativa Uf { get; set; }
+        public UF Uf { get; set; }
     }
 }

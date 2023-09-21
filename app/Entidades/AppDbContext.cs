@@ -8,13 +8,7 @@ namespace app.Entidades
     {
         private readonly IConfiguration configuration;
 
-        public DbSet<UnidadeFederativa> UnidadesFederativas { get; set; }
-        public DbSet<EtapaEnsino> EtapasEnsino { get; set; }
-        public DbSet<Situacao> Situacoes { get; set; }
         public DbSet<Municipio> Municipios { get; set; }
-        public DbSet<Rede> Redes { get; set; }
-        public DbSet<Porte> Portes { get; set; }
-        public DbSet<Localizacao> Localizacoes { get; set; }
         public DbSet<Escola> Escolas { get; set; }
         public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }
 
@@ -30,15 +24,7 @@ namespace app.Entidades
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<UnidadeFederativa>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<EtapaEnsino>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Situacao>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Rede>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Porte>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Localizacao>().Property(u => u.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<EscolaEtapaEnsino>().HasNoKey();
-
-            modelBuilder.Entity<Escola>().HasMany(escola => escola.EtapasEnsino).WithMany(etapa => etapa.Escolas).UsingEntity<EscolaEtapaEnsino>();
+            modelBuilder.Entity<Escola>().HasMany(escola => escola.EtapasEnsino).WithOne(e => e.Escola);
         }
     }
 }
