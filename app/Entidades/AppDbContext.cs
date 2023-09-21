@@ -13,6 +13,7 @@ namespace app.Entidades
         public DbSet<Situacao> Situacao { get; set; }
         public DbSet<Municipio> Municipios { get; set; }
         public DbSet<Rede> Redes { get; set; }
+        public DbSet<Porte> Portes { get; set; }
 
         public AppDbContext (IConfiguration configuration)
         {
@@ -30,6 +31,7 @@ namespace app.Entidades
             modelBuilder.Entity<EtapaEnsino>().Property(u => u.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Situacao>().Property(u => u.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Rede>().Property(u => u.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Porte>().Property(u => u.Id).ValueGeneratedOnAdd();
         }
     }
 }
