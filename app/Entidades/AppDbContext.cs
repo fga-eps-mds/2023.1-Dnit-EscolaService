@@ -9,7 +9,7 @@ namespace app.Entidades
         private readonly IConfiguration configuration;
 
         public DbSet<UnidadeFederativa> UnidadesFederativas { get; set; }
-        //public DbSet<EtapaEnsino> EtapasEnsino { get; set; }
+        public DbSet<EtapaEnsino> EtapasEnsino { get; set; }
         //public DbSet<Municipio> Municipios { get; set; }
 
         public AppDbContext (IConfiguration configuration)
