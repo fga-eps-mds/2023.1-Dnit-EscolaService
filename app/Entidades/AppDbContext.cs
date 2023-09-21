@@ -15,6 +15,7 @@ namespace app.Entidades
         public DbSet<Rede> Redes { get; set; }
         public DbSet<Porte> Portes { get; set; }
         public DbSet<Localizacao> Localizacoes { get; set; }
+        public DbSet<Escola> Escolas { get; set; }
 
         public AppDbContext (IConfiguration configuration)
         {
