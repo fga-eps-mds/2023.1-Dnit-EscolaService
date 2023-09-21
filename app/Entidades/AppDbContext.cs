@@ -14,6 +14,7 @@ namespace app.Entidades
         public DbSet<Municipio> Municipios { get; set; }
         public DbSet<Rede> Redes { get; set; }
         public DbSet<Porte> Portes { get; set; }
+        public DbSet<Localizacao> Localizacoes { get; set; }
 
         public AppDbContext (IConfiguration configuration)
         {
@@ -32,6 +33,7 @@ namespace app.Entidades
             modelBuilder.Entity<Situacao>().Property(u => u.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Rede>().Property(u => u.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Porte>().Property(u => u.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Localizacao>().Property(u => u.Id).ValueGeneratedOnAdd();
         }
     }
 }
