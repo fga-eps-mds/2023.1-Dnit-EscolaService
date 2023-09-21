@@ -10,7 +10,7 @@ namespace app.Entidades
 
         public DbSet<UnidadeFederativa> UnidadesFederativas { get; set; }
         public DbSet<EtapaEnsino> EtapasEnsino { get; set; }
-        //public DbSet<Municipio> Municipios { get; set; }
+        public DbSet<Municipio> Municipios { get; set; }
 
         public AppDbContext (IConfiguration configuration)
         {
