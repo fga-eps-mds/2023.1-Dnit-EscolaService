@@ -1,10 +1,7 @@
 ﻿using app.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using repositorio;
 using repositorio.Interfaces;
-using service.Interfaces;
-using test.Stub;
 
 namespace test
 {

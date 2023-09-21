@@ -1,6 +1,7 @@
 using app.DI;
+using app.Entidades;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +20,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-      Title = "EscolaService",
+        Title = "EscolaService",
         Description = "Microserivo EscolaService"
     });
 });
@@ -56,5 +57,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    dbContext.Database.Migrate();
+}
 
 app.Run();
