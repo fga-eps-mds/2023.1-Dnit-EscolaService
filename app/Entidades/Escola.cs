@@ -58,7 +58,7 @@ namespace app.Entidades
         public int SituacaoId { get; set; }
         public Situacao Situacao { get; set; }
 
-        //public List<EtapaEnsino> EtapasEnsino { get; set; }
+        public List<EtapaEnsino> EtapasEnsino { get; set; }
 
         [NotMapped]
         public DateTimeOffset AtaualizacaoDate { get; set; }

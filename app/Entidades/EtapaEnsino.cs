@@ -11,5 +11,7 @@ namespace app.Entidades
 
         [Required, MaxLength(150)]
         public string Descricao { get; set; }
+
+        public List<Escola> Escolas { get; set; }
     }
 }

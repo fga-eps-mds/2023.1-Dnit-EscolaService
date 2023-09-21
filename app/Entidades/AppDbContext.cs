@@ -10,12 +10,13 @@ namespace app.Entidades
 
         public DbSet<UnidadeFederativa> UnidadesFederativas { get; set; }
         public DbSet<EtapaEnsino> EtapasEnsino { get; set; }
-        public DbSet<Situacao> Situacao { get; set; }
+        public DbSet<Situacao> Situacoes { get; set; }
         public DbSet<Municipio> Municipios { get; set; }
         public DbSet<Rede> Redes { get; set; }
         public DbSet<Porte> Portes { get; set; }
         public DbSet<Localizacao> Localizacoes { get; set; }
         public DbSet<Escola> Escolas { get; set; }
+        public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }
 
         public AppDbContext (IConfiguration configuration)
         {
@@ -35,6 +36,9 @@ namespace app.Entidades
             modelBuilder.Entity<Rede>().Property(u => u.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Porte>().Property(u => u.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Localizacao>().Property(u => u.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<EscolaEtapaEnsino>().HasNoKey();
+
+            modelBuilder.Entity<Escola>().HasMany(escola => escola.EtapasEnsino).WithMany(etapa => etapa.Escolas).UsingEntity<EscolaEtapaEnsino>();
         }
     }
 }
