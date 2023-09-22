@@ -12,7 +12,7 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230921035316_InitialMigration")]
+    [Migration("20230922034201_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -130,9 +130,10 @@ namespace app.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Nome")
+                    b.Property<string>("Nome")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("integer");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("Uf")
                         .HasColumnType("integer");

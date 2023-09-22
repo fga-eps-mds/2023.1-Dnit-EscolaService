@@ -28,7 +28,7 @@ namespace app.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("AtualizacaoDateUtc")
+                    b.Property<DateTime?>("AtualizacaoDateUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Cep")
@@ -66,7 +66,6 @@ namespace app.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<string>("Observacao")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -127,9 +126,10 @@ namespace app.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Nome")
+                    b.Property<string>("Nome")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("integer");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("Uf")
                         .HasColumnType("integer");

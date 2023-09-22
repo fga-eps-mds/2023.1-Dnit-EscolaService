@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using api;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app.Entidades
@@ -36,7 +37,7 @@ namespace app.Entidades
         public string Telefone { get; set; }
 
         [MaxLength(500)]
-        public string Observacao { get; set; }
+        public string? Observacao { get; set; }
         
         [Required]
         public Rede Rede { get; set; }
@@ -55,12 +56,12 @@ namespace app.Entidades
         public List<EscolaEtapaEnsino> EtapasEnsino { get; set; }
 
         [NotMapped]
-        public DateTimeOffset AtualizacaoDate { get; set; }
+        public DateTimeOffset? AtualizacaoDate { get; set; }
 
-        public DateTime AtualizacaoDateUtc
+        public DateTime? AtualizacaoDateUtc
         {
-            get => AtualizacaoDate.UtcDateTime;
-            set => AtualizacaoDate = new DateTimeOffset(value, TimeSpan.Zero);
+            get => AtualizacaoDate?.UtcDateTime;
+            set => AtualizacaoDate = value != null ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null;
         }
     }
 }

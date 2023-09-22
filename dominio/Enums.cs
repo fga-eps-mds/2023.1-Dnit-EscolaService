@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace app.Entidades
+namespace api
 {
     public enum UF
     {

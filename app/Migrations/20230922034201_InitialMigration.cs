@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.VisualBasic.FileIO;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -8,8 +9,10 @@ namespace app.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration
-    {
-        /// <inheritdoc />
+    {/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     /// CUSTOM CODE: Atention this migration has custom code for seeding
+     /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -18,7 +21,7 @@ namespace app.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<int>(type: "integer", maxLength: 50, nullable: false),
+                    Nome = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Uf = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -87,6 +90,34 @@ namespace app.Migrations
                 name: "IX_Escolas_MunicipioId",
                 table: "Escolas",
                 column: "MunicipioId");
+
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // BEGIN CUSTOM CODE
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            using (var fs = File.OpenRead(Path.Join(".", "Migrations", "Data", "municipios.csv")))
+            using (var parser = new TextFieldParser(fs))
+            {
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(",");
+
+                var columns = new Dictionary<string, int> { { "id", 0 }, { "name", 1 }, { "uf", 2 } };
+
+                while (!parser.EndOfData)
+                {
+                    var row = parser.ReadFields();
+                    var id = int.Parse(row[columns["id"]]);
+                    var name = row[columns["name"]];
+                    var uf = int.Parse(row[columns["uf"]]);
+
+                    migrationBuilder.InsertData(
+                    table: "Municipios",
+                    columns: new[] { "Id", "Nome", "Uf" },
+                    values: new object[] { id, name, uf });
+                }
+            }
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // END CUSTOM CODE
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
         /// <inheritdoc />

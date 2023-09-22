@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using api;
+using System.ComponentModel.DataAnnotations;
 
 namespace app.Entidades
 {
@@ -8,7 +9,7 @@ namespace app.Entidades
         public int Id { get; set; }
 
         [Required, MaxLength(50)]
-        public int Nome { get; set; }
+        public string Nome { get; set; }
 
         [Required]
         public UF Uf { get; set; }
