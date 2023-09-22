@@ -1,5 +1,6 @@
 ﻿using app.Entidades;
-using service;
+using app.service;
+using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
 
 namespace app.DI
@@ -8,7 +9,7 @@ namespace app.DI
     {
         public static void AddConfigServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<AppDbContext>(optionsBuilder => optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgreSql")));
 
             services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();

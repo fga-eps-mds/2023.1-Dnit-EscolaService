@@ -1,4 +1,4 @@
-using dominio;
+using api;
 using Microsoft.AspNetCore.Mvc;
 using service;
 using service.Interfaces;
@@ -49,7 +49,7 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    escolasNovas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                    escolasNovas = await escolaService.CadastrarEscolaViaPlanilhaAsync(memoryStream);
                 }
 
                 return Ok(escolasNovas);
@@ -63,10 +63,11 @@ namespace app.Controllers
         [HttpGet("obter")]
         public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
         {
-            ListaPaginada<EscolaCorreta> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
+            ListaPaginada<EscolaCorretaModel> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
 
             return new OkObjectResult(listaEscolaPaginada);
         }
+
         [HttpDelete("excluir")]
         public IActionResult ExcluirEscola([FromQuery] int id)
         {
@@ -76,9 +77,9 @@ namespace app.Controllers
         }
 
         [HttpPost("cadastrarEscola")]
-        public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO cadastroEscolaDTO)
+        public async Task<IActionResult> CadastrarEscolaAsync(CadastroEscolaDTO cadastroEscolaDTO)
         {
-            escolaService.CadastrarEscola(cadastroEscolaDTO);
+            await escolaService.CadastrarEscolaAsync(cadastroEscolaDTO);
             return Ok();
         }
 
