@@ -39,14 +39,35 @@ namespace app.Repositorios
             throw new NotImplementedException();
         }
 
-        public ListaPaginada<EscolaCorretaModel> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public void RemoverSituacaoEscola(int idEscola)
         {
             throw new NotImplementedException();
         }
 
         public void RemoverSituacaoEscola(int idEscola)
         {
-            throw new NotImplementedException();
+            var escola = new Escola
+            {
+                Nome = escolaData.NomeEscola,
+                Codigo = escolaData.CodigoEscola,
+                Cep = escolaData.Cep,
+                Endereco = escolaData.Endereco,
+                Latitude = escolaData.Latitude,
+                Longitude = escolaData.Longitude,
+                TotalAlunos = escolaData.NumeroTotalDeAlunos,
+                Telefone = escolaData.Telefone,
+                TotalDocentes = escolaData.NumeroTotalDeDocentes,
+                Rede = (Rede)escolaData.IdRede,
+                Uf = (UF)escolaData.IdUf,
+                Localizacao = (Localizacao?)escolaData.IdLocalizacao,
+                Porte = (Porte?)escolaData.IdPorte,
+                Situacao = (Situacao?)escolaData.IdSituacao,
+                AtualizacaoDate = DateTimeOffset.Now,
+                MunicipioId = municipio.Id,
+                Municipio = municipio,
+            };
+            dbContext.Add(escola);
+            return escola;
         }
 
         public Escola Criar(EscolaModel data)
@@ -63,7 +84,7 @@ namespace app.Repositorios
                 TotalAlunos = data.NumeroTotalDeAlunos ?? 0,
                 Telefone = data.Telefone,
                 TotalDocentes = data.NumeroTotalDeDocentes,
-                Rede = data.Rede,
+                Rede = data.Rede.Value,
                 Uf = data.Uf,
                 Localizacao = data.Localizacao,
                 MunicipioId = data.IdMunicipio,

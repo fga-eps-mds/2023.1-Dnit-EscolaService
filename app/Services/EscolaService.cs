@@ -5,20 +5,25 @@ using app.Entidades;
 using EnumsNET;
 using api;
 using app.Repositorios.Interfaces;
+using app.Repositorios;
+using app.Services;
 
 namespace app.service
 {
     public class EscolaService : IEscolaService
     {
         private readonly IEscolaRepositorio escolaRepositorio;
+        private readonly IMunicipioRepositorio municipioRepositorio;
         private readonly AppDbContext dbContext;
 
         public EscolaService(
             IEscolaRepositorio escolaRepositorio,
+            IMunicipioRepositorio municipioRepositorio,
             AppDbContext dbContext
         )
         {
             this.escolaRepositorio = escolaRepositorio;
+            this.municipioRepositorio = municipioRepositorio;
             this.dbContext = dbContext;
         }
 
@@ -35,7 +40,19 @@ namespace app.service
             }
         }
 
-        public async Task<List<string>> CadastrarEscolaViaPlanilhaAsync(MemoryStream planilha)
+        public async Task CadastrarAsync(CadastroEscolaDTO escolaData)
+        {
+            var municipio = await municipioRepositorio.ObterPorIdAsync(escolaData.IdMunicipio.Value);
+            var escola = escolaRepositorio.Criar(escolaData, municipio);
+            escolaData.IdEtapasDeEnsino
+                ?.Select(e => (EtapaEnsino)e)
+                ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, e))
+                ?.ToList();
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> CadastrarAsync(MemoryStream planilha)
         {
             var escolasNovas = new List<string>();
             var redes = Enum.GetValues<Rede>().ToDictionary(r => r.ToString().ToLower());
@@ -161,7 +178,7 @@ namespace app.service
                         var escolaExistente = await escolaRepositorio.ObterPorCodigoAsync(escola.CodigoEscola);
                         if (escolaExistente != default)
                         {
-                            await AtualizarEscolaAsync(escolaExistente, escola, escolaEtapas);
+                            await AtualizarAsync(escolaExistente, escola, escolaEtapas);
                             continue;
                         }
 
@@ -184,7 +201,7 @@ namespace app.service
             return escolasNovas;
         }
 
-        public async Task AtualizarEscolaAsync(Escola escola, EscolaModel data, List<EtapaEnsino>? etapas = null)
+        public async Task AtualizarAsync(Escola escola, EscolaModel data, List<EtapaEnsino>? etapasData = null)
         {
             escola.Nome = data.NomeEscola;
             escola.Codigo = data.CodigoEscola;
@@ -195,7 +212,7 @@ namespace app.service
             escola.TotalAlunos = data.NumeroTotalDeAlunos ?? 0;
             escola.TotalDocentes = data.NumeroTotalDeDocentes;
             escola.Telefone = data.Telefone;
-            escola.Rede = data.Rede;
+            escola.Rede = data.Rede.Value;
             escola.Uf = data.Uf;
             escola.Localizacao = data.Localizacao;
             escola.MunicipioId = data.IdMunicipio;

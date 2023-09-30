@@ -5,10 +5,11 @@ namespace app.Repositorios.Interfaces
 {
     public interface IEscolaRepositorio
     {
-        public int? CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO);
-        public Escola Criar(EscolaModel escola);
+        Task<Escola> ObterPorIdAsync(Guid id);
+        Escola Criar(CadastroEscolaDTO escolaData, Municipio municipio);
+        Escola Criar(EscolaModel escola);
+        Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro);
         public void ExcluirEscola(int Id);
-        public ListaPaginada<EscolaCorretaModel> ObterEscolas(PesquisaEscolaFiltro pesquisaEscolaFiltro);
         public void RemoverSituacaoEscola(int idEscola);
         public bool EscolaJaExiste(int codigoEscola);
         public void AtualizarDadosPlanilha(EscolaModel escola);

@@ -49,7 +49,7 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    escolasNovas = await escolaService.CadastrarEscolaViaPlanilhaAsync(memoryStream);
+                    escolasNovas = await escolaService.CadastrarAsync(memoryStream);
                 }
 
                 return Ok(escolasNovas);
@@ -61,11 +61,9 @@ namespace app.Controllers
         }
 
         [HttpGet("obter")]
-        public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ObterEscolas([FromQuery] PesquisaEscolaFiltro filtro)
         {
-            ListaPaginada<EscolaCorretaModel> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
-
-            return new OkObjectResult(listaEscolaPaginada);
+            return await escolaService.ListarPaginadaAsync(filtro);
         }
 
         [HttpDelete("excluir")]
@@ -79,7 +77,7 @@ namespace app.Controllers
         [HttpPost("cadastrarEscola")]
         public async Task<IActionResult> CadastrarEscolaAsync(CadastroEscolaDTO cadastroEscolaDTO)
         {
-            await escolaService.CadastrarEscolaAsync(cadastroEscolaDTO);
+            await escolaService.CadastrarAsync(cadastroEscolaDTO);
             return Ok();
         }
 
