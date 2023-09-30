@@ -29,11 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dominio\api.csproj" />
+    <Folder Include="Migrations\Data\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\Data\" />
+    <ProjectReference Include="..\api\api.csproj" />
   </ItemGroup>
 
 </Project>

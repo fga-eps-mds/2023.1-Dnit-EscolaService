@@ -7,7 +7,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace service
+namespace app.service
 {
     public class SmtpClientWrapper : ISmtpClientWrapper
     {

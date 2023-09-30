@@ -1,18 +1,10 @@
-﻿using AutoMapper;
-using dominio;
-using repositorio;
-using service.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using service.Interfaces;
 using System.Net.Mail;
-using System.Threading.Tasks;
-using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Web;
-using Microsoft.Extensions.Configuration;
+using api.Escolas;
 
-namespace service
+namespace app.service
 {
     public class SolicitacaoAcaoService : ISolicitacaoAcaoService
     {

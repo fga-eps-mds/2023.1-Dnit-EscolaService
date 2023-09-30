@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using app.service;
 
 namespace test
 {
@@ -36,7 +37,7 @@ namespace test
 
             service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
-            string mensagemEsperada =   "Nova solicitação de ação em escola.\n\n" +
+            string mensagemEsperada = "Nova solicitação de ação em escola.\n\n" +
                                         "Escola: Escola Teste\n" +
                                         "UF: DF\n" +
                                         "Municipio: Brasília\n" +
@@ -142,7 +143,7 @@ namespace test
             int codEscolaB = 87654321;
             int primeiraPosicao = 0;
             int segundaPosicao = 1;
-            
+
             var escolas = await service.ObterEscolas(municipio);
 
             Assert.Equal(codEscolaA, escolas.ElementAt(primeiraPosicao).Cod);

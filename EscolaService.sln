@@ -5,9 +5,7 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "app", "app\app.csproj", "{A553D130-F52F-4C65-9EFA-DE58FAC021FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "api", "dominio\api.csproj", "{91F2F3EB-3054-4187-8E04-0E04EC55ED08}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "repositorio", "repositorio\repositorio.csproj", "{456103BA-9130-4604-8AF7-49632FBAB6BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "api", "api\api.csproj", "{91F2F3EB-3054-4187-8E04-0E04EC55ED08}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "test\test.csproj", "{A6A560FE-BB47-4B88-AF9F-8AC9F5F856ED}"
 EndProject

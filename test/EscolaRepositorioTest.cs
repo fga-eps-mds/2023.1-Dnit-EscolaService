@@ -1,9 +1,8 @@
-﻿using repositorio;
-using repositorio.Interfaces;
-using dominio;
+﻿using dominio;
 using Microsoft.Data.Sqlite;
 using test.Stub;
 using Dapper;
+using repositorio.Interfaces;
 
 namespace test
 {
@@ -16,7 +15,7 @@ namespace test
             connection = new SqliteConnection("Data Source=:memory:");
             connection.Open();
 
-            repositorio = new EscolaRepositorio(contexto => new Contexto(connection));
+            repositorio = new repositorio.EscolaRepositorio(contexto => new Contexto(connection));
         }
 
         [Fact]

@@ -1,15 +1,11 @@
 ﻿using api;
 using app.Entidades;
+using app.Repositorios.Interfaces;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace app.Repositorios
 {
-    public interface IMunicipioRepositorio
-    {
-        Task<Municipio> ObterPorIdAsync(int id);
-    }
-
     public class MunicipioRepositorio : IMunicipioRepositorio
     {
         private readonly AppDbContext dbContext;

@@ -3,6 +3,7 @@ using dominio;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using service.Interfaces;
+using System.Threading.Tasks;
 using test.Stub;
 
 namespace test
@@ -36,12 +37,12 @@ namespace test
             int idEscola = 59;
             var result = controller.ExcluirEscola(idEscola);
 
-            escolaServiceMock.Verify(service => service.ExcluirEscola(idEscola), Times.Once);
+            escolaServiceMock.Verify(service => service.ExcluirEscolaAsync(idEscola), Times.Once);
             Assert.IsType<OkResult>(result);
         }
 
         [Fact]
-        public void CadastrarEscola_QuandoEscolaForCadastrada_DeveRetornarHttpOk()
+        public async Task CadastrarEscola_QuandoEscolaForCadastrada_DeveRetornarHttpOk()
         {
             var escolaServiceMock = new Mock<IEscolaService>();
 
@@ -50,9 +51,9 @@ namespace test
             EscolaStub escolaStub = new EscolaStub();
             var escola = escolaStub.ObterCadastroEscolaDTO();
 
-            var result = controller.CadastrarEscola(escola);
+            var result = await controller.CadastrarEscolaAsync(escola);
 
-            escolaServiceMock.Verify(service => service.CadastrarEscola(escola), Times.Once);
+            escolaServiceMock.Verify(service => service.CadastrarEscolaAsync(escola), Times.Once);
             Assert.IsType<OkResult>(result);
         }
 
