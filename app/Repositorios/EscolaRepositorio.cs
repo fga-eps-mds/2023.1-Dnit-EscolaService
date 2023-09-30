@@ -20,10 +20,31 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
-        public async Task<Escola> ObterPorIdAsync(Guid id)
+        private IQueryable<Escola> SelecaoEscola(bool incluirEtapas = false, bool incluirMunicipio = false)
         {
-            return await dbContext.Escolas.FirstOrDefaultAsync(e => e.Id == id)
+            var query = dbContext.Escolas.AsQueryable();
+
+            if (incluirEtapas)
+            {
+                query = query.Include(e => e.EtapasEnsino);
+            }
+            if (incluirMunicipio)
+            {
+                query = query.Include(e => e.Municipio);
+            }
+
+            return query;
+        }
+
+        public async Task<Escola> ObterPorIdAsync(Guid id, bool incluirEtapas = false, bool incluirMunicipio = false)
+        {
+            return await SelecaoEscola(incluirEtapas, incluirMunicipio).FirstOrDefaultAsync(e => e.Id == id)
                 ?? throw new ApiException(ErrorCodes.EscolaNaoEncontrada);
+        }
+
+        public async Task<Escola?> ObterPorCodigoAsync(int codigo, bool incluirEtapas = false, bool incluirMunicipio = false)
+        {
+            return await SelecaoEscola(incluirEtapas, incluirMunicipio).FirstOrDefaultAsync(e => e.Codigo == codigo);
         }
 
         public EscolaEtapaEnsino AdicionarEtapaEnsino(Escola escola, EtapaEnsino etapa)
@@ -36,16 +57,6 @@ namespace app.Repositorios
             };
             dbContext.Add(model);
             return model;
-        }
-
-        public void ExcluirEscola(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoverSituacaoEscola(int idEscola)
-        {
-            throw new NotImplementedException();
         }
 
         public Escola Criar(CadastroEscolaDTO escolaData, Municipio municipio)
@@ -101,35 +112,6 @@ namespace app.Repositorios
             return escola;
         }
 
-        public void AtualizarDadosPlanilha(EscolaModel escola)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int? AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CadastrarEtapasDeEnsino(int idEscola, int idEtapaEnsino)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoverEtapasDeEnsino(int idEscola)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Escola?> ObterPorCodigoAsync(int codigo)
-        {
-            return await dbContext.Escolas.Include(e => e.EtapasEnsino).FirstOrDefaultAsync(e => e.Codigo == codigo);
-        }
-        public bool EscolaJaExiste(int codigoEscola)
-        {
-            return dbContext.Escolas.Any(e => e.Codigo == codigoEscola);
-        }
-
         public async Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
         {
             var query = dbContext.Escolas
@@ -139,7 +121,8 @@ namespace app.Repositorios
 
             if (filtro.Nome != null)
             {
-                query = query.Where(e => e.Nome.ToLower() == filtro.Nome.ToLower() || e.Nome.ToLower().Contains(filtro.Nome.ToLower()));
+                var nome = filtro.Nome.ToLower().Trim();
+                query = query.Where(e => e.Nome.ToLower() == nome || e.Nome.ToLower().Contains(nome));
             }
             if (filtro.IdSituacao != null)
             {
@@ -148,7 +131,7 @@ namespace app.Repositorios
             if (filtro.IdEtapaEnsino != null)
             {
                 var etapas = filtro.IdEtapaEnsino.ConvertAll(e => (EtapaEnsino)e);
-                query = query.Where(escola => escola.EtapasEnsino.Exists(etapa => etapas.Any(e => e == etapa.EtapaEnsino)));
+                query = query.Where(escola => escola.EtapasEnsino.Any(etapa => etapas.Contains(etapa.EtapaEnsino)));
             }
             if (filtro.IdMunicipio != null)
             {

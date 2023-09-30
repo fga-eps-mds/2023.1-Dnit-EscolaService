@@ -224,13 +224,18 @@ namespace app.service
             escola.Porte = data.Porte;
             escola.AtualizacaoDate = DateTimeOffset.Now;
 
-            var etapasExistentes = escola.EtapasEnsino?.Select(e => e.EtapaEnsino).ToList();
-
-            etapasData?.Where(e => !(etapasExistentes?.Exists(etapa => etapa == e) ?? false))
-                ?.Select(etapa => escolaRepositorio.AdicionarEtapaEnsino(escola, etapa))
-                ?.ToList();
-
+            atualizarEtapasEnsino(escola, data.EtapasEnsino);
             await dbContext.SaveChangesAsync();
+        }
+
+        private void atualizarEtapasEnsino(Escola escola, List<EtapaEnsino> etapas)
+        {
+            var etapasExistentes = escola.EtapasEnsino.Select(e => e.EtapaEnsino).ToList();
+            var etapasDeletadas = escola.EtapasEnsino.Where(e => !etapas.Contains(e.EtapaEnsino));
+            var etapasNovas = etapas.Where(e => !etapasExistentes.Contains(e));
+
+            etapasDeletadas.Select(e => dbContext.Remove(e)).ToList();
+            etapasNovas.Select(etapa => escolaRepositorio.AdicionarEtapaEnsino(escola, etapa)).ToList();
         }
 
         public async Task ExcluirAsync(Guid id)
@@ -309,8 +314,7 @@ namespace app.service
 
         public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaDTO dados)
         {
-            if (dados.IdSituacao == 0) dados.IdSituacao = null;
-            var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola);
+            var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola, incluirEtapas: true);
 
             escola.AtualizacaoDate = DateTime.Now;
             escola.Telefone = dados.Telefone;
@@ -320,6 +324,9 @@ namespace app.service
             escola.TotalDocentes = dados.NumeroTotalDeDocentes;
             escola.Observacao = dados.Observacao;
             escola.Situacao = (Situacao?)dados.IdSituacao;
+
+            atualizarEtapasEnsino(escola, dados.IdEtapasDeEnsino.ConvertAll(e => (EtapaEnsino)e));
+
             await dbContext.SaveChangesAsync();
         }
     }
