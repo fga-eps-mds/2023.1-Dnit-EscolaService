@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dominio
+namespace api
 {
     public class CadastroEscolaDTO
     {
@@ -12,7 +12,7 @@ namespace dominio
         public string NomeEscola { get; set; }
         public int IdRede { get; set; }
         public string Cep { get; set; }
-        public int IdUf { get; set; }
+        public short IdUf { get; set; }
         public string Endereco { get; set; }
         public int? IdMunicipio { get; set; }
         public int? IdLocalizacao { get; set; }

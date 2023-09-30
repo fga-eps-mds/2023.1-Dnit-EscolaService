@@ -14,16 +14,19 @@ namespace app.service
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IMunicipioRepositorio municipioRepositorio;
+        private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
 
         public EscolaService(
             IEscolaRepositorio escolaRepositorio,
             IMunicipioRepositorio municipioRepositorio,
+            ModelConverter modelConverter,
             AppDbContext dbContext
         )
         {
             this.escolaRepositorio = escolaRepositorio;
             this.municipioRepositorio = municipioRepositorio;
+            this.modelConverter = modelConverter;
             this.dbContext = dbContext;
         }
 
@@ -42,7 +45,8 @@ namespace app.service
 
         public async Task CadastrarAsync(CadastroEscolaDTO escolaData)
         {
-            var municipio = await municipioRepositorio.ObterPorIdAsync(escolaData.IdMunicipio.Value);
+            var municipioId = escolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
+            var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
             var escola = escolaRepositorio.Criar(escolaData, municipio);
             escolaData.IdEtapasDeEnsino
                 ?.Select(e => (EtapaEnsino)e)
@@ -220,7 +224,6 @@ namespace app.service
             escola.AtualizacaoDate = DateTimeOffset.Now;
 
             var etapasExistentes = escola.EtapasEnsino?.Select(e => e.EtapaEnsino).ToList();
-            var novasEtapas = etapas.Where(e => !(etapasExistentes?.Exists(etapa => etapa == e) ?? false));
 
             etapasData?.Where(e => !(etapasExistentes?.Exists(etapa => etapa == e) ?? false))
                 ?.Select(etapa => escolaRepositorio.AdicionarEtapaEnsino(escola, etapa))
@@ -230,11 +233,11 @@ namespace app.service
         }
 
         public async Task ExcluirAsync(Guid id)
-            {
+        {
             var escola = await escolaRepositorio.ObterPorIdAsync(id);
             dbContext.Remove(escola);
             await dbContext.SaveChangesAsync();
-            }
+        }
 
         public async void RemoverSituacaoEscola(Guid idEscola)
         {
@@ -243,34 +246,12 @@ namespace app.service
             await dbContext.SaveChangesAsync();
         }
 
-        //public void ExcluirEscola(int id)
-        //{
-        //    escolaRepositorio.ExcluirEscola(id);
-        //}
-
-        //public async Task CadastrarEscolaAsync(CadastroEscolaDTO cadastroEscolaDTO)
-        //{
-        //    var escola = escolaRepositorio.CadastrarEscola(cadastroEscolaDTO);
-        //    var etapasEnsino = cadastroEscolaDTO.IdEtapasDeEnsino;
-
-
-        //    //foreach (var etapa in etapasEnsino)
-        //    //{
-        //    //    escolaRepositorio2.AdicionarEtapaEnsino(escola, etapa);
-        //    //}
-
-        //    await dbContext.SaveChangesAsync();
-        //}
-
-        //public void RemoverSituacaoEscola(int idEscola)
-        //{
-        //    escolaRepositorio.RemoverSituacaoEscola(idEscola);
-        //}
-
-        //public ListaPaginada<EscolaCorretaModel> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
-        //{
-        //    return escolaRepositorio.ObterEscolas(pesquisaEscolaFiltro);
-        //}
+        public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
+        {
+            var escolas = await escolaRepositorio.ListarPaginadaAsync(filtro);
+            var escolasCorretas = escolas.Items.ConvertAll(modelConverter.ToModel);
+            return new(escolasCorretas, escolas.Pagina, escolas.ItemsPorPagina, escolas.Total);
+        }
 
         public async Task<string> ObterCodigoMunicipioPorCEP(string cep)
         {

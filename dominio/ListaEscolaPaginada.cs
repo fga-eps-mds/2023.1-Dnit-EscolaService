@@ -1,6 +1,6 @@
-﻿namespace dominio
+﻿namespace api
 {
-    public class ListaPaginada<T>
+    public class ListaEscolaPaginada<T>
     {
         public int Pagina { get; set; }
         public int EscolasPorPagina { get; set; }
@@ -9,7 +9,7 @@
         public List<T> Escolas { get; set; }
 
 
-        public ListaPaginada(IEnumerable<T> escolas, int paginaIndex, int escolasPorPagina, int totalEscolas)
+        public ListaEscolaPaginada(IEnumerable<T> escolas, int paginaIndex, int escolasPorPagina, int totalEscolas)
         {
             Pagina = paginaIndex;
             EscolasPorPagina = escolasPorPagina;

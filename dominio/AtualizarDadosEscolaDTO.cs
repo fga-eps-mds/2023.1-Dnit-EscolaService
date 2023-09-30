@@ -1,4 +1,4 @@
-namespace dominio
+namespace api
 {
     public class AtualizarDadosEscolaDTO
     {

@@ -128,5 +128,44 @@ namespace app.Repositorios
         {
             return dbContext.Escolas.Any(e => e.Codigo == codigoEscola);
         }
+
+        public async Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
+        {
+            var query = dbContext.Escolas
+                .Include(e => e.EtapasEnsino)
+                .Include(e => e.Municipio)
+                .AsQueryable();
+
+            if (filtro.Nome != null)
+            {
+                query = query.Where(e => e.Nome.ToLower() == filtro.Nome.ToLower() || e.Nome.ToLower().Contains(filtro.Nome.ToLower()));
+            }
+            if (filtro.IdSituacao != null)
+            {
+                query = query.Where(e => e.Situacao == (Situacao)filtro.IdSituacao);
+            }
+            if (filtro.IdEtapaEnsino != null)
+            {
+                var etapas = filtro.IdEtapaEnsino.ConvertAll(e => (EtapaEnsino)e);
+                query = query.Where(escola => escola.EtapasEnsino.Exists(etapa => etapas.Any(e => e == etapa.EtapaEnsino)));
+            }
+            if (filtro.IdMunicipio != null)
+            {
+                query = query.Where(e => e.MunicipioId == filtro.IdMunicipio);
+            }
+            if (filtro.IdUf != null)
+            {
+                query = query.Where(e => e.Uf == (UF)filtro.IdUf);
+            }
+
+            var total = await query.CountAsync();
+            var items = await query
+                .OrderBy(e => e.Nome)
+                .Skip((filtro.Pagina - 1) * filtro.TamanhoPagina)
+                .Take(filtro.TamanhoPagina)
+                .ToListAsync();
+
+            return new ListaPaginada<Escola>(items, filtro.Pagina, filtro.TamanhoPagina, total);
+        }
     }
 }
