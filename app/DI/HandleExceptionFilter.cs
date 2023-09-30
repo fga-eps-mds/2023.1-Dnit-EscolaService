@@ -41,7 +41,7 @@ namespace app.DI
 
                 var error = new
                 {
-                    Message = $"An unexpected error has occurred. Please contact the support andprovide the code {code}",
+                    Message = $"Um erro inesperado aconteceu. Contate o administrador do sistema e informe o código: {code}",
                     ExceptionCode = code,
                 };
 

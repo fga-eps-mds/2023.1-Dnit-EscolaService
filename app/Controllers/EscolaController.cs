@@ -1,6 +1,5 @@
 using api.Escolas;
 using Microsoft.AspNetCore.Mvc;
-using service;
 using service.Interfaces;
 
 
@@ -21,7 +20,6 @@ namespace app.Controllers
         [HttpPost("cadastrarEscolaPlanilha")]
         public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
         {
-
             List<string> escolasNovas;
 
             try

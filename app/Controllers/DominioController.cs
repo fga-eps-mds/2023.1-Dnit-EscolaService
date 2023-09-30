@@ -1,6 +1,7 @@
 ﻿using api;
 using api.Municipios;
 using app.Repositorios;
+using app.Repositorios.Interfaces;
 using app.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,11 @@ namespace app.Controllers
     public class DominioController : ControllerBase
     {
         private readonly ModelConverter modelConverter;
-        private readonly MunicipioRepositorio municipioRepositorio;
+        private readonly IMunicipioRepositorio municipioRepositorio;
 
         public DominioController(
             ModelConverter modelConverter,
-            MunicipioRepositorio municipioRepositorio
+            IMunicipioRepositorio municipioRepositorio
         )
         {
             this.modelConverter = modelConverter;
