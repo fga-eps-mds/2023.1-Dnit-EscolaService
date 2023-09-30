@@ -7,6 +7,7 @@ using api;
 using app.Repositorios.Interfaces;
 using app.Repositorios;
 using app.Services;
+using api.Escolas;
 
 namespace app.service
 {

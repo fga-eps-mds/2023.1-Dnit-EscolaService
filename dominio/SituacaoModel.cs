@@ -1,6 +1,6 @@
-﻿namespace api.Dominio
+﻿namespace api
 {
-    public class Situacao
+    public class SituacaoModel
     {
         public int Id { get; set; }
         public string Descricao { get; set; }

@@ -1,6 +1,6 @@
-﻿namespace api.Dominio
+﻿namespace api.Municipios
 {
-    public class Municipio
+    public class MunicipioModel
     {
         public string Nome { get; set; }
         public int Id { get; set; }

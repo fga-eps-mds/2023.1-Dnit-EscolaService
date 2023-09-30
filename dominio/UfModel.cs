@@ -1,6 +1,6 @@
-﻿namespace api.Dominio
+﻿namespace api
 {
-    public class UnidadeFederativa
+    public class UfModel
     {
         public string Nome { get; set; }
         public int Id { get; set; }

@@ -1,4 +1,4 @@
-﻿using dominio;
+﻿using api.Escolas;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
 using System.Net.Mail;

@@ -1,4 +1,4 @@
-﻿namespace api
+﻿namespace api.Escolas
 {
     public class EscolaInep
     {

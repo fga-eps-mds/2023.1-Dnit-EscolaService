@@ -1,11 +1,8 @@
-﻿using dominio;
-using repositorio;
+﻿using api;
+using api.Municipios;
+using app.Repositorios;
+using app.Services;
 using Microsoft.AspNetCore.Mvc;
-using repositorio;
-using repositorio.Interfaces;
-using service;
-using service.Interfaces;
-using dominio.Dominio;
 
 namespace app.Controllers
 {
@@ -13,44 +10,41 @@ namespace app.Controllers
     [Route("api/dominio")]
     public class DominioController : ControllerBase
     {
-        private readonly IDominioRepositorio dominioRepositorio;
+        private readonly ModelConverter modelConverter;
+        private readonly MunicipioRepositorio municipioRepositorio;
 
-        public DominioController(IDominioRepositorio dominioRepositorio)
+        public DominioController(
+            ModelConverter modelConverter,
+            MunicipioRepositorio municipioRepositorio
+        )
         {
-            this.dominioRepositorio = dominioRepositorio;
+            this.modelConverter = modelConverter;
+            this.municipioRepositorio = municipioRepositorio;
         }
 
         [HttpGet("unidadeFederativa")]
-        public IActionResult ObterListaUF()
+        public IEnumerable<UfModel> ObterListaUF()
         {
-            IEnumerable<UnidadeFederativa> listaUnidadeFederativa = dominioRepositorio.ObterUnidadeFederativa();
-
-            return new OkObjectResult(listaUnidadeFederativa);
+            return Enum.GetValues<UF>().Select(modelConverter.ToModel).OrderBy(uf => uf.Sigla);
         }
 
         [HttpGet("etapasDeEnsino")]
-        public IActionResult ObterListaEtapasdeEnsino()
+        public IEnumerable<EtapasdeEnsinoModel> ObterListaEtapasdeEnsino()
         {
-            IEnumerable<EtapasdeEnsino> listaEtapasdeEnsino = dominioRepositorio.ObterEtapasdeEnsino();
-
-            return new OkObjectResult(listaEtapasdeEnsino);
+            return Enum.GetValues<EtapaEnsino>().Select(modelConverter.ToModel).OrderBy(e => e.Descricao);
         }
 
         [HttpGet("municipio")]
-        public IActionResult ObterListaMunicipio([FromQuery] int? idUf)
+        public async Task<IEnumerable<MunicipioModel>> ObterListaMunicipio([FromQuery] int? idUf)
         {
-            IEnumerable<Municipio> listaMunicipio = dominioRepositorio.ObterMunicipio(idUf);
-
-            return new OkObjectResult(listaMunicipio);
+            var municipios = await municipioRepositorio.ListarAsync((UF?)idUf);
+            return municipios.Select(modelConverter.ToModel);
         }
 
         [HttpGet("situacao")]
-        public IActionResult ObterListaSituacao()
+        public IEnumerable<SituacaoModel> ObterListaSituacao()
         {
-            IEnumerable<Situacao> listaSituacao = dominioRepositorio.ObterSituacao();
-
-            return new OkObjectResult(listaSituacao);
+            return Enum.GetValues<Situacao>().Select(modelConverter.ToModel).OrderBy(s => s.Descricao);
         }
-
     }
 }

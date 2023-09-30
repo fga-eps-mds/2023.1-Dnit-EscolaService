@@ -26,5 +26,17 @@ namespace app.Repositorios
             return await dbContext.Municipios.FirstAsync(x => x.Id == id)
                 ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
         }
+
+        public async Task<List<Municipio>> ListarAsync(UF? uf)
+        {
+            var query = dbContext.Municipios.AsQueryable();
+
+            if (uf.HasValue)
+            {
+                query = query.Where(m => m.Uf == uf.Value);
+            }
+
+            return await query.OrderBy(m => m.Nome).ToListAsync();
+        }
     }
 }

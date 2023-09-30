@@ -1,4 +1,4 @@
-using api;
+using api.Escolas;
 using Microsoft.AspNetCore.Mvc;
 using service;
 using service.Interfaces;

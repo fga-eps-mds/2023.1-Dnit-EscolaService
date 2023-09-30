@@ -1,4 +1,5 @@
 using api;
+using api.Escolas;
 using app.Entidades;
 
 namespace app.Repositorios.Interfaces

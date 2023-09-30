@@ -1,4 +1,6 @@
 ﻿using api;
+using api.Escolas;
+using api.Municipios;
 using app.Entidades;
 using EnumsNET;
 
@@ -41,6 +43,33 @@ namespace app.Services
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
+            };
+
+        public UfModel ToModel(UF uf) =>
+            new UfModel
+            {
+                Id = (int)uf,
+                Sigla = uf.ToString(),
+                Nome = uf.AsString(EnumFormat.Description),
+            };
+
+        public EtapasdeEnsinoModel ToModel(EtapaEnsino value) =>
+            new EtapasdeEnsinoModel
+            {
+                Id = (int)value,
+                Descricao = value.AsString(EnumFormat.Description),
+            };
+
+        public MunicipioModel ToModel(Municipio value) =>
+            new MunicipioModel {
+                Id = value.Id,
+                Nome = value.Nome,
+            };
+
+        public SituacaoModel ToModel(Situacao value) =>
+            new SituacaoModel {
+                Id = (int)value,
+                Descricao = value.AsString(EnumFormat.Description),
             };
     }
 }
