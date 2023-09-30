@@ -67,44 +67,27 @@ namespace app.Controllers
         }
 
         [HttpDelete("excluir")]
-        public IActionResult ExcluirEscola([FromQuery] int id)
+        public async Task ExcluirEscola([FromQuery] Guid id)
         {
-            escolaService.ExcluirEscola(id);
-            return Ok();
-
+            await escolaService.ExcluirAsync(id);
         }
 
         [HttpPost("cadastrarEscola")]
-        public async Task<IActionResult> CadastrarEscolaAsync(CadastroEscolaDTO cadastroEscolaDTO)
+        public async Task CadastrarEscolaAsync(CadastroEscolaDTO cadastroEscolaDTO)
         {
             await escolaService.CadastrarAsync(cadastroEscolaDTO);
-            return Ok();
         }
 
         [HttpPost("removerSituacao")]
-        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        public async Task RemoverSituacao([FromQuery] Guid idEscola)
         {
-            escolaService.RemoverSituacaoEscola(idEscola);
-            return Ok();
+            await escolaService.RemoverSituacaoAsync(idEscola);
         }
 
         [HttpPut("alterarDadosEscola")]
-        public IActionResult AlterarDadosEscola([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        public async Task AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
-            try
-            {
-                escolaService.AlterarDadosEscola(atualizarDadosEscolaDTO);
-                return Ok();
-            }
-            catch (Npgsql.PostgresException ex)
-            {
-                if(ex.SqlState == "23503")
-                {
-                    return Conflict("A chave estrangeira é inválida.");
-                }
-                return StatusCode(500, "Houve um erro interno no servidor.");
-            }
+            await escolaService.AlterarDadosEscolaAsync(atualizarDadosEscolaDTO);
         }
-
     }
 }

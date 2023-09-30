@@ -239,9 +239,9 @@ namespace app.service
             await dbContext.SaveChangesAsync();
         }
 
-        public async void RemoverSituacaoEscola(Guid idEscola)
+        public async Task RemoverSituacaoAsync(Guid id)
         {
-            var escola = await escolaRepositorio.ObterPorIdAsync(idEscola);
+            var escola = await escolaRepositorio.ObterPorIdAsync(id);
             escola.Situacao = null;
             await dbContext.SaveChangesAsync();
         }
@@ -305,52 +305,22 @@ namespace app.service
             throw new NotImplementedException();
         }
 
-        public void ExcluirEscola(int id)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void RemoverSituacaoEscola(int idEscola)
+        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaDTO dados)
         {
-            throw new NotImplementedException();
-        }
+            if (dados.IdSituacao == 0) dados.IdSituacao = null;
+            var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola);
 
-        public int ObterEstadoPelaSigla(string UF)
-        {
-            throw new NotImplementedException();
+            escola.AtualizacaoDate = DateTime.Now;
+            escola.Telefone = dados.Telefone;
+            escola.Longitude = dados.Longitude;
+            escola.Latitude = dados.Latitude;
+            escola.TotalAlunos = dados.NumeroTotalDeAlunos;
+            escola.TotalDocentes = dados.NumeroTotalDeDocentes;
+            escola.Observacao = dados.Observacao;
+            escola.Situacao = (Situacao?)dados.IdSituacao;
+            await dbContext.SaveChangesAsync();
         }
-
-        public int ObterPortePeloId(string Porte)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int ObterRedePeloId(string Rede)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int ObterLocalizacaoPeloId(string Localizacao)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<int> EtapasParaIds(string etapas, string nomeEscola)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        //public void AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
-        //{
-        //    if (atualizarDadosEscolaDTO.IdSituacao == 0) atualizarDadosEscolaDTO.IdSituacao = null;
-        //    atualizarDadosEscolaDTO.UltimaAtualizacao = DateTime.Now;
-        //    escolaRepositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
-        //}
     }
 }
 

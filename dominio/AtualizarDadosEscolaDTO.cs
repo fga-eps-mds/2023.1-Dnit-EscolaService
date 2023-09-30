@@ -2,7 +2,7 @@ namespace api
 {
     public class AtualizarDadosEscolaDTO
     {
-        public int IdEscola {get; set;}
+        public Guid IdEscola {get; set;}
         public int? IdSituacao {get; set;}
         public string Telefone {get; set;}
         public string Longitude {get; set;}
