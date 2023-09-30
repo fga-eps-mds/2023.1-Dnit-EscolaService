@@ -112,4 +112,13 @@ namespace api
         [Description("Educação Profissional")]
         Profissional,
     }
+
+    public enum ErrorCodes
+    {
+        Unknown,
+        [Description("Escola não encontrada")]
+        EscolaNaoEncontrada,
+        [Description("Municipio não encontrado")]
+        MunicipioNaoEncontrado,
+    }
 }
