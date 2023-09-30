@@ -222,10 +222,24 @@ namespace app.service
             var etapasExistentes = escola.EtapasEnsino?.Select(e => e.EtapaEnsino).ToList();
             var novasEtapas = etapas.Where(e => !(etapasExistentes?.Exists(etapa => etapa == e) ?? false));
 
-            foreach (var etapa in novasEtapas)
+            etapasData?.Where(e => !(etapasExistentes?.Exists(etapa => etapa == e) ?? false))
+                ?.Select(etapa => escolaRepositorio.AdicionarEtapaEnsino(escola, etapa))
+                ?.ToList();
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task ExcluirAsync(Guid id)
             {
-                escolaRepositorio.AdicionarEtapaEnsino(escola, etapa);
+            var escola = await escolaRepositorio.ObterPorIdAsync(id);
+            dbContext.Remove(escola);
+            await dbContext.SaveChangesAsync();
             }
+
+        public async void RemoverSituacaoEscola(Guid idEscola)
+        {
+            var escola = await escolaRepositorio.ObterPorIdAsync(idEscola);
+            escola.Situacao = null;
             await dbContext.SaveChangesAsync();
         }
 

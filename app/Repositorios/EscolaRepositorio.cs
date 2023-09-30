@@ -1,7 +1,9 @@
 ﻿using api;
 using app.Entidades;
 using app.Repositorios.Interfaces;
+using app.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace app.Repositorios
 {
@@ -17,6 +19,12 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
+        public async Task<Escola> ObterPorIdAsync(Guid id)
+        {
+            return await dbContext.Escolas.FirstOrDefaultAsync(e => e.Id == id)
+                ?? throw new ApiException(ErrorCodes.EscolaNaoEncontrada);
+        }
+
         public EscolaEtapaEnsino AdicionarEtapaEnsino(Escola escola, EtapaEnsino etapa)
         {
             var model = new EscolaEtapaEnsino
@@ -29,11 +37,6 @@ namespace app.Repositorios
             return model;
         }
 
-        public int? CadastrarEscola(CadastroEscolaDTO cadastroEscolaDTO)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ExcluirEscola(int Id)
         {
             throw new NotImplementedException();
@@ -44,7 +47,7 @@ namespace app.Repositorios
             throw new NotImplementedException();
         }
 
-        public void RemoverSituacaoEscola(int idEscola)
+        public Escola Criar(CadastroEscolaDTO escolaData, Municipio municipio)
         {
             var escola = new Escola
             {
