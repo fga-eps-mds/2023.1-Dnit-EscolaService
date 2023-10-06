@@ -50,7 +50,7 @@ app.UseSwagger();
 
 app.UseSwaggerUI();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
@@ -62,6 +62,8 @@ using (var scope = app.Services.CreateScope())
         .GetRequiredService<AppDbContext>();
 
     dbContext.Database.Migrate();
+
+    dbContext.Seed();
 }
 
 app.Run();
