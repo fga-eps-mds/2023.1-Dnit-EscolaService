@@ -12,8 +12,6 @@ namespace app.Entidades
         public DbSet<Escola> Escolas { get; set; }
         public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }
 
-        public string CaminhoArquivoMunicipios { get; set; } = Path.Join(".", "Migrations", "Data", "municipios.csv");
-
         public AppDbContext (DbContextOptions<AppDbContext> options) : base (options)
         { }
         
@@ -26,10 +24,10 @@ namespace app.Entidades
 
         public void Seed(int? limit = null)
         {
-            SeedMunicipios(limit);
+            SeedMunicipiosPorArquivo(limit, Path.Join(".", "Migrations", "Data", "municipios.csv"));
         }
 
-        public List<Municipio>? SeedMunicipios(int? limit)
+        public List<Municipio>? SeedMunicipiosPorArquivo(int? limit, string caminho)
         {
             var hasMunicipio = Municipios.Any();
             var municipios = new List<Municipio>();
@@ -39,7 +37,7 @@ namespace app.Entidades
                 return null;
             }
 
-            using (var fs = File.OpenRead(CaminhoArquivoMunicipios))
+            using (var fs = File.OpenRead(caminho))
             using (var parser = new TextFieldParser(fs))
             {
                 parser.TextFieldType = FieldType.Delimited;
