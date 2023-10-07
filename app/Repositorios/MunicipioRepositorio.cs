@@ -19,7 +19,7 @@ namespace app.Repositorios
 
         public async Task<Municipio> ObterPorIdAsync(int id)
         {
-            return await dbContext.Municipios.FirstAsync(x => x.Id == id)
+            return await dbContext.Municipios.FirstOrDefaultAsync(x => x.Id == id)
                 ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
         }
 
