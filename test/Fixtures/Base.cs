@@ -1,7 +1,9 @@
-﻿using app.Entidades;
+﻿using app.Controllers;
+using app.Entidades;
 using app.Repositorios;
 using app.Repositorios.Interfaces;
 using app.service;
+using app.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,9 +29,12 @@ namespace test.Fixtures
 
             // Services
             services.AddScoped<IEscolaService, EscolaService>();
-            services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
+            services.AddScoped<IMunicipioService, MunicipioService>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
-            services.AddScoped<IEscolaService, EscolaService>();
+            services.AddSingleton<ModelConverter>();
+
+            // Controllers
+            services.AddScoped<DominioController>();
         }
 
         protected override ValueTask DisposeAsyncCore() => new();

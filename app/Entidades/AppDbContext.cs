@@ -22,9 +22,9 @@ namespace app.Entidades
             modelBuilder.Entity<Escola>().HasMany(escola => escola.EtapasEnsino).WithOne(e => e.Escola);
         }
 
-        public void Seed(int? limit = null)
+        public void Seed()
         {
-            SeedMunicipiosPorArquivo(limit, Path.Join(".", "Migrations", "Data", "municipios.csv"));
+            SeedMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
         }
 
         public List<Municipio>? SeedMunicipiosPorArquivo(int? limit, string caminho)

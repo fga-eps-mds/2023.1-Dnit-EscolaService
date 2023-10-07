@@ -4,6 +4,7 @@ using app.Repositorios;
 using app.Repositorios.Interfaces;
 using app.Services;
 using Microsoft.AspNetCore.Mvc;
+using service.Interfaces;
 
 namespace app.Controllers
 {
@@ -12,15 +13,15 @@ namespace app.Controllers
     public class DominioController : ControllerBase
     {
         private readonly ModelConverter modelConverter;
-        private readonly IMunicipioRepositorio municipioRepositorio;
+        private readonly IMunicipioService municipioService;
 
         public DominioController(
             ModelConverter modelConverter,
-            IMunicipioRepositorio municipioRepositorio
+            IMunicipioService municipioService
         )
         {
             this.modelConverter = modelConverter;
-            this.municipioRepositorio = municipioRepositorio;
+            this.municipioService = municipioService;
         }
 
         [HttpGet("unidadeFederativa")]
@@ -38,8 +39,7 @@ namespace app.Controllers
         [HttpGet("municipio")]
         public async Task<IEnumerable<MunicipioModel>> ObterListaMunicipio([FromQuery] int? idUf)
         {
-            var municipios = await municipioRepositorio.ListarAsync((UF?)idUf);
-            return municipios.Select(modelConverter.ToModel);
+            return await municipioService.ListarAsync((UF?)idUf);
         }
 
         [HttpGet("situacao")]

@@ -35,13 +35,15 @@ namespace test.Stub
         {
             if (municipios != default && limit < municipios.Count)
             {
-                dbContext.AddRange(municipios.Take(limit).ToList());
+                var resultado = municipios.Take(limit).ToList();
+                dbContext.AddRange(resultado);
                 dbContext.SaveChanges();
-                return municipios;
+                return resultado;
             }
             var caminho = Path.Join("..", "..", "..", "Stub", "municipios.csv");
-            municipios = dbContext.SeedMunicipiosPorArquivo(limit, caminho);
-            return municipios;
+            var municipiosDb = dbContext.SeedMunicipiosPorArquivo(limit, caminho)!;
+            municipios = municipiosDb.ToList();
+            return municipiosDb;
         }
     }
 }

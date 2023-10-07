@@ -1,67 +1,69 @@
-﻿using app.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using repositorio.Interfaces;
+﻿using api;
+using app.Controllers;
+using app.Entidades;
+using app.Repositorios.Interfaces;
+using app.Services;
+using System.Linq;
+using System.Threading.Tasks;
+using test.Fixtures;
+using test.Stub;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace test
 {
-    public class DominioControllerTest
+    public class DominioControllerTest : TestBed<Base>, IDisposable
     {
-        [Fact]
-        public void ObterListaUF_QuandoMetodoForChamado_DeveRetornarHttpOk()
+        IMunicipioRepositorio municipioRepositorio;
+        DominioController dominioController;
+        AppDbContext dbContext;
+
+        public DominioControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
-            var dominioRepositorioMock = new Mock<IDominioRepositorio>();
-
-            var controller = new DominioController(dominioRepositorioMock.Object);
-
-            var result = controller.ObterListaUF();
-
-            dominioRepositorioMock.Verify(r => r.ObterUnidadeFederativa(), Times.Once);
-
-            Assert.IsType<OkObjectResult>(result);
+            dbContext = fixture.GetService<AppDbContext>(testOutputHelper);
+            municipioRepositorio = fixture.GetService<IMunicipioRepositorio>(testOutputHelper);
+            dominioController = fixture.GetService<DominioController>(testOutputHelper);
         }
 
         [Fact]
-        public void ObterListaEtapasdeEnsino_QuandoMetodoForChamado_DeveRetornarHttpOk()
+        public void ObterListaUF_QuandoMetodoForChamado_DeveRetornarTodosUfs()
         {
-            var dominioRepositorioMock = new Mock<IDominioRepositorio>();
-
-            var controller = new DominioController(dominioRepositorioMock.Object);
-
-            var result = controller.ObterListaEtapasdeEnsino();
-
-            dominioRepositorioMock.Verify(r => r.ObterEtapasdeEnsino(), Times.Once);
-
-            Assert.IsType<OkObjectResult>(result);
+            var ufs = dominioController.ObterListaUF().ToList();
+            Assert.True(Enum.GetValues<UF>().ToList().All(uf => ufs.Any(u => u.Id == (int)uf)));
         }
 
         [Fact]
-        public void ObterListaSituacao_QuandoMetodoForChamado_DeveRetornarHttpOk()
+        public void ObterListaEtapasdeEnsino_QuandoMetodoForChamado_DeveTodasAsEtapas()
         {
-            var dominioRepositorioMock = new Mock<IDominioRepositorio>();
+            var etapas = dominioController.ObterListaEtapasdeEnsino();
 
-            var controller = new DominioController(dominioRepositorioMock.Object);
-
-            var result = controller.ObterListaSituacao();
-
-            dominioRepositorioMock.Verify(r => r.ObterSituacao(), Times.Once);
-
-            Assert.IsType<OkObjectResult>(result);
+            Assert.True(Enum.GetValues<EtapaEnsino>().ToList().All(etapa => etapas.Any(e => e.Id == (int)etapa)));
         }
 
         [Fact]
-        public void ObterListaMunicipio_QuandoMetodoForChamado_DeveRetornarHttpOk()
+        public void ObterListaSituacao_QuandoMetodoForChamado_DeveTodasSituacoes()
         {
-            var dominioRepositorioMock = new Mock<IDominioRepositorio>();
+            var situacoes = dominioController.ObterListaSituacao();
+            Assert.True(Enum.GetValues<Situacao>().ToList().All(situacao => situacoes.Any(s => s.Id == (int)situacao)));
+        }
 
-            var controller = new DominioController(dominioRepositorioMock.Object);
+        [Fact]
+        public async Task ObterListaMunicipio_QuandoMetodoForChamado_DeveRetornarHttpOk()
+        {
+            var municipiosDb = dbContext.SeedMunicipios(10)!;
+            var uf = municipiosDb.First().Uf;
+            var municipioUf = municipiosDb.Where(m => m.Uf == uf).ToList();
+            var municipios = (await dominioController.ObterListaMunicipio((int)uf)).ToList();
 
-            int idUf = 1;
-            var result = controller.ObterListaMunicipio(idUf);
+            Assert.NotEmpty(municipios);
+            Assert.True(municipioUf.All(mdb => municipios.Any(m => m.Id == mdb.Id)));
 
-            dominioRepositorioMock.Verify(r => r.ObterMunicipio(idUf), Times.Once);
+        }
 
-            Assert.IsType<OkObjectResult>(result);
+        public new void Dispose()
+        {
+            dbContext.RemoveRange(dbContext.Municipios);
+            dbContext.SaveChanges();
         }
     }
 }

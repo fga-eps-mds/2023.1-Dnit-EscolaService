@@ -14,8 +14,10 @@ namespace app.DI
 
             services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
             services.AddSingleton<ModelConverter>();
-            services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
+
             services.AddScoped<IEscolaService, EscolaService>();
+            services.AddScoped<IMunicipioService, MunicipioService>();
+            services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
 
             services.AddControllers(o => o.Filters.Add(typeof(HandleExceptionFilter)));
 
