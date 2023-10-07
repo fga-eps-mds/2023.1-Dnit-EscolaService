@@ -1,4 +1,4 @@
-﻿using dominio;
+﻿using api.Escolas;
 
 namespace test.Stub
 {

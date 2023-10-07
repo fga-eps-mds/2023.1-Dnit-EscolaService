@@ -1,7 +1,6 @@
 ﻿using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using test.Fixtures;
@@ -19,14 +18,13 @@ namespace test
         public MunicipioRepositorioTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper);
-            dbContext.CaminhoArquivoMunicipios = Path.Join("..", "..", "..", "Stub", "municipios.csv");
             municipioRepositorio = fixture.GetService<IMunicipioRepositorio>(testOutputHelper);
         }
 
         [Fact]
         public async Task ObterPorIdAsync_QuandoExistir_DeveRetornarOMunicipio()
         {
-            var municipio = dbContext.SeedMunicipios(1).First();
+            var municipio = dbContext.SeedMunicipios(1)!.First();
             var resultado = await municipioRepositorio.ObterPorIdAsync(municipio.Id);
             Assert.Equal(municipio.Id, resultado.Id);
         }
@@ -49,10 +47,10 @@ namespace test
         [Fact]
         public async Task ListarAsync_QuandoPreenchido_DeveRetornarListaCompleta()
         {
-            var municipiosDb = dbContext.SeedMunicipios(5);
+            var municipiosDb = dbContext.SeedMunicipios(5)!;
             var municipios = await municipioRepositorio.ListarAsync(null);
-            Assert.Equal(municipiosDb?.Count, municipios.Count);
-            Assert.True(municipiosDb?.All(mdb => municipios.Exists(m => m.Id == mdb.Id)));
+            Assert.Equal(municipiosDb.Count, municipios.Count);
+            Assert.True(municipiosDb.All(mdb => municipios.Exists(m => m.Id == mdb.Id)));
         }
 
         [Fact]

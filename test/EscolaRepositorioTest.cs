@@ -23,7 +23,6 @@ namespace test
         public EscolaRepositorioTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
-            dbContext.CaminhoArquivoMunicipios = Path.Join("..", "..", "..", "Stub", "municipios.csv");
 
             escolaRepositorio = fixture.GetService<IEscolaRepositorio>(testOutputHelper);
         }
@@ -145,6 +144,7 @@ namespace test
         public new void Dispose()
         {
             dbContext.RemoveRange(dbContext.Municipios);
+            dbContext.RemoveRange(dbContext.EscolaEtapaEnsino);
             dbContext.RemoveRange(dbContext.Escolas);
             dbContext.SaveChanges();
         }
