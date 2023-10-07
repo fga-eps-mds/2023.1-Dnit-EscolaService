@@ -7,7 +7,7 @@ namespace test.Stub
 {
     public static class EscolaStub
     {
-        public static IEnumerable<Escola> ListarEscolas(List<Municipio> municipios)
+        public static IEnumerable<Escola> ListarEscolas(List<Municipio> municipios, bool comEtapas)
         {
             while (true)
             {
@@ -31,13 +31,16 @@ namespace test.Stub
                     TotalDocentes = Random.Shared.Next() % 100 + 1,
                     Uf = Enum.GetValues<UF>().TakeRandom().FirstOrDefault(),
                 };
-                escola.EtapasEnsino = Enum.GetValues<EtapaEnsino>().AsEnumerable().TakeRandom().ConvertAll(etapa => new EscolaEtapaEnsino
+                if (comEtapas)
                 {
-                    Id = Guid.NewGuid(),
-                    EscolaId = escola.Id,
-                    Escola = escola,
-                    EtapaEnsino = etapa,
-                });
+                    escola.EtapasEnsino = Enum.GetValues<EtapaEnsino>().AsEnumerable().TakeRandom().ConvertAll(etapa => new EscolaEtapaEnsino
+                    {
+                        Id = Guid.NewGuid(),
+                        EscolaId = escola.Id,
+                        Escola = escola,
+                        EtapaEnsino = etapa,
+                    });
+                }
                 yield return escola;
             }
         }

@@ -1,95 +1,152 @@
-﻿using dominio;
-using Microsoft.Data.Sqlite;
+﻿using api;
+using api.Escolas;
+using app.Entidades;
+using app.Repositorios.Interfaces;
+using app.Services;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using test.Fixtures;
 using test.Stub;
-using Dapper;
-using repositorio.Interfaces;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace test
 {
-    public class EscolaRepositorioTest : IDisposable
+
+    public class EscolaRepositorioTest : TestBed<Base>, IDisposable
     {
-        IEscolaRepositorio repositorio;
-        SqliteConnection connection;
-        public EscolaRepositorioTest()
-        {
-            connection = new SqliteConnection("Data Source=:memory:");
-            connection.Open();
+        IEscolaRepositorio escolaRepositorio;
+        AppDbContext dbContext;
 
-            repositorio = new repositorio.EscolaRepositorio(contexto => new Contexto(connection));
+        public EscolaRepositorioTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
+        {
+            dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
+            dbContext.CaminhoArquivoMunicipios = Path.Join("..", "..", "..", "Stub", "municipios.csv");
+
+            escolaRepositorio = fixture.GetService<IEscolaRepositorio>(testOutputHelper);
         }
 
         [Fact]
-        public void ObterEscolas_QuandoFiltroForemNulos_DeveRetornarListaDeEscolasPaginadas()
+        public async Task ListarPaginadaAsync_QuandoFiltroForemNulos_DeveRetornarListaDeEscolasPaginadas()
         {
+            var escolaDb = dbContext.SeedEscolas(5);
+
             var filtro = new PesquisaEscolaFiltro();
             filtro.Pagina = 1;
             filtro.TamanhoPagina = 2;
 
-            var listaPaginada = repositorio.ObterEscolas(filtro);
+            var listaPaginada = await escolaRepositorio.ListarPaginadaAsync(filtro);
 
             Assert.Equal(filtro.Pagina, listaPaginada.Pagina);
-            Assert.Equal(filtro.TamanhoPagina, listaPaginada.EscolasPorPagina);
-            Assert.Equal(3, listaPaginada.TotalEscolas);
-            Assert.Equal(2, listaPaginada.TotalPaginas);
-            Assert.Equal("CEM02", listaPaginada.Escolas[0].NomeEscola);
-            Assert.Equal("CEM03", listaPaginada.Escolas[1].NomeEscola);
+            Assert.Equal(filtro.TamanhoPagina, listaPaginada.ItemsPorPagina);
+            Assert.Equal(escolaDb.Count, listaPaginada.Total);
+            Assert.Equal(escolaDb.OrderBy(e => e.Nome).First().Codigo, listaPaginada.Items.First().Codigo);
         }
 
         [Fact]
-        public void ObterEscolas_QuandoFiltroForPassado_DeveRetornarListaDeEscolasFiltradas()
+        public async void ListarPaginadaAsync_QuandoFiltroForPassado_DeveRetornarListaDeEscolasFiltradas()
         {
+            var escolaDb = dbContext.SeedEscolas(5);
+
+            var escolaPesquisa = escolaDb.First();
             var filtro = new PesquisaEscolaFiltro();
             filtro.Pagina = 1;
             filtro.TamanhoPagina = 2;
-            filtro.Nome = "CEM";
-            filtro.IdUf = 1;
-            filtro.IdSituacao = 1;
-            filtro.IdMunicipio = 1;
+            filtro.Nome = escolaPesquisa.Nome;
+            filtro.IdUf = (int?)escolaPesquisa.Uf;
+            filtro.IdSituacao = (int?)escolaPesquisa.Situacao;
+            filtro.IdEtapaEnsino = new List<int>() { (int)(escolaPesquisa.EtapasEnsino.FirstOrDefault()?.EtapaEnsino ?? 0 )};
+            filtro.IdMunicipio = escolaPesquisa.MunicipioId;
 
-            var listaPaginada = repositorio.ObterEscolas(filtro);
+            var listaPaginada = await escolaRepositorio.ListarPaginadaAsync(filtro);
 
-            Assert.Equal(filtro.Pagina, listaPaginada.Pagina);
-            Assert.Equal(filtro.TamanhoPagina, listaPaginada.EscolasPorPagina);
-            Assert.Equal(2, listaPaginada.TotalEscolas);
-            Assert.Equal(1, listaPaginada.TotalPaginas);
-            Assert.Equal("CEM02", listaPaginada.Escolas[0].NomeEscola);
-            Assert.Equal("CEM04", listaPaginada.Escolas[1].NomeEscola);
+            Assert.Contains(escolaPesquisa, listaPaginada.Items);
         }
 
         [Fact]
-        public void ExcluirEscola_QuandoIdForPassado_DeveExcluirEscolaCorrespondente()
+        public async void ListarPaginadaAsync_QuandoFiltroNaoExistir_DeveRetornarListaVazia()
         {
-            EscolaStub escolaStub = new EscolaStub();
-            var escola = escolaStub.ObterCadastroEscolaDTO();
+            dbContext.SeedEscolas(5);
 
-            int? idEscolaCadastrada = repositorio.CadastrarEscola(escola);
-            repositorio.ExcluirEscola(idEscolaCadastrada!.Value);
+            var filtro = new PesquisaEscolaFiltro();
+            filtro.Pagina = 1000;
+            filtro.TamanhoPagina = 20;
 
-            string sql = $"SELECT id_escola FROM public.escola WHERE id_escola = {idEscolaCadastrada.Value}";
-            int? idEscolaObtida = connection.ExecuteScalar<int?>(sql);
+            var listaPaginada = await escolaRepositorio.ListarPaginadaAsync(filtro);
 
-            Assert.Null(idEscolaObtida);
+            Assert.Empty(listaPaginada.Items);
         }
 
         [Fact]
-        public void AlterarDadosEscola_QuandoDadosDaEscolaForemAlterados_DeveRetornarVerdadeiro()
+        public async Task ObterPorIdAsync_QuandoExistir_DeveRetornarEscola()
         {
-            EscolaStub escolaStub = new EscolaStub();
-            var cadastroEscolaDTO = escolaStub.ObterCadastroEscolaDTO();
-            var atualizarDadosEscolaDTO = escolaStub.ObterAtualizarDadosEscolaDTO();
+            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaEsperada = escolaDb.Last();
+            var escola = await escolaRepositorio.ObterPorIdAsync(escolaEsperada.Id);
 
-            int? idEscolaCadastrada = repositorio.CadastrarEscola(cadastroEscolaDTO);
-            atualizarDadosEscolaDTO.IdEscola = idEscolaCadastrada!.Value;
-            var linhasAfetadas = repositorio.AlterarDadosEscola(atualizarDadosEscolaDTO);
-
-            int linhasEsperadas = 1;
-            Assert.Equal(linhasEsperadas, linhasAfetadas);
+            Assert.Equal(escolaEsperada, escola);
         }
 
-        public void Dispose()
+        [Fact]
+        public async Task ObterPorIdAsync_QuandoIncluir_DeveRetornarEscola()
         {
-            connection.Close();
-            connection.Dispose();
+            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaEsperada = escolaDb.Last();
+            var escola = await escolaRepositorio.ObterPorIdAsync(escolaEsperada.Id, incluirEtapas: true, incluirMunicipio: true);
+
+            Assert.Equal(escolaEsperada.Id, escola.Id);
+            Assert.Equal(escolaEsperada.Municipio, escola.Municipio);
+            Assert.Equal(escolaEsperada.EtapasEnsino, escola.EtapasEnsino);
+        }
+
+        [Fact]
+        public async Task ObterPorIdAsync_QuandoNaoExistir_DeveLancarExcecao()
+        {
+            var escolaDb = dbContext.SeedEscolas(2);
+            var excecao = await Assert.ThrowsAsync<ApiException>(() => escolaRepositorio.ObterPorIdAsync(Guid.NewGuid()));
+
+            Assert.Equal(ErrorCodes.EscolaNaoEncontrada, excecao.Error.Code);
+        }
+
+        [Fact]
+        public async Task ObterPorCodigoAsync_QuandoExistir_DeveRetornarEscola()
+        {
+            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaEsperada = escolaDb.Last();
+            var escola = await escolaRepositorio.ObterPorCodigoAsync(escolaEsperada.Codigo);
+
+            Assert.Equal(escolaEsperada, escola);
+        }
+
+        [Fact]
+        public async Task ObterPorCodigoAsync_QuandoNaoExistir_DeveRetornarNulo()
+        {
+            var escolaDb = dbContext.SeedEscolas(2);
+            var escola = await escolaRepositorio.ObterPorCodigoAsync(-1);
+
+            Assert.Null(escola);
+        }
+
+        [Fact]
+        public void AdicionarEtapaEnsino_QuandoValida_DeveAdicionar()
+        {
+            var escolaDb = dbContext.SeedEscolas(1, comEtapas: false).First();
+
+            var etapa = EtapaEnsino.Infantil;
+            var etapaDb = escolaRepositorio.AdicionarEtapaEnsino(escolaDb, etapa);
+
+            Assert.Equal(etapa, etapaDb.EtapaEnsino);
+            Assert.Equal(escolaDb, etapaDb.Escola);
+            Assert.Equal(1, escolaDb.EtapasEnsino?.Count);
+        }
+
+        public new void Dispose()
+        {
+            dbContext.RemoveRange(dbContext.Municipios);
+            dbContext.RemoveRange(dbContext.Escolas);
+            dbContext.SaveChanges();
         }
     }
 }
