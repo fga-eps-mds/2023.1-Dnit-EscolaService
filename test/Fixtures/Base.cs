@@ -17,7 +17,9 @@ namespace test.Fixtures
     {
         protected override void AddServices(IServiceCollection services, IConfiguration? configuration)
         {
-            services.AddDbContext<AppDbContext>(o => o.UseInMemoryDatabase("DbInMemory"));
+            // Para evitar a colisão durante a testagem paralela, o nome deve ser diferente para cada classe de teste
+            var databaseName = "DbInMemory" + Random.Shared.Next().ToString();
+            services.AddDbContext<AppDbContext>(o => o.UseInMemoryDatabase(databaseName));
 
             // Repositorios
             services.AddScoped<IEscolaRepositorio, EscolaRepositorio>();
@@ -31,6 +33,7 @@ namespace test.Fixtures
         }
 
         protected override ValueTask DisposeAsyncCore() => new();
+
         protected override IEnumerable<TestAppSettings> GetTestAppSettings()
         {
             yield return new() { Filename = "appsettings.json", IsOptional = false };
