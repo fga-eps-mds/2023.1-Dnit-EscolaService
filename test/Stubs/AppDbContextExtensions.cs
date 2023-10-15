@@ -1,18 +1,20 @@
 ﻿
 using app.Entidades;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
-namespace test.Stub
+namespace test.Stubs
 {
     public static class AppDbContextExtensions
     {
         private static List<Municipio>? municipios;
+        private static Mutex municipios_mutex = new Mutex();
 
         public static List<Escola> PopulaEscolas(this AppDbContext dbContext, int limite = 1, bool comEtapas = true)
         {
+            dbContext.Clear();
             var escolas = new List<Escola>();
             
             if (!dbContext.Municipios.Any())
@@ -33,16 +35,19 @@ namespace test.Stub
 
         public static List<Municipio>? PopulaMunicipios(this AppDbContext dbContext, int limit)
         {
-            if (municipios != default && limit < municipios.Count)
+            dbContext.Clear();
+            if (municipios != default && limit <= municipios.Count)
             {
                 var resultado = municipios.Take(limit).ToList();
                 dbContext.AddRange(resultado);
                 dbContext.SaveChanges();
                 return resultado;
             }
-            var caminho = Path.Join("..", "..", "..", "Stub", "municipios.csv");
+            municipios_mutex.WaitOne(int.MaxValue);
+            var caminho = Path.Join("..", "..", "..", "Stubs", "municipios.csv");
             var municipiosDb = dbContext.PopulaMunicipiosPorArquivo(limit, caminho)!;
             municipios = municipiosDb.ToList();
+            municipios_mutex.ReleaseMutex();
             return municipiosDb;
         }
 

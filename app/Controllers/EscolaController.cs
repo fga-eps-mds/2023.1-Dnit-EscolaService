@@ -18,7 +18,7 @@ namespace app.Controllers
 
         [Consumes("multipart/form-data")]
         [HttpPost("cadastrarEscolaPlanilha")]
-        public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
+        public async Task<IActionResult> EnviarPlanilhaAsync(IFormFile arquivo)
         {
             List<string> escolasNovas;
 
@@ -59,13 +59,13 @@ namespace app.Controllers
         }
 
         [HttpGet("obter")]
-        public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ObterEscolas([FromQuery] PesquisaEscolaFiltro filtro)
+        public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ObterEscolasAsync([FromQuery] PesquisaEscolaFiltro filtro)
         {
             return await escolaService.ListarPaginadaAsync(filtro);
         }
 
         [HttpDelete("excluir")]
-        public async Task ExcluirEscola([FromQuery] Guid id)
+        public async Task ExcluirEscolaAsync([FromQuery] Guid id)
         {
             await escolaService.ExcluirAsync(id);
         }
@@ -77,13 +77,13 @@ namespace app.Controllers
         }
 
         [HttpPost("removerSituacao")]
-        public async Task RemoverSituacao([FromQuery] Guid idEscola)
+        public async Task RemoverSituacaoAsync([FromQuery] Guid idEscola)
         {
             await escolaService.RemoverSituacaoAsync(idEscola);
         }
 
         [HttpPut("alterarDadosEscola")]
-        public async Task AlterarDadosEscola(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
         {
             await escolaService.AlterarDadosEscolaAsync(atualizarDadosEscolaDTO);
         }

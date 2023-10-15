@@ -1,127 +1,248 @@
-﻿//using app.Controllers;
-//using dominio;
-//using Microsoft.AspNetCore.Mvc;
-//using Moq;
-//using service.Interfaces;
-//using System.Threading.Tasks;
-//using test.Stub;
+﻿using api;
+using api.Escolas;
+using app.Controllers;
+using app.Entidades;
+using app.Repositorios;
+using app.Repositorios.Interfaces;
+using app.Services;
+using EnumsNET;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using service.Interfaces;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using test.Fixtures;
+using test.Stubs;
+using Xunit.Abstractions;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
 
-//namespace test
-//{
-//    public class EscolaControllerTest
-//    {
-//        const int INTERNAL_SERVER_ERROR = 500;
+namespace test
+{
+    public class EscolaControllerTest : TestBed<Base>
+    {
+        const int INTERNAL_SERVER_ERROR = 500;
 
-//        [Fact]
-//        public void ObterEscolas_QuandoMetodoForChamado_DeveRetornarListaDeEscolas()
-//        {
-//            var escolaServiceMock = new Mock<IEscolaService>();
+        AppDbContext dbContext;
+        EscolaController escolaController;
 
-//            var controller = new EscolaController(escolaServiceMock.Object);
+        public EscolaControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
+        {
+            dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
+            dbContext.PopulaEscolas(5);
 
-//            var filtro = new PesquisaEscolaFiltro();
-//            filtro.Pagina = 1;
-//            filtro.TamanhoPagina = 2;
-//            var result = controller.ObterEscolas(filtro);
+            escolaController = fixture.GetService<EscolaController>(testOutputHelper);
+        }
 
-//            escolaServiceMock.Verify(service => service.Obter(filtro), Times.Once);
-//            Assert.IsType<OkObjectResult>(result);
-//        }
-//        [Fact]
-//        public void Excluir_QuandoIdEscolaForPassado_DeveExcluirEscola()
-//        {
-//            var escolaServiceMock = new Mock<IEscolaService>();
+        [Fact]
+        public async Task ObterEscolas_QuandoMetodoForChamado_DeveRetornarListaDeEscolas()
+        {
+            var escolasDb = dbContext.Escolas.ToList();
+            var filtro = new PesquisaEscolaFiltro();
+            filtro.Pagina = 1;
+            filtro.TamanhoPagina = escolasDb.Count();
+            var result = await escolaController.ObterEscolasAsync(filtro);
 
-//            var controller = new EscolaController(escolaServiceMock.Object);
+            Assert.Equal(escolasDb.Count(), result.TotalEscolas);
+            Assert.Equal(filtro.Pagina, result.Pagina);
+            Assert.Equal(filtro.TamanhoPagina, result.EscolasPorPagina);
+            Assert.True(escolasDb.All(e => result.Escolas.Exists(ee => ee.IdEscola == e.Id)));
+        }
 
-//            int idEscola = 59;
-//            var result = controller.ExcluirEscola(idEscola);
+        [Fact]
+        public async Task Excluir_QuandoIdEscolaForPassado_DeveExcluirEscola()
+        {
+            var idEscola = dbContext.Escolas.First().Id;
+            await escolaController.ExcluirEscolaAsync(idEscola);
 
-//            escolaServiceMock.Verify(service => service.ExcluirEscolaAsync(idEscola), Times.Once);
-//            Assert.IsType<OkResult>(result);
-//        }
+            Assert.False(dbContext.Escolas.Any(e => e.Id == idEscola));
+        }
 
-//        [Fact]
-//        public async Task CadastrarEscola_QuandoEscolaForCadastrada_DeveRetornarHttpOk()
-//        {
-//            var escolaServiceMock = new Mock<IEscolaService>();
+        [Fact]
+        public async Task CadastrarEscola_QuandoEscolaForCadastrada_DeveRetornarHttpOk()
+        {
+            var escola = EscolaStub.ListarEscolasDto(dbContext.Municipios.ToList(), comEtapas: true).First();
 
-//            var controller = new EscolaController(escolaServiceMock.Object);
+            await escolaController.CadastrarEscolaAsync(escola);
 
-//            EscolaStub escolaStub = new EscolaStub();
-//            var escola = escolaStub.ObterCadastroEscolaDTO();
+            var escolaDb = dbContext.Escolas.First(e => e.Codigo == escola.CodigoEscola);
 
-//            var result = await controller.CadastrarEscolaAsync(escola);
+            Assert.Equal(escola.Cep, escolaDb.Cep);
+            Assert.Equal(escola.NomeEscola, escolaDb.Nome);
+            Assert.Equal(escola.Endereco, escolaDb.Endereco);
+            Assert.Equal(escola.IdLocalizacao, (int?)escolaDb.Localizacao);
+            Assert.Equal(escola.IdPorte, (int?)escolaDb.Porte);
+            Assert.Equal(escola.IdUf, (int?)escolaDb.Uf);
+            Assert.Equal(escola.Latitude, escolaDb.Latitude);
+            Assert.Equal(escola.Longitude, escolaDb.Longitude);
+            Assert.Equal(escola.IdRede, (int?)escolaDb.Rede);
+            Assert.Equal(escola.NumeroTotalDeAlunos, escolaDb.TotalAlunos);
+            Assert.Equal(escola.NumeroTotalDeDocentes, escolaDb.TotalDocentes);
+        }
 
-//            escolaServiceMock.Verify(service => service.CadastrarEscolaAsync(escola), Times.Once);
-//            Assert.IsType<OkResult>(result);
-//        }
+        [Fact]
+        public async Task RemoverSituacaoAsync_QuandoSituacaoForRemovida_DeveRetornarHttpOk()
+        {
+            var idEscola = dbContext.Escolas.First().Id;
+            await escolaController.RemoverSituacaoAsync(idEscola);
 
-//        [Fact]
-//        public void RemoverSituacao_QuandoSituacaoForRemovida_DeveRetornarHttpOk()
-//        {
-//            var escolaServiceMock = new Mock<IEscolaService>();
+            Assert.Null(dbContext.Escolas.First(e => e.Id == idEscola).Situacao);
+        }
 
-//            var controller = new EscolaController(escolaServiceMock.Object);
+        [Fact]
+        public async Task AlterarDadosEscolaAsync_QuandoAlterarDadosDaEscola_DeveRetornarOK()
+        {
+            var escola = EscolaStub.ListarAtualizarEscolasDto(dbContext.Municipios.ToList(), true).First();
+            escola.IdEscola = dbContext.Escolas.Last().Id;
+            await escolaController.AlterarDadosEscolaAsync(escola);
 
-//            int idEscola = 1;
-//            var result = controller.RemoverSituacao(idEscola);
+            var escolaDb = dbContext.Escolas.First(e => e.Id == escola.IdEscola);
 
-//            escolaServiceMock.Verify(service => service.RemoverSituacaoEscola(idEscola), Times.Once);
-//            Assert.IsType<OkResult>(result);
-//        }
-//        [Fact]
-//        public void AlterarDadosEscola_QuandoAlterarDadosDaEscola_DeveRetornarOK()
-//        {
-//            var escolaServiceMock = new Mock<IEscolaService>();
+            Assert.Equal(escola.Observacao, escolaDb.Observacao);
+            Assert.Equal(escola.Latitude, escolaDb.Latitude);
+            Assert.Equal(escola.Longitude, escolaDb.Longitude);
+            Assert.Equal(escola.NumeroTotalDeAlunos, escolaDb.TotalAlunos);
+            Assert.Equal(escola.NumeroTotalDeDocentes, escolaDb.TotalDocentes);
+            Assert.True(escolaDb.EtapasEnsino.All(ee => escola.IdEtapasDeEnsino.Exists(eId => (int)ee.EtapaEnsino == eId)));
+        }
 
-//            var controller = new EscolaController(escolaServiceMock.Object);
+        [Fact]
+        public async Task EnviarPlanilhaAsync_QuandoCadastrarEscola_DeveEstarNoBancoDeDados()
+        {
+            var escolaCodigo = 41127226;
+            var etapas = new List<EtapaEnsino>() { EtapaEnsino.Fundamental, EtapaEnsino.JovensAdultos };
+            var descricoesEtapa = string.Join(',', etapas.Select(e => e.AsString(EnumFormat.Description)));
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine($"2019;1;{escolaCodigo};ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;{descricoesEtapa};;70;90;92;65;73;0;0;0;0;126\r\n");
 
-//            EscolaStub escolaStub = new EscolaStub();
-//            var escola = escolaStub.ObterAtualizarDadosEscolaDTO();
-//            var result = controller.AlterarDadosEscola(escola);
+            var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
+            var memoryStream = new MemoryStream(bytes);
 
+            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            arquivo.Headers = new HeaderDictionary();
+            arquivo.Headers.ContentType = "text/csv";
+            var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
 
-//            escolaServiceMock.Verify(service => service.AlterarDadosEscola(escola), Times.Once);
-//            Assert.IsType<OkResult>(result);
-//        }
-//        [Fact]
-//        public void AlterarDadosEscola_QuandoIdDoAtributoNaoExistir_DeveRetornarConflict()
-//        {
-//            var escolaServiceMock = new Mock<IEscolaService>();
-//            var excecao = new Npgsql.PostgresException("", "", "", "23503");
+            Assert.IsType<OkObjectResult>(resultado);
+            var valor = (resultado as OkObjectResult)?.Value as List<string>;
 
-//            escolaServiceMock.Setup(service => service.AlterarDadosEscola(It.IsAny<AtualizarDadosEscolaDTO>())).Throws(excecao);
+            var escolaDb = dbContext.Escolas.First(e => e.Codigo == escolaCodigo);
+            Assert.True(valor?.Exists(v => v == escolaDb.Nome));
+        }
 
-//            var controller = new EscolaController(escolaServiceMock.Object);
+        [Fact]
+        public async Task EnviarPlanilhaAsync_QuandoNaoForCsv_DeveDevolverBadRequest()
+        {
+            var escolaCodigo = 41127226;
+            var etapas = new List<EtapaEnsino>() { EtapaEnsino.Fundamental, EtapaEnsino.JovensAdultos };
+            var descricoesEtapa = string.Join(',', etapas.Select(e => e.AsString(EnumFormat.Description)));
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine($"2019;1;{escolaCodigo};ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;{descricoesEtapa};;70;90;92;65;73;0;0;0;0;126\r\n");
 
-//            EscolaStub escolaStub = new();
-//            AtualizarDadosEscolaDTO atualizarDadosEscolaDTO = escolaStub.ObterAtualizarDadosEscolaDTO();
+            var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
+            var memoryStream = new MemoryStream(bytes);
 
-//            var resultado = controller.AlterarDadosEscola(atualizarDadosEscolaDTO);
+            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.pdf");
+            arquivo.Headers = new HeaderDictionary();
+            arquivo.Headers.ContentType = "application/pdf";
+            var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
 
-//            escolaServiceMock.Verify(service => service.AlterarDadosEscola(atualizarDadosEscolaDTO), Times.Once);
-//            var objeto = Assert.IsType<ConflictObjectResult>(resultado);
-//        }
-//        [Fact]
-//        public void AlterarDadosEscola_QuandoEscolaNaoForAlterada_DeveRetornarErroInterno()
-//        {
-//            var escolaServiceMock = new Mock<IEscolaService>();
-//            var excecao = new Npgsql.PostgresException("", "", "", "");
+            Assert.IsType<BadRequestObjectResult>(resultado);
+            var valor = (resultado as BadRequestObjectResult)?.Value as string;
 
-//            escolaServiceMock.Setup(service => service.AlterarDadosEscola(It.IsAny<AtualizarDadosEscolaDTO>())).Throws(excecao);
+            Assert.Equal("O arquivo deve estar no formato CSV.", valor);
+        }
 
-//            var controller = new EscolaController(escolaServiceMock.Object);
+        [Fact]
+        public async Task EnviarPlanilhaAsync_QuandoTiverVazio_DeveDevolverBadRequest()
+        {
+            var bytes = Encoding.UTF8.GetBytes("");
+            var memoryStream = new MemoryStream(bytes);
 
-//            EscolaStub escolaStub = new();
-//            AtualizarDadosEscolaDTO atualizarDadosEscolaDTO = escolaStub.ObterAtualizarDadosEscolaDTO();
+            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            arquivo.Headers = new HeaderDictionary();
+            arquivo.Headers.ContentType = "text/csv";
 
-//            var resultado = controller.AlterarDadosEscola(atualizarDadosEscolaDTO);
+            var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
 
-//            escolaServiceMock.Verify(service => service.AlterarDadosEscola(atualizarDadosEscolaDTO), Times.Once);
+            Assert.IsType<BadRequestObjectResult>(resultado);
+            var valor = (resultado as BadRequestObjectResult)?.Value as string;
 
-//            var objeto = Assert.IsType<ObjectResult>(resultado);
-//            Assert.Equal(INTERNAL_SERVER_ERROR, objeto.StatusCode);
-//        }
-//    }
-//}
+            Assert.Equal("Nenhum arquivo enviado.", valor);
+        }
+
+        [Fact]
+        public async Task EnviarPlanilhaAsync_QuandoTiverAcimaDoLimite_DeveDevolverNotAcceptableRequest()
+        {
+            var caminhoArquivo = Path.Join("..", "..", "..", "Stubs", "planilha_maior_max.csv");
+            var bytes = File.ReadAllBytes(caminhoArquivo);
+            var stream = new MemoryStream(bytes);
+            var arquivo = new FormFile(stream, 0, bytes.Count(), "planilha_maior_max", "planilha_maior_max.csv");
+            arquivo.Headers = new HeaderDictionary();
+            arquivo.Headers.ContentType = "text/csv";
+            var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
+
+            Assert.IsType<ObjectResult>(resultado);
+            var resultadoObjeto = resultado as ObjectResult;
+            Assert.Equal(406, resultadoObjeto.StatusCode);
+            Assert.Equal("Tamanho máximo de arquivo ultrapassado!", resultadoObjeto.Value);
+        }
+
+        [Fact]
+        public async Task EnviarPlanilhaAsync_QuandoNaoTiverEtapa_DeveRetornarInternalServerError()
+        {
+            var escolaCodigo = 41127226;
+            var etapas = new List<EtapaEnsino>() { };
+            var descricoesEtapa = string.Join(',', etapas.Select(e => e.AsString(EnumFormat.Description)));
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine($"2019;1;{escolaCodigo};ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;{descricoesEtapa};;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
+            var memoryStream = new MemoryStream(bytes);
+
+            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            arquivo.Headers = new HeaderDictionary();
+            arquivo.Headers.ContentType = "text/csv";
+            var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
+
+            Assert.IsType<ObjectResult>(resultado);
+            var resultadoObjeto = resultado as ObjectResult;
+            Assert.Equal(500, resultadoObjeto?.StatusCode);
+            Assert.True((resultadoObjeto.Value as string)?.Contains("descrição das etapas de ensino inválida"));
+        }
+
+        [Fact]
+        public async Task EnviarPlanilhaAsync_QuandoNaoTiverRede_DeveRetornarInternalServerError()
+        {
+            var escolaCodigo = 41127226;
+            var etapas = new List<EtapaEnsino>() { EtapaEnsino.Infantil };
+            var descricoesEtapa = string.Join(',', etapas.Select(e => e.AsString(EnumFormat.Description)));
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine($"2019;1;{escolaCodigo};ANISIO TEIXEIRA E M EF;;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;{descricoesEtapa};;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
+            var memoryStream = new MemoryStream(bytes);
+
+            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            arquivo.Headers = new HeaderDictionary();
+            arquivo.Headers.ContentType = "text/csv";
+            var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
+
+            Assert.IsType<ObjectResult>(resultado);
+            var resultadoObjeto = resultado as ObjectResult;
+            Assert.Equal(500, resultadoObjeto.StatusCode);
+            Assert.True((resultadoObjeto.Value as string)?.Contains("rede inválida"));
+        }
+
+        public new void Dispose()
+        {
+            dbContext.Clear();
+        }
+    }
+}

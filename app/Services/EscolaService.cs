@@ -144,7 +144,7 @@ namespace app.Services
 
                         //Lançando exceções para erro nas colunas da planilha inserida
 
-                        var municipio = await ObterCodigoMunicipioPorCEP(escola.Cep);
+                        var municipio = await ObterCodigoMunicipioPorCEPAsync(escola.Cep);
                         int codigoMunicipio;
                         if (int.TryParse(municipio, out codigoMunicipio))
                         {
@@ -258,10 +258,10 @@ namespace app.Services
         {
             var escolas = await escolaRepositorio.ListarPaginadaAsync(filtro);
             var escolasCorretas = escolas.Items.ConvertAll(modelConverter.ToModel);
-            return new(escolasCorretas, escolas.Pagina, escolas.ItemsPorPagina, escolas.Total);
+            return new ListaEscolaPaginada<EscolaCorretaModel>(escolasCorretas, escolas.Pagina, escolas.ItemsPorPagina, escolas.Total);
         }
 
-        public async Task<string> ObterCodigoMunicipioPorCEP(string cep)
+        public async Task<string?> ObterCodigoMunicipioPorCEPAsync(string cep)
         {
             var url = $"https://viacep.com.br/ws/{cep}/json/";
 
@@ -297,17 +297,6 @@ namespace app.Services
             var resultado = etapas_separadas.Select(e => etapas.GetValueOrDefault(e.ToLower())).Where(e => e != default).ToList();
             return resultado;
         }
-
-        public Task CadastrarEscolaAsync(CadastroEscolaDTO cadastroEscolaDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ListaPaginada<EscolaCorretaModel> Obter(PesquisaEscolaFiltro pesquisaEscolaFiltro)
-        {
-            throw new NotImplementedException();
-        }
-
 
         public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaDTO dados)
         {

@@ -1,12 +1,10 @@
 ﻿using api;
 using app.Controllers;
 using app.Entidades;
-using app.Repositorios.Interfaces;
-using app.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using test.Fixtures;
-using test.Stub;
+using test.Stubs;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
@@ -14,14 +12,12 @@ namespace test
 {
     public class DominioControllerTest : TestBed<Base>, IDisposable
     {
-        IMunicipioRepositorio municipioRepositorio;
         DominioController dominioController;
         AppDbContext dbContext;
 
         public DominioControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper);
-            municipioRepositorio = fixture.GetService<IMunicipioRepositorio>(testOutputHelper);
             dominioController = fixture.GetService<DominioController>(testOutputHelper);
         }
 
@@ -62,8 +58,7 @@ namespace test
 
         public new void Dispose()
         {
-            dbContext.RemoveRange(dbContext.Municipios);
-            dbContext.SaveChanges();
+            dbContext.Clear();
         }
     }
 }

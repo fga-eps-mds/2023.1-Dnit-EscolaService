@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using test.Stub;
+using test.Stubs;
 using app.Services;
 
 namespace test

@@ -4,11 +4,10 @@ using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using test.Fixtures;
-using test.Stub;
+using test.Stubs;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
@@ -125,7 +124,7 @@ namespace test
         [Fact]
         public async Task ObterPorCodigoAsync_QuandoNaoExistir_DeveRetornarNulo()
         {
-            var escolaDb = dbContext.PopulaEscolas(2);
+            dbContext.PopulaEscolas(2);
             var escola = await escolaRepositorio.ObterPorCodigoAsync(-1);
 
             Assert.Null(escola);

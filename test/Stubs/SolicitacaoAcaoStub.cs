@@ -1,6 +1,6 @@
 ﻿using api.Escolas;
 
-namespace test.Stub
+namespace test.Stubs
 {
     public class SolicitacaoAcaoStub
     {

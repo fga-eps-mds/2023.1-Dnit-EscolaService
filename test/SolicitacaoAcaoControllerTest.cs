@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using test.Fixtures;
-using test.Stub;
+using test.Stubs;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace test

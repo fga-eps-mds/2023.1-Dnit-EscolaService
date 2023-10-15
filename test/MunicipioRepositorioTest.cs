@@ -4,7 +4,7 @@ using app.Services;
 using System.Linq;
 using System.Threading.Tasks;
 using test.Fixtures;
-using test.Stub;
+using test.Stubs;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 

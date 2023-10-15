@@ -1,7 +1,6 @@
 using api;
 using app.Entidades;
 using app.Repositorios.Interfaces;
-using app.Services;
 using EnumsNET;
 using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
@@ -11,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using test.Fixtures;
-using test.Stub;
+using test.Stubs;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 
@@ -21,7 +20,6 @@ namespace test
     {
         IEscolaService escolaService;
         IEscolaRepositorio escolaRepositorio;
-        ModelConverter converter;
         AppDbContext dbContext;
 
         public EscolaServiceTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
@@ -30,7 +28,6 @@ namespace test
             dbContext.PopulaEscolas(5);
 
             escolaService = fixture.GetService<IEscolaService>(testOutputHelper);
-            converter = fixture.GetService<ModelConverter>(testOutputHelper);
             escolaRepositorio = fixture.GetService<IEscolaRepositorio>(testOutputHelper);
         }
 
@@ -69,17 +66,16 @@ namespace test
         [Fact]
         public void CadastrarAsync_QuandoPlanilhaComTamanhoMaiorQueOMaximoForPassada_DeveRetornarTrue()
         {
-            var caminhoArquivo = Path.Join("..", "..", "..", "Stub", "planilha_maior_max.csv");
+            var caminhoArquivo = Path.Join("..", "..", "..", "Stubs", "planilha_maior_max.csv");
             var stream = new MemoryStream(File.ReadAllBytes(caminhoArquivo));
             var resultado = escolaService.SuperaTamanhoMaximo(stream);
             Assert.True(resultado);
-
         }
 
         [Fact]
         public void SuperaTamanhoMaximo_QuandoPlanilhaComTamanhoMenorQueOMaximoForPassada_DeveRetornarFalse()
         {
-            var caminhoArquivo = Path.Join("..", "..", "..", "Stub", "planilha_menor_max.csv");
+            var caminhoArquivo = Path.Join("..", "..", "..", "Stubs", "planilha_menor_max.csv");
             var stream = new MemoryStream(File.ReadAllBytes(caminhoArquivo));
             var resultado = escolaService.SuperaTamanhoMaximo(stream);
             Assert.False(resultado);
@@ -207,7 +203,7 @@ namespace test
             Assert.True(etapas.All(e => escola.EtapasEnsino.Exists(ee => ee.EtapaEnsino == e)));
         }
 
-        internal new void Dispose()
+        public new void Dispose()
         {
             dbContext.Clear();
         }

@@ -34,6 +34,7 @@ namespace test.Fixtures
 
             // Controllers
             services.AddScoped<DominioController>();
+            services.AddScoped<EscolaController>();
         }
 
         protected override ValueTask DisposeAsyncCore() => new();

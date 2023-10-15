@@ -1,8 +1,7 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace test.Stub
+namespace test.Stubs
 {
     public static class UtilsExtensions
     {
