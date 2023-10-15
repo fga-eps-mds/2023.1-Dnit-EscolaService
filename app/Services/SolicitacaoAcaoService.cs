@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using System.Web;
 using api.Escolas;
 
-namespace app.service
+namespace app.Services
 {
     public class SolicitacaoAcaoService : ISolicitacaoAcaoService
     {

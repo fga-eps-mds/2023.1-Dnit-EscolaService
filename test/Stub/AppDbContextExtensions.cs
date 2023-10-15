@@ -11,13 +11,13 @@ namespace test.Stub
     {
         private static List<Municipio>? municipios;
 
-        public static List<Escola> SeedEscolas(this AppDbContext dbContext, int limite = 1, bool comEtapas = true)
+        public static List<Escola> PopulaEscolas(this AppDbContext dbContext, int limite = 1, bool comEtapas = true)
         {
             var escolas = new List<Escola>();
             
             if (!dbContext.Municipios.Any())
             {
-                dbContext.SeedMunicipios(limite);
+                dbContext.PopulaMunicipios(limite);
             }
             
             var municipios = dbContext.Municipios.Take(1).ToList();
@@ -31,7 +31,7 @@ namespace test.Stub
             return escolas;
         }
 
-        public static List<Municipio>? SeedMunicipios(this AppDbContext dbContext, int limit)
+        public static List<Municipio>? PopulaMunicipios(this AppDbContext dbContext, int limit)
         {
             if (municipios != default && limit < municipios.Count)
             {
@@ -41,9 +41,18 @@ namespace test.Stub
                 return resultado;
             }
             var caminho = Path.Join("..", "..", "..", "Stub", "municipios.csv");
-            var municipiosDb = dbContext.SeedMunicipiosPorArquivo(limit, caminho)!;
+            var municipiosDb = dbContext.PopulaMunicipiosPorArquivo(limit, caminho)!;
             municipios = municipiosDb.ToList();
             return municipiosDb;
         }
+
+        public static void Clear(this AppDbContext dbContext)
+        {
+            dbContext.RemoveRange(dbContext.EscolaEtapaEnsino);
+            dbContext.RemoveRange(dbContext.Municipios);
+            dbContext.RemoveRange(dbContext.Escolas);
+            dbContext.SaveChanges();
+        }
+
     }
 }

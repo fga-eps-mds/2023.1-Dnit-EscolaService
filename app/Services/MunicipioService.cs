@@ -1,10 +1,9 @@
 using service.Interfaces;
 using api;
 using app.Repositorios.Interfaces;
-using app.Services;
 using api.Municipios;
 
-namespace app.service
+namespace app.Services
 {
     public class MunicipioService : IMunicipioService
     {

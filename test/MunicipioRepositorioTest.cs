@@ -24,7 +24,7 @@ namespace test
         [Fact]
         public async Task ObterPorIdAsync_QuandoExistir_DeveRetornarOMunicipio()
         {
-            var municipio = dbContext.SeedMunicipios(1)!.First();
+            var municipio = dbContext.PopulaMunicipios(1)!.First();
             var resultado = await municipioRepositorio.ObterPorIdAsync(municipio.Id);
             Assert.Equal(municipio.Id, resultado.Id);
         }
@@ -47,7 +47,7 @@ namespace test
         [Fact]
         public async Task ListarAsync_QuandoPreenchido_DeveRetornarListaCompleta()
         {
-            var municipiosDb = dbContext.SeedMunicipios(5)!;
+            var municipiosDb = dbContext.PopulaMunicipios(5)!;
             var municipios = await municipioRepositorio.ListarAsync(null);
             Assert.Equal(municipiosDb.Count, municipios.Count);
             Assert.True(municipiosDb.All(mdb => municipios.Exists(m => m.Id == mdb.Id)));
@@ -56,7 +56,7 @@ namespace test
         [Fact]
         public async Task ListarAsync_QuandoFiltroUf_DeveRetornarListaFiltrada()
         {
-            var municipiosDb = dbContext.SeedMunicipios(5);
+            var municipiosDb = dbContext.PopulaMunicipios(5);
             var filtroUf = municipiosDb.First().Uf;
             var municipios = await municipioRepositorio.ListarAsync(filtroUf);
             Assert.Equal(municipiosDb.Where(m => m.Uf == filtroUf).Count(), municipios.Count);
@@ -65,7 +65,7 @@ namespace test
         [Fact]
         public async Task ListarAsync_QuandoNaoExistirUfPesquisada_DeveRetornarListaVazia()
         {
-            var municipiosDb = dbContext.SeedMunicipios(5);
+            var municipiosDb = dbContext.PopulaMunicipios(5);
             var filtroUf = api.UF.DF;
 
             dbContext.RemoveRange(dbContext.Municipios.Where(m => m.Uf == filtroUf));
@@ -77,8 +77,7 @@ namespace test
 
         public new void Dispose()
         {
-            dbContext.RemoveRange(dbContext.Municipios);
-            dbContext.SaveChanges();
+            dbContext.Clear();
         }
     }
 }

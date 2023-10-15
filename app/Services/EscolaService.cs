@@ -5,11 +5,9 @@ using app.Entidades;
 using EnumsNET;
 using api;
 using app.Repositorios.Interfaces;
-using app.Repositorios;
-using app.Services;
 using api.Escolas;
 
-namespace app.service
+namespace app.Services
 {
     public class EscolaService : IEscolaService
     {
@@ -133,10 +131,9 @@ namespace app.service
                             Latitude = linha[colunas["latitude"]],
                             Longitude = linha[colunas["longitude"]],
                             Telefone = linha[colunas["ddd"]] + linha[colunas["telefone"]],
-                            NumeroTotalDeDocentes = int.Parse(linha[colunas["qtd_docentes"]])
+                            NumeroTotalDeDocentes = int.Parse(linha[colunas["qtd_docentes"]]),
+                            EtapasEnsino = etapasParaIds(etapas, linha[colunas["etapas_ensino"]]),
                         };
-
-                        var escolaEtapas = etapasParaIds(etapas, linha[colunas["etapas_ensino"]], escola.NomeEscola);
 
                         for (int i = colunas["qtd_ensino_infantil"]; i <= colunas["qtd_ensino_fund_9ano"]; i++)
                         {
@@ -158,22 +155,27 @@ namespace app.service
                             throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
                         }
 
-                        if (escola.Rede == default)
+                        if (escola.EtapasEnsino.Count == 0 || escola.EtapasEnsino.Count != linha[colunas["etapas_ensino"]].Split(",").Count())
+                        {
+                            throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição das etapas de ensino inválida!");
+                        }
+
+                        if (escola.Rede == default(Rede))
                         {
                             throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
                         }
 
-                        if (escola.Uf == default)
+                        if (escola.Uf == default(UF))
                         {
                             throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
                         }
 
-                        if (escola.Localizacao == default)
+                        if (escola.Localizacao == default(Localizacao))
                         {
                             throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
                         }
 
-                        if (escola.Porte == default)
+                        if (escola.Porte == default(Porte))
                         {
                             throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
                         }
@@ -183,12 +185,12 @@ namespace app.service
                         var escolaExistente = await escolaRepositorio.ObterPorCodigoAsync(escola.CodigoEscola);
                         if (escolaExistente != default)
                         {
-                            await AtualizarAsync(escolaExistente, escola, escolaEtapas);
+                            await AtualizarAsync(escolaExistente, escola);
                             continue;
                         }
 
                         var escolaNova = escolaRepositorio.Criar(escola);
-                        foreach (var etapa in escolaEtapas)
+                        foreach (var etapa in escola.EtapasEnsino)
                         {
                             escolaRepositorio.AdicionarEtapaEnsino(escolaNova, etapa);
                         }
@@ -288,16 +290,11 @@ namespace app.service
             }
         }
 
-        private List<EtapaEnsino> etapasParaIds(Dictionary<string, EtapaEnsino> etapas, string coluna_etapas, string nomeEscola)
+        private List<EtapaEnsino> etapasParaIds(Dictionary<string, EtapaEnsino> etapas, string coluna_etapas)
         {
             var ids = new List<int>();
             var etapas_separadas = coluna_etapas.Split(',').Select(item => item.Trim());
             var resultado = etapas_separadas.Select(e => etapas.GetValueOrDefault(e.ToLower())).Where(e => e != default).ToList();
-            
-            if (resultado.Count == 0 || resultado.Count != etapas_separadas.Count())
-            {
-                throw new Exception("Erro. A leitura do arquivo parou na escola: " + nomeEscola + ", descrição das etapas de ensino inválida!");
-            }
             return resultado;
         }
 

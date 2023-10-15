@@ -30,7 +30,7 @@ namespace test
         [Fact]
         public async Task ListarPaginadaAsync_QuandoFiltroForemNulos_DeveRetornarListaDeEscolasPaginadas()
         {
-            var escolaDb = dbContext.SeedEscolas(5);
+            var escolaDb = dbContext.PopulaEscolas(5);
 
             var filtro = new PesquisaEscolaFiltro();
             filtro.Pagina = 1;
@@ -47,17 +47,20 @@ namespace test
         [Fact]
         public async void ListarPaginadaAsync_QuandoFiltroForPassado_DeveRetornarListaDeEscolasFiltradas()
         {
-            var escolaDb = dbContext.SeedEscolas(5);
+            var escolaDb = dbContext.PopulaEscolas(5);
 
             var escolaPesquisa = escolaDb.First();
-            var filtro = new PesquisaEscolaFiltro();
-            filtro.Pagina = 1;
-            filtro.TamanhoPagina = 2;
-            filtro.Nome = escolaPesquisa.Nome;
-            filtro.IdUf = (int?)escolaPesquisa.Uf;
-            filtro.IdSituacao = (int?)escolaPesquisa.Situacao;
-            filtro.IdEtapaEnsino = new List<int>() { (int)(escolaPesquisa.EtapasEnsino.FirstOrDefault()?.EtapaEnsino ?? 0 )};
-            filtro.IdMunicipio = escolaPesquisa.MunicipioId;
+
+            var filtro = new PesquisaEscolaFiltro()
+            {
+                Pagina = 1,
+                TamanhoPagina = 2,
+                Nome = escolaPesquisa.Nome,
+                IdUf = (int?)escolaPesquisa.Uf,
+                IdSituacao = (int?)escolaPesquisa.Situacao,
+                IdEtapaEnsino = new List<int>() { (int)(escolaPesquisa.EtapasEnsino.FirstOrDefault()?.EtapaEnsino ?? 0 )},
+                IdMunicipio = escolaPesquisa.MunicipioId,
+            };
 
             var listaPaginada = await escolaRepositorio.ListarPaginadaAsync(filtro);
 
@@ -67,7 +70,7 @@ namespace test
         [Fact]
         public async void ListarPaginadaAsync_QuandoFiltroNaoExistir_DeveRetornarListaVazia()
         {
-            dbContext.SeedEscolas(5);
+            dbContext.PopulaEscolas(5);
 
             var filtro = new PesquisaEscolaFiltro();
             filtro.Pagina = 1000;
@@ -81,7 +84,7 @@ namespace test
         [Fact]
         public async Task ObterPorIdAsync_QuandoExistir_DeveRetornarEscola()
         {
-            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaDb = dbContext.PopulaEscolas(2);
             var escolaEsperada = escolaDb.Last();
             var escola = await escolaRepositorio.ObterPorIdAsync(escolaEsperada.Id);
 
@@ -91,7 +94,7 @@ namespace test
         [Fact]
         public async Task ObterPorIdAsync_QuandoIncluir_DeveRetornarEscola()
         {
-            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaDb = dbContext.PopulaEscolas(2);
             var escolaEsperada = escolaDb.Last();
             var escola = await escolaRepositorio.ObterPorIdAsync(escolaEsperada.Id, incluirEtapas: true, incluirMunicipio: true);
 
@@ -103,7 +106,7 @@ namespace test
         [Fact]
         public async Task ObterPorIdAsync_QuandoNaoExistir_DeveLancarExcecao()
         {
-            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaDb = dbContext.PopulaEscolas(2);
             var excecao = await Assert.ThrowsAsync<ApiException>(() => escolaRepositorio.ObterPorIdAsync(Guid.NewGuid()));
 
             Assert.Equal(ErrorCodes.EscolaNaoEncontrada, excecao.Error.Code);
@@ -112,7 +115,7 @@ namespace test
         [Fact]
         public async Task ObterPorCodigoAsync_QuandoExistir_DeveRetornarEscola()
         {
-            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaDb = dbContext.PopulaEscolas(2);
             var escolaEsperada = escolaDb.Last();
             var escola = await escolaRepositorio.ObterPorCodigoAsync(escolaEsperada.Codigo);
 
@@ -122,7 +125,7 @@ namespace test
         [Fact]
         public async Task ObterPorCodigoAsync_QuandoNaoExistir_DeveRetornarNulo()
         {
-            var escolaDb = dbContext.SeedEscolas(2);
+            var escolaDb = dbContext.PopulaEscolas(2);
             var escola = await escolaRepositorio.ObterPorCodigoAsync(-1);
 
             Assert.Null(escola);
@@ -131,7 +134,7 @@ namespace test
         [Fact]
         public void AdicionarEtapaEnsino_QuandoValida_DeveAdicionar()
         {
-            var escolaDb = dbContext.SeedEscolas(1, comEtapas: false).First();
+            var escolaDb = dbContext.PopulaEscolas(1, comEtapas: false).First();
 
             var etapa = EtapaEnsino.Infantil;
             var etapaDb = escolaRepositorio.AdicionarEtapaEnsino(escolaDb, etapa);
@@ -143,10 +146,7 @@ namespace test
 
         public new void Dispose()
         {
-            dbContext.RemoveRange(dbContext.Municipios);
-            dbContext.RemoveRange(dbContext.EscolaEtapaEnsino);
-            dbContext.RemoveRange(dbContext.Escolas);
-            dbContext.SaveChanges();
+            dbContext.Clear();
         }
     }
 }

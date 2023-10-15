@@ -32,8 +32,6 @@
   <ItemGroup>
     <ProjectReference Include="..\api\api.csproj" />
     <ProjectReference Include="..\app\app.csproj" />
-    <ProjectReference Include="..\dominio\api.csproj" />
-    <ProjectReference Include="..\repositorio\repositorio.csproj" />
   </ItemGroup>
 
 </Project>

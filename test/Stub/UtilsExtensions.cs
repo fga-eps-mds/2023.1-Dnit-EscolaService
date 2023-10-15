@@ -13,7 +13,7 @@ namespace test.Stub
 
         public static List<T> TakeRandom<T>(this IEnumerable<T> collection, bool empty = false)
         {
-            return collection.Take((Random.Shared.Next() % collection.Count()) + (empty ? 0 : 1)).ToList();
+            return collection.Shuffle().Take((Random.Shared.Next() % collection.Count()) + (empty ? 0 : 1)).ToList();
         }
 
         public static string Truncate(this string text, int limit) {

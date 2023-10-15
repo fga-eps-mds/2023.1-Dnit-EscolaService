@@ -1,7 +1,6 @@
 ﻿
 using api;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.VisualBasic.FileIO;
 
 namespace app.Entidades
@@ -24,10 +23,10 @@ namespace app.Entidades
 
         public void Seed()
         {
-            SeedMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
+            PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
         }
 
-        public List<Municipio>? SeedMunicipiosPorArquivo(int? limit, string caminho)
+        public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
         {
             var hasMunicipio = Municipios.Any();
             var municipios = new List<Municipio>();

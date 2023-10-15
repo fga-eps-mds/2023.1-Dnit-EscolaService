@@ -50,7 +50,7 @@ namespace test
         [Fact]
         public async Task ObterListaMunicipio_QuandoMetodoForChamado_DeveRetornarHttpOk()
         {
-            var municipiosDb = dbContext.SeedMunicipios(10)!;
+            var municipiosDb = dbContext.PopulaMunicipios(10)!;
             var uf = municipiosDb.First().Uf;
             var municipioUf = municipiosDb.Where(m => m.Uf == uf).ToList();
             var municipios = (await dominioController.ObterListaMunicipio((int)uf)).ToList();

@@ -1,5 +1,4 @@
 ﻿using app.Entidades;
-using app.service;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 using service.Interfaces;

@@ -2,7 +2,6 @@
 using app.Entidades;
 using app.Repositorios;
 using app.Repositorios.Interfaces;
-using app.service;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

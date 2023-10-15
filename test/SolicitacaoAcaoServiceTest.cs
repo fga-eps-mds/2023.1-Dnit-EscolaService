@@ -8,8 +8,8 @@ using System.Net.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using app.service;
 using test.Stub;
+using app.Services;
 
 namespace test
 {
