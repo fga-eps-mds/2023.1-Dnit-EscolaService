@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /dominio/UsuarioDNIT.cs
 
 coverage.*
+app/build

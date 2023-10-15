@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -55,9 +56,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"fga-eps-mds_2023.1-DNIT-EscolaService" /o:"fga-eps-mds-1" /d:sonar.login="5e981eabd44a537f64a8d46d957ee6e352a1447f" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.testExecutionReportPaths=results.xml
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"fga-eps-mds_2023.2-Dnit-EscolaService" /o:"fga-eps-mds-1" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.testExecutionReportPaths=results.xml
           dotnet build
           dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
           dotnet test --logger "trx;LogFileName=results.trx" --results-directory ./TestResults/results.xml
           ./dotnet-trx2sonar/TrxToSonar/bin/Release/net6.0/TrxToSonar -d ./TestResults -o results.xml
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="5e981eabd44a537f64a8d46d957ee6e352a1447f"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

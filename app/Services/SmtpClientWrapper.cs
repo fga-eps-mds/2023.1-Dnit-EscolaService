@@ -10,10 +10,11 @@ namespace app.Services
 
         public SmtpClientWrapper()
         {
-            string emailRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_ADDRESS");
-            string senhaRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_PASSWORD");
+            var emailRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_ADDRESS");
+            var senhaRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_PASSWORD");
+            var smtpDomain = Environment.GetEnvironmentVariable("EMAIL_SERVICE_SMTP") ?? "smtp-mail.outlook.com";
 
-            smtpClient = new SmtpClient("smtp-mail.outlook.com")
+            smtpClient = new SmtpClient(smtpDomain)
             {
                 Port = 587,
                 Credentials = new NetworkCredential(emailRemetente, senhaRemetente),

@@ -6,5 +6,11 @@ services:
     ports:
       - "7084:7084"
     container_name: escolaService
+    volumes:
+      - ./app:/app/app
+      - ./dominio:/app/dominio
+      - ./repositorio:/app/repositorio
+      - ./service:/app/service
+      - ./test:/app/test
     env_file:
       - .env
