@@ -224,7 +224,7 @@ namespace app.Services
             escola.Localizacao = data.Localizacao;
             escola.MunicipioId = data.IdMunicipio;
             escola.Porte = data.Porte;
-            escola.AtualizacaoDate = DateTimeOffset.Now;
+            escola.DataAtualizacao = DateTimeOffset.Now;
 
             atualizarEtapasEnsino(escola, data.EtapasEnsino);
             await dbContext.SaveChangesAsync();
@@ -283,7 +283,7 @@ namespace app.Services
                         return null;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return null;
                 }
@@ -302,7 +302,7 @@ namespace app.Services
         {
             var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola, incluirEtapas: true);
 
-            escola.AtualizacaoDate = DateTime.Now;
+            escola.DataAtualizacao = DateTime.Now;
             escola.Telefone = dados.Telefone;
             escola.Longitude = dados.Longitude;
             escola.Latitude = dados.Latitude;

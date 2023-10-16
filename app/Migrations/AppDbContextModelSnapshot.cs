@@ -28,9 +28,6 @@ namespace app.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime?>("AtualizacaoDateUtc")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Cep")
                         .IsRequired()
                         .HasMaxLength(8)
@@ -38,6 +35,9 @@ namespace app.Migrations
 
                     b.Property<int>("Codigo")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DataAtualizacaoUtc")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Endereco")
                         .IsRequired()

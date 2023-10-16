@@ -51,17 +51,17 @@ namespace app.Entidades
         public Situacao? Situacao { get; set; }
 
         public int? MunicipioId { get; set; }
-        public Municipio Municipio { get; set; }
+        public Municipio? Municipio { get; set; }
 
-        public List<EscolaEtapaEnsino> EtapasEnsino { get; set; }
+        public List<EscolaEtapaEnsino>? EtapasEnsino { get; set; }
 
         [NotMapped]
-        public DateTimeOffset? AtualizacaoDate { get; set; }
+        public DateTimeOffset? DataAtualizacao { get; set; }
 
-        public DateTime? AtualizacaoDateUtc
+        public DateTime? DataAtualizacaoUtc
         {
-            get => AtualizacaoDate?.UtcDateTime;
-            set => AtualizacaoDate = value != null ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null;
+            get => DataAtualizacao?.UtcDateTime;
+            set => DataAtualizacao = value != null ? new DateTimeOffset(value.Value, TimeSpan.Zero) : null;
         }
     }
 }

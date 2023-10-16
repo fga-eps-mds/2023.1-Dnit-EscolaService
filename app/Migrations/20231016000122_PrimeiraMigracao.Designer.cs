@@ -12,8 +12,8 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230922034201_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20231016000122_PrimeiraMigracao")]
+    partial class PrimeiraMigracao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,9 +31,6 @@ namespace app.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("AtualizacaoDateUtc")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Cep")
                         .IsRequired()
                         .HasMaxLength(8)
@@ -41,6 +38,9 @@ namespace app.Migrations
 
                     b.Property<int>("Codigo")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DataAtualizacaoUtc")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Endereco")
                         .IsRequired()
@@ -69,7 +69,6 @@ namespace app.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<string>("Observacao")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 

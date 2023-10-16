@@ -12,7 +12,7 @@ namespace api.Escolas
         public string NomeEscola { get; set; }
         public int IdRede { get; set; }
         public string Cep { get; set; }
-        public short IdUf { get; set; }
+        public int IdUf { get; set; }
         public string Endereco { get; set; }
         public int? IdMunicipio { get; set; }
         public int? IdLocalizacao { get; set; }

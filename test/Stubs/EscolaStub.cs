@@ -15,7 +15,7 @@ namespace test.Stubs
                 var escola = new Escola
                 {
                     Id = Guid.NewGuid(),
-                    AtualizacaoDate = DateTime.Now,
+                    DataAtualizacao = DateTime.Now,
                     Cep = $"7215436{Random.Shared.Next() % 10}",
                     Endereco = $"Endereço Teste {Random.Shared.Next()}",
                     Codigo = Random.Shared.Next() % 1000,

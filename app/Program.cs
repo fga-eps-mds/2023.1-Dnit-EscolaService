@@ -63,7 +63,7 @@ using (var scope = app.Services.CreateScope())
 
     dbContext.Database.Migrate();
 
-    dbContext.Seed();
+    dbContext.Popula();
 }
 
 app.Run();

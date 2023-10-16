@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace app.Migrations
 {
-    public partial class InitialMigration : Migration
+    /// <inheritdoc />
+    public partial class PrimeiraMigracao : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -37,14 +40,14 @@ namespace app.Migrations
                     TotalAlunos = table.Column<int>(type: "integer", nullable: false),
                     TotalDocentes = table.Column<int>(type: "integer", nullable: false),
                     Telefone = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
-                    Observacao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Observacao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Rede = table.Column<int>(type: "integer", nullable: false),
                     Uf = table.Column<int>(type: "integer", nullable: true),
                     Localizacao = table.Column<int>(type: "integer", nullable: true),
                     Porte = table.Column<int>(type: "integer", nullable: true),
                     Situacao = table.Column<int>(type: "integer", nullable: true),
                     MunicipioId = table.Column<int>(type: "integer", nullable: true),
-                    AtualizacaoDateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DataAtualizacaoUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,6 +89,7 @@ namespace app.Migrations
                 column: "MunicipioId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

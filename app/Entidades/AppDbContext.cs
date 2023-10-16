@@ -21,7 +21,7 @@ namespace app.Entidades
             modelBuilder.Entity<Escola>().HasMany(escola => escola.EtapasEnsino).WithOne(e => e.Escola);
         }
 
-        public void Seed()
+        public void Popula()
         {
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
         }

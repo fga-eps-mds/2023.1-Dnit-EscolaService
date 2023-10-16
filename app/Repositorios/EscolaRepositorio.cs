@@ -77,7 +77,7 @@ namespace app.Repositorios
                 Localizacao = (Localizacao?)escolaData.IdLocalizacao,
                 Porte = (Porte?)escolaData.IdPorte,
                 Situacao = (Situacao?)escolaData.IdSituacao,
-                AtualizacaoDate = DateTimeOffset.Now,
+                DataAtualizacao = DateTimeOffset.Now,
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
             };
@@ -106,7 +106,7 @@ namespace app.Repositorios
                 Porte = data.Porte,
                 Situacao = data.Situacao,
                 Observacao = data.Observacao,
-                AtualizacaoDate = DateTimeOffset.Now,
+                DataAtualizacao = DateTimeOffset.Now,
             };
             dbContext.Add(escola);
             return escola;

@@ -15,7 +15,7 @@ namespace app.Services
                 CodigoEscola = value.Codigo,
                 NomeEscola = value.Nome,
                 Telefone = value.Telefone,
-                UltimaAtualizacao = value.AtualizacaoDate?.LocalDateTime,
+                UltimaAtualizacao = value.DataAtualizacao?.LocalDateTime,
                 Cep = value.Cep,
                 Endereco = value.Endereco,
                 Uf = value.Uf,
