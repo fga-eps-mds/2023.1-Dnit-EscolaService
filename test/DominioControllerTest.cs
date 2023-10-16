@@ -17,8 +17,8 @@ namespace test
 
         public DominioControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
-            dbContext = fixture.GetService<AppDbContext>(testOutputHelper);
-            dominioController = fixture.GetService<DominioController>(testOutputHelper);
+            dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
+            dominioController = fixture.GetService<DominioController>(testOutputHelper)!;
         }
 
         [Fact]

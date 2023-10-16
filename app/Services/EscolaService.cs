@@ -80,7 +80,7 @@ namespace app.Services
                 {
                     try
                     {
-                        string[] linha = parser.ReadFields();
+                        string[] linha = parser.ReadFields()!;
                         if (!primeiralinha)
                         {
                             primeiralinha = true;
@@ -219,7 +219,7 @@ namespace app.Services
             escola.TotalAlunos = data.NumeroTotalDeAlunos ?? 0;
             escola.TotalDocentes = data.NumeroTotalDeDocentes;
             escola.Telefone = data.Telefone;
-            escola.Rede = data.Rede.Value;
+            escola.Rede = data.Rede!.Value;
             escola.Uf = data.Uf;
             escola.Localizacao = data.Localizacao;
             escola.MunicipioId = data.IdMunicipio;
@@ -232,8 +232,8 @@ namespace app.Services
 
         private void atualizarEtapasEnsino(Escola escola, List<EtapaEnsino> etapas)
         {
-            var etapasExistentes = escola.EtapasEnsino.Select(e => e.EtapaEnsino).ToList();
-            var etapasDeletadas = escola.EtapasEnsino.Where(e => !etapas.Contains(e.EtapaEnsino));
+            var etapasExistentes = escola.EtapasEnsino!.Select(e => e.EtapaEnsino).ToList();
+            var etapasDeletadas = escola.EtapasEnsino!.Where(e => !etapas.Contains(e.EtapaEnsino));
             var etapasNovas = etapas.Where(e => !etapasExistentes.Contains(e));
 
             foreach (var etapa in etapasDeletadas)

@@ -46,7 +46,7 @@ namespace app.Entidades
 
                 while (!parser.EndOfData)
                 {
-                    var row = parser.ReadFields();
+                    var row = parser.ReadFields()!;
                     var municipio = new Municipio
                     {
                         Id = int.Parse(row[columns["id"]]),
