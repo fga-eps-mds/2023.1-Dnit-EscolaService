@@ -6,13 +6,13 @@ namespace service.Interfaces
 {
     public interface IEscolaService
     {
-        Task CadastrarAsync(CadastroEscolaDTO cadastroEscolaDTO);
+        Task CadastrarAsync(CadastroEscolaData cadastroEscolaDTO);
         Task<List<string>> CadastrarAsync(MemoryStream planilha);
         Task AtualizarAsync(Escola escola, EscolaModel data, List<EtapaEnsino>? etapas = null);
         Task<ListaEscolaPaginada<EscolaCorretaModel>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro);
         Task ExcluirAsync(Guid id);
         bool SuperaTamanhoMaximo(MemoryStream planilha);
         Task RemoverSituacaoAsync(Guid id);
-        Task AlterarDadosEscolaAsync(AtualizarDadosEscolaDTO dados);
+        Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData dados);
     }
 }

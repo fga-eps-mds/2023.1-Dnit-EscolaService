@@ -19,7 +19,7 @@ namespace app.Services
             this.configuration = configuration;
         }
 
-        public void EnviarSolicitacaoAcao(SolicitacaoAcaoDTO solicitacaoAcaoDTO)
+        public void EnviarSolicitacaoAcao(SolicitacaoAcaoData solicitacaoAcaoDTO)
         {
             string ciclosEnsino = "\n" + string.Join("\n", solicitacaoAcaoDTO.CiclosEnsino.Select(ciclo => $"    > {ciclo}"));
 
@@ -34,7 +34,7 @@ namespace app.Services
                             $"Ciclos de ensino: {ciclosEnsino}\n" +
                             $"Quantidade de alunos: {solicitacaoAcaoDTO.QuantidadeAlunos}\n" +
                             $"Observações: {solicitacaoAcaoDTO.Observacoes}\n";
-            string emailDestinatario = Environment.GetEnvironmentVariable("EMAIL_DNIT");
+            var emailDestinatario = Environment.GetEnvironmentVariable("EMAIL_DNIT") ?? "";
             EnviarEmail(emailDestinatario, "Solicitação de Serviço", mensagem);
         }
         public void EnviarEmail(string emailDestinatario, string assunto, string corpo)
@@ -42,7 +42,7 @@ namespace app.Services
 
             MailMessage mensagem = new MailMessage();
 
-            string emailRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_ADDRESS");
+            string emailRemetente = Environment.GetEnvironmentVariable("EMAIL_SERVICE_ADDRESS")!;
 
             mensagem.From = new MailAddress(emailRemetente);
             mensagem.Subject = assunto;
@@ -54,7 +54,7 @@ namespace app.Services
 
         public async Task<IEnumerable<EscolaInep>> ObterEscolas(int municipio)
         {
-            var uriBuilder = new UriBuilder(configuration["ApiInepUrl"]);
+            var uriBuilder = new UriBuilder(configuration["ApiInepUrl"]!);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
 
             query["cidade"] = municipio.ToString();

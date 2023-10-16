@@ -6,6 +6,7 @@ using EnumsNET;
 using api;
 using app.Repositorios.Interfaces;
 using api.Escolas;
+using System.Data;
 
 namespace app.Services
 {
@@ -42,14 +43,13 @@ namespace app.Services
             }
         }
 
-        public async Task CadastrarAsync(CadastroEscolaDTO escolaData)
+        public async Task CadastrarAsync(CadastroEscolaData escolaData)
         {
             var municipioId = escolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
             var escola = escolaRepositorio.Criar(escolaData, municipio);
             escolaData.IdEtapasDeEnsino
-                ?.Select(e => (EtapaEnsino)e)
-                ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, e))
+                ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
 
             await dbContext.SaveChangesAsync();
@@ -63,10 +63,10 @@ namespace app.Services
             var ufs = Enum.GetValues<UF>().ToDictionary(uf => uf.ToString().ToLower());
             var portes = Enum.GetValues<Porte>()
                 .ToDictionary(p => p.AsString(EnumFormat.Description)?.ToLower()
-                                    ?? throw new Exception($"Enum ${nameof(Porte)} deve ter descrição"));
+                                    ?? throw new NotImplementedException($"Enum ${nameof(Porte)} deve ter descrição"));
             var etapas = Enum.GetValues<EtapaEnsino>()
                 .ToDictionary(e => e.AsString(EnumFormat.Description)?.ToLower()
-                                    ?? throw new Exception($"Enum {nameof(EtapaEnsino)} deve ter descrição"));
+                                    ?? throw new NotImplementedException($"Enum {nameof(EtapaEnsino)} deve ter descrição"));
 
             using (var reader = new StreamReader(planilha))
             using (var parser = new TextFieldParser(reader))
@@ -137,7 +137,6 @@ namespace app.Services
 
                         for (int i = colunas["qtd_ensino_infantil"]; i <= colunas["qtd_ensino_fund_9ano"]; i++)
                         {
-                            var alunos = linha[i];
                             int quantidade;
                             if (int.TryParse(linha[i], out quantidade)) escola.NumeroTotalDeAlunos += quantidade;
                         }
@@ -152,32 +151,32 @@ namespace app.Services
                         }
                         else
                         {
-                            throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
+                            throw new ArgumentNullException("Cep", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
                         }
 
                         if (escola.EtapasEnsino.Count == 0 || escola.EtapasEnsino.Count != linha[colunas["etapas_ensino"]].Split(",").Count())
                         {
-                            throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição das etapas de ensino inválida!");
+                            throw new ArgumentNullException("EtapasEnsino", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição das etapas de ensino inválida!");
                         }
 
                         if (escola.Rede == default(Rede))
                         {
-                            throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
+                            throw new ArgumentNullException("Rede", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
                         }
 
                         if (escola.Uf == default(UF))
                         {
-                            throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
+                            throw new ArgumentNullException("Uf", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
                         }
 
                         if (escola.Localizacao == default(Localizacao))
                         {
-                            throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
+                            throw new ArgumentNullException("Localizacao", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
                         }
 
                         if (escola.Porte == default(Porte))
                         {
-                            throw new Exception("Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
+                            throw new ArgumentNullException("Porte", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
                         }
 
 
@@ -201,7 +200,7 @@ namespace app.Services
                     }
                     catch (FormatException)
                     {
-                        throw new Exception("Planilha com formato incompatível.");
+                        throw new FormatException("Planilha com formato incompatível.");
                     }
                 }
             }
@@ -298,13 +297,12 @@ namespace app.Services
 
         private List<EtapaEnsino> etapasParaIds(Dictionary<string, EtapaEnsino> etapas, string coluna_etapas)
         {
-            var ids = new List<int>();
             var etapas_separadas = coluna_etapas.Split(',').Select(item => item.Trim());
-            var resultado = etapas_separadas.Select(e => etapas.GetValueOrDefault(e.ToLower())).Where(e => e != default).ToList();
+            var resultado = etapas_separadas.Select(e => etapas.GetValueOrDefault(e.ToLower())).Where(e => e != default(EtapaEnsino)).ToList();
             return resultado;
         }
 
-        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaDTO dados)
+        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData dados)
         {
             var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola, incluirEtapas: true);
 

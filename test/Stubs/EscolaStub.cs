@@ -46,11 +46,11 @@ namespace test.Stubs
             }
         }
 
-        public static IEnumerable<CadastroEscolaDTO> ListarEscolasDto(IEnumerable<Municipio> municipios, bool comEtapas)
+        public static IEnumerable<CadastroEscolaData> ListarEscolasDto(IEnumerable<Municipio> municipios, bool comEtapas)
         {
             while (true)
             {
-                var escola = new CadastroEscolaDTO
+                var escola = new CadastroEscolaData
                 {
                     Cep = $"7215436{Random.Shared.Next() % 10}",
                     Endereco = $"Endereço Teste {Random.Shared.Next()}",
@@ -77,11 +77,11 @@ namespace test.Stubs
             }
         }
 
-        public static IEnumerable<AtualizarDadosEscolaDTO> ListarAtualizarEscolasDto(IEnumerable<Municipio> municipios, bool comEtapas)
+        public static IEnumerable<AtualizarDadosEscolaData> ListarAtualizarEscolasDto(IEnumerable<Municipio> municipios, bool comEtapas)
         {
             while (true)
             {
-                var escola = new AtualizarDadosEscolaDTO
+                var escola = new AtualizarDadosEscolaData
                 {
                     Latitude = Random.Shared.NextDouble().ToString().Truncate(12),
                     Longitude = Random.Shared.NextDouble().ToString().Truncate(12),

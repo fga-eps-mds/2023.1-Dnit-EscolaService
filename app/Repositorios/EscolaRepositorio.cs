@@ -59,7 +59,7 @@ namespace app.Repositorios
             return model;
         }
 
-        public Escola Criar(CadastroEscolaDTO escolaData, Municipio municipio)
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio)
         {
             var escola = new Escola
             {
@@ -131,7 +131,7 @@ namespace app.Repositorios
             if (filtro.IdEtapaEnsino != null)
             {
                 var etapas = filtro.IdEtapaEnsino.ConvertAll(e => (EtapaEnsino)e);
-                query = query.Where(escola => escola.EtapasEnsino.Any(etapa => etapas.Contains(etapa.EtapaEnsino)));
+                query = query.Where(escola => escola.EtapasEnsino!.Any(etapa => etapas.Contains(etapa.EtapaEnsino)));
             }
             if (filtro.IdMunicipio != null)
             {

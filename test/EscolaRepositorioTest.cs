@@ -57,7 +57,7 @@ namespace test
                 Nome = escolaPesquisa.Nome,
                 IdUf = (int?)escolaPesquisa.Uf,
                 IdSituacao = (int?)escolaPesquisa.Situacao,
-                IdEtapaEnsino = new List<int>() { (int)(escolaPesquisa.EtapasEnsino.FirstOrDefault()?.EtapaEnsino ?? 0 )},
+                IdEtapaEnsino = new List<int>() { (int)(escolaPesquisa.EtapasEnsino?.FirstOrDefault()?.EtapaEnsino ?? 0 )},
                 IdMunicipio = escolaPesquisa.MunicipioId,
             };
 

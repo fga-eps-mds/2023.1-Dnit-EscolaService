@@ -27,8 +27,8 @@ namespace test
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
             dbContext.PopulaEscolas(5);
 
-            escolaService = fixture.GetService<IEscolaService>(testOutputHelper);
-            escolaRepositorio = fixture.GetService<IEscolaRepositorio>(testOutputHelper);
+            escolaService = fixture.GetService<IEscolaService>(testOutputHelper)!;
+            escolaRepositorio = fixture.GetService<IEscolaRepositorio>(testOutputHelper)!;
         }
 
         [Fact]
@@ -91,8 +91,8 @@ namespace test
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
-            var exception = await Assert.ThrowsAsync<Exception>(() => escolaService.CadastrarAsync(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, CEP inválido!", exception.Message);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => escolaService.CadastrarAsync(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, CEP inválido! (Parameter 'Cep')", exception.Message);
         }
 
         [Fact]
@@ -104,8 +104,8 @@ namespace test
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
-            Exception exception = await Assert.ThrowsAsync<Exception>(() => escolaService.CadastrarAsync(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, rede inválida!", exception.Message);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => escolaService.CadastrarAsync(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, rede inválida! (Parameter 'Rede')", exception.Message);
         }
 
         [Fact]
@@ -117,8 +117,8 @@ namespace test
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
-            var exception = await Assert.ThrowsAsync<Exception>(() => escolaService.CadastrarAsync(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, UF inválida!", exception.Message);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => escolaService.CadastrarAsync(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, UF inválida! (Parameter 'Uf')", exception.Message);
         }
 
         [Fact]
@@ -130,8 +130,8 @@ namespace test
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
-            var exception = await Assert.ThrowsAsync<Exception>(() => escolaService.CadastrarAsync(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, localização inválida!", exception.Message);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => escolaService.CadastrarAsync(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, localização inválida! (Parameter 'Localizacao')", exception.Message);
         }
 
         [Fact]
@@ -143,8 +143,8 @@ namespace test
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
-            var exception = await Assert.ThrowsAsync<Exception>(() => escolaService.CadastrarAsync(memoryStream));
-            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, descrição do porte inválida!", exception.Message);
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => escolaService.CadastrarAsync(memoryStream));
+            Assert.Equal("Erro. A leitura do arquivo parou na escola: ANISIO TEIXEIRA E M EF, descrição do porte inválida! (Parameter 'Porte')", exception.Message);
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace test
 
             var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(planilha.ToString()));
 
-            var exception = await Assert.ThrowsAsync<Exception>(() => escolaService.CadastrarAsync(memoryStream));
+            var exception = await Assert.ThrowsAsync<FormatException>(() => escolaService.CadastrarAsync(memoryStream));
             Assert.Equal("Planilha com formato incompatível.", exception.Message);
         }
 
@@ -199,8 +199,8 @@ namespace test
             var retorno = await escolaService.CadastrarAsync(memoryStream);
             var escola = (await escolaRepositorio.ObterPorCodigoAsync(escolaCodigo, incluirEtapas: true))!;
 
-            Assert.Equal(etapas.Count, escola.EtapasEnsino.Count);
-            Assert.True(etapas.All(e => escola.EtapasEnsino.Exists(ee => ee.EtapaEnsino == e)));
+            Assert.Equal(etapas.Count, escola.EtapasEnsino?.Count);
+            Assert.True(etapas.All(e => escola.EtapasEnsino?.Exists(ee => ee.EtapaEnsino == e) ?? false));
         }
 
         public new void Dispose()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace api.Escolas
 {
-    public class CadastroEscolaDTO
+    public class CadastroEscolaData
     {
         public int CodigoEscola { get; set; }
         public string? NomeEscola { get; set; }

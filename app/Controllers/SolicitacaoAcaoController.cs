@@ -16,7 +16,7 @@ namespace app.Controllers
             this.solicitacaoAcaoService = solicitacaoAcaoService;
         }
         [HttpPost]
-        public IActionResult EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoDTO solicitacaoAcaoDTO)
+        public IActionResult EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoData solicitacaoAcaoDTO)
         {
             try
             {

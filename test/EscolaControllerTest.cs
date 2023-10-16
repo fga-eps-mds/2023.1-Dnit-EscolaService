@@ -33,7 +33,7 @@ namespace test
             dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
             dbContext.PopulaEscolas(5);
 
-            escolaController = fixture.GetService<EscolaController>(testOutputHelper);
+            escolaController = fixture.GetService<EscolaController>(testOutputHelper)!;
         }
 
         [Fact]
@@ -105,7 +105,7 @@ namespace test
             Assert.Equal(escola.Longitude, escolaDb.Longitude);
             Assert.Equal(escola.NumeroTotalDeAlunos, escolaDb.TotalAlunos);
             Assert.Equal(escola.NumeroTotalDeDocentes, escolaDb.TotalDocentes);
-            Assert.True(escolaDb.EtapasEnsino.All(ee => escola.IdEtapasDeEnsino.Exists(eId => (int)ee.EtapaEnsino == eId)));
+            Assert.True(escolaDb.EtapasEnsino?.All(ee => escola.IdEtapasDeEnsino.Exists(eId => (int)ee.EtapaEnsino == eId)));
         }
 
         [Fact]
@@ -240,7 +240,7 @@ namespace test
             Assert.True((resultadoObjeto.Value as string)?.Contains("rede inválida"));
         }
 
-        public new void Dispose()
+        internal new void Dispose()
         {
             dbContext.Clear();
         }

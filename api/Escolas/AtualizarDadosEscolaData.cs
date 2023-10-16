@@ -1,6 +1,6 @@
 namespace api.Escolas
 {
-    public class AtualizarDadosEscolaDTO
+    public class AtualizarDadosEscolaData
     {
         public Guid IdEscola { get; set; }
         public int? IdSituacao { get; set; }

@@ -71,7 +71,7 @@ namespace app.Controllers
         }
 
         [HttpPost("cadastrarEscola")]
-        public async Task CadastrarEscolaAsync(CadastroEscolaDTO cadastroEscolaDTO)
+        public async Task CadastrarEscolaAsync(CadastroEscolaData cadastroEscolaDTO)
         {
             await escolaService.CadastrarAsync(cadastroEscolaDTO);
         }
@@ -83,7 +83,7 @@ namespace app.Controllers
         }
 
         [HttpPut("alterarDadosEscola")]
-        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData atualizarDadosEscolaDTO)
         {
             await escolaService.AlterarDadosEscolaAsync(atualizarDadosEscolaDTO);
         }

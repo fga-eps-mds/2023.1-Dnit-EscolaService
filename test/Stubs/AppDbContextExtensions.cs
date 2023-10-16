@@ -33,7 +33,7 @@ namespace test.Stubs
             return escolas;
         }
 
-        public static List<Municipio>? PopulaMunicipios(this AppDbContext dbContext, int limit)
+        public static List<Municipio> PopulaMunicipios(this AppDbContext dbContext, int limit)
         {
             dbContext.Clear();
             if (municipios != default && limit <= municipios.Count)

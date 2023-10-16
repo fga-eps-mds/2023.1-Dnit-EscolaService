@@ -17,8 +17,8 @@ namespace test
 
         public MunicipioRepositorioTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
-            dbContext = fixture.GetService<AppDbContext>(testOutputHelper);
-            municipioRepositorio = fixture.GetService<IMunicipioRepositorio>(testOutputHelper);
+            dbContext = fixture.GetService<AppDbContext>(testOutputHelper)!;
+            municipioRepositorio = fixture.GetService<IMunicipioRepositorio>(testOutputHelper)!;
         }
 
         [Fact]

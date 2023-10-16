@@ -1,6 +1,6 @@
 ﻿namespace api.Escolas
 {
-    public class SolicitacaoAcaoDTO
+    public class SolicitacaoAcaoData
     {
         public string Escola { get; set; }
         public string UF { get; set; }

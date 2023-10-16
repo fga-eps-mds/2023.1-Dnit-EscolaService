@@ -9,7 +9,7 @@ namespace app.Services
     public class ModelConverter
     {
         public EscolaCorretaModel ToModel(Escola value) =>
-            new EscolaCorretaModel
+            new EscolaCorretaModel()
             {
                 IdEscola = value.Id,
                 CodigoEscola = value.Codigo,
@@ -41,8 +41,8 @@ namespace app.Services
                 IdMunicipio = value.MunicipioId,
 
                 NomeMunicipio = value.Municipio?.Nome,
-                EtapasEnsino = value.EtapasEnsino.ConvertAll(e => e.EtapaEnsino),
-                EtapaEnsino = value.EtapasEnsino.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
+                EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
+                EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
             };
 
         public UfModel ToModel(UF uf) =>
@@ -50,14 +50,14 @@ namespace app.Services
             {
                 Id = (int)uf,
                 Sigla = uf.ToString(),
-                Nome = uf.AsString(EnumFormat.Description),
+                Nome = uf.AsString(EnumFormat.Description)!,
             };
 
         public EtapasdeEnsinoModel ToModel(EtapaEnsino value) =>
             new EtapasdeEnsinoModel
             {
                 Id = (int)value,
-                Descricao = value.AsString(EnumFormat.Description),
+                Descricao = value.AsString(EnumFormat.Description)!,
             };
 
         public MunicipioModel ToModel(Municipio value) =>
@@ -69,7 +69,7 @@ namespace app.Services
         public SituacaoModel ToModel(Situacao value) =>
             new SituacaoModel {
                 Id = (int)value,
-                Descricao = value.AsString(EnumFormat.Description),
+                Descricao = value.AsString(EnumFormat.Description)!,
             };
     }
 }

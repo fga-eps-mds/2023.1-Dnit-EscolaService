@@ -4,9 +4,9 @@ namespace test.Stubs
 {
     public class SolicitacaoAcaoStub
     {
-        public SolicitacaoAcaoDTO ObterSolicitacaoAcaoDTO()
+        public SolicitacaoAcaoData ObterSolicitacaoAcaoDTO()
         {
-            return new SolicitacaoAcaoDTO
+            return new SolicitacaoAcaoData
             {
                 Escola = "Escola Teste",
                 UF = "DF",
