@@ -236,8 +236,14 @@ namespace app.Services
             var etapasDeletadas = escola.EtapasEnsino.Where(e => !etapas.Contains(e.EtapaEnsino));
             var etapasNovas = etapas.Where(e => !etapasExistentes.Contains(e));
 
-            etapasDeletadas.Select(e => dbContext.Remove(e)).ToList();
-            etapasNovas.Select(etapa => escolaRepositorio.AdicionarEtapaEnsino(escola, etapa)).ToList();
+            foreach (var etapa in etapasDeletadas)
+            {
+                dbContext.Remove(etapa);
+            }
+            foreach (var etapa in etapasNovas)
+            {
+                escolaRepositorio.AdicionarEtapaEnsino(escola, etapa);
+            }
         }
 
         public async Task ExcluirAsync(Guid id)
