@@ -33,4 +33,11 @@
     <ProjectReference Include="..\app\app.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <SonarQubeSetting Include="sonar.exclusions">
+      <Value>**/**</Value>
+      <Value>**</Value>
+    </SonarQubeSetting>
+   </ItemGroup>
+
 </Project>
