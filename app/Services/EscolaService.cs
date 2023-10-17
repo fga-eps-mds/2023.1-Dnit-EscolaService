@@ -7,6 +7,7 @@ using api;
 using app.Repositorios.Interfaces;
 using api.Escolas;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace app.Services
 {
@@ -43,12 +44,12 @@ namespace app.Services
             }
         }
 
-        public async Task CadastrarAsync(CadastroEscolaData escolaData)
+        public async Task CadastrarAsync(CadastroEscolaData cadastroEscolaData)
         {
-            var municipioId = escolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
+            var municipioId = cadastroEscolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
-            var escola = escolaRepositorio.Criar(escolaData, municipio);
-            escolaData.IdEtapasDeEnsino
+            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio);
+            cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
 
@@ -58,15 +59,6 @@ namespace app.Services
         public async Task<List<string>> CadastrarAsync(MemoryStream planilha)
         {
             var escolasNovas = new List<string>();
-            var redes = Enum.GetValues<Rede>().ToDictionary(r => r.ToString().ToLower());
-            var localizacoes = Enum.GetValues<Localizacao>().ToDictionary(l => l.ToString().ToLower());
-            var ufs = Enum.GetValues<UF>().ToDictionary(uf => uf.ToString().ToLower());
-            var portes = Enum.GetValues<Porte>()
-                .ToDictionary(p => p.AsString(EnumFormat.Description)?.ToLower()
-                                    ?? throw new NotImplementedException($"Enum ${nameof(Porte)} deve ter descrição"));
-            var etapas = Enum.GetValues<EtapaEnsino>()
-                .ToDictionary(e => e.AsString(EnumFormat.Description)?.ToLower()
-                                    ?? throw new NotImplementedException($"Enum {nameof(EtapaEnsino)} deve ter descrição"));
 
             using (var reader = new StreamReader(planilha))
             using (var parser = new TextFieldParser(reader))
@@ -87,111 +79,11 @@ namespace app.Services
                             continue;
                         }
 
-                        Dictionary<string, int> colunas = new Dictionary<string, int>
-                        {
-                            {"ano_senso", 0 },
-                            {"id", 1 },
-                            {"codigo_inep", 2 },
-                            {"nome_escola", 3 },
-                            {"rede", 4 },
-                            {"porte", 5 },
-                            {"endereco", 6 },
-                            {"cep", 7 },
-                            {"cidade", 8 },
-                            {"uf", 9 },
-                            {"localizacao", 10 },
-                            {"latitude", 11 },
-                            {"longitude", 12 },
-                            {"ddd", 13 },
-                            {"telefone", 14 },
-                            {"etapas_ensino", 15 },
-                            {"qtd_ensino_infantil", 16 },
-                            {"qtd_ensino_fund_1ano", 17 },
-                            {"qtd_ensino_fund_2ano", 18 },
-                            {"qtd_ensino_fund_3ano", 19 },
-                            {"qtd_ensino_fund_4ano", 20 },
-                            {"qtd_ensino_fund_5ano", 21 },
-                            {"qtd_ensino_fund_6ano", 22 },
-                            {"qtd_ensino_fund_7ano", 23 },
-                            {"qtd_ensino_fund_8ano", 24 },
-                            {"qtd_ensino_fund_9ano", 25 },
-                            {"qtd_docentes", 26 },
-                        };
+                        var escolaNova = await criarEscolaPorLinhaAsync(linha);
 
-                        var escola = new EscolaModel()
+                        if (escolaNova == null)
                         {
-                            CodigoEscola = int.Parse(linha[colunas["codigo_inep"]]),
-                            NomeEscola = linha[colunas["nome_escola"]],
-                            Uf = ufs.GetValueOrDefault(linha[colunas["uf"]].ToLower()),
-                            Rede = redes.GetValueOrDefault(linha[colunas["rede"]].ToLower()),
-                            Porte = portes.GetValueOrDefault(linha[colunas["porte"]].ToLower()),
-                            Localizacao = localizacoes.GetValueOrDefault(linha[colunas["localizacao"]].ToLower()),
-                            Endereco = linha[colunas["endereco"]],
-                            Cep = linha[colunas["cep"]],
-                            Latitude = linha[colunas["latitude"]],
-                            Longitude = linha[colunas["longitude"]],
-                            Telefone = linha[colunas["ddd"]] + linha[colunas["telefone"]],
-                            NumeroTotalDeDocentes = int.Parse(linha[colunas["qtd_docentes"]]),
-                            EtapasEnsino = etapasParaIds(etapas, linha[colunas["etapas_ensino"]]),
-                        };
-
-                        for (int i = colunas["qtd_ensino_infantil"]; i <= colunas["qtd_ensino_fund_9ano"]; i++)
-                        {
-                            int quantidade;
-                            if (int.TryParse(linha[i], out quantidade)) escola.NumeroTotalDeAlunos += quantidade;
-                        }
-
-                        //Lançando exceçães para erro nas colunas da planilha inserida
-
-                        var municipio = await ObterCodigoMunicipioPorCEPAsync(escola.Cep);
-                        int codigoMunicipio;
-                        if (int.TryParse(municipio, out codigoMunicipio))
-                        {
-                            escola.IdMunicipio = int.Parse(municipio);
-                        }
-                        else
-                        {
-                            throw new ArgumentNullException("Cep", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
-                        }
-
-                        if (escola.EtapasEnsino.Count == 0 || escola.EtapasEnsino.Count != linha[colunas["etapas_ensino"]].Split(",").Count())
-                        {
-                            throw new ArgumentNullException("EtapasEnsino", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição das etapas de ensino inválida!");
-                        }
-
-                        if (escola.Rede == default(Rede))
-                        {
-                            throw new ArgumentNullException("Rede", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
-                        }
-
-                        if (escola.Uf == default(UF))
-                        {
-                            throw new ArgumentNullException("Uf", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
-                        }
-
-                        if (escola.Localizacao == default(Localizacao))
-                        {
-                            throw new ArgumentNullException("Localizacao", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
-                        }
-
-                        if (escola.Porte == default(Porte))
-                        {
-                            throw new ArgumentNullException("Porte", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
-                        }
-
-
-                        //Atualizando ou inserindo escolas no banco de dados
-                        var escolaExistente = await escolaRepositorio.ObterPorCodigoAsync(escola.CodigoEscola);
-                        if (escolaExistente != default)
-                        {
-                            await AtualizarAsync(escolaExistente, escola);
                             continue;
-                        }
-
-                        var escolaNova = escolaRepositorio.Criar(escola);
-                        foreach (var etapa in escola.EtapasEnsino)
-                        {
-                            escolaRepositorio.AdicionarEtapaEnsino(escolaNova, etapa);
                         }
 
                         await dbContext.SaveChangesAsync();
@@ -207,14 +99,14 @@ namespace app.Services
             return escolasNovas;
         }
 
-        public async Task AtualizarAsync(Escola escola, EscolaModel data, List<EtapaEnsino>? etapasData = null)
+        public async Task AtualizarAsync(Escola escola, EscolaModel data)
         {
             escola.Nome = data.NomeEscola;
             escola.Codigo = data.CodigoEscola;
             escola.Cep = data.Cep;
             escola.Endereco = data.Endereco;
-            escola.Latitude = data.Latitude;
-            escola.Longitude = data.Longitude;
+            escola.Latitude = data.Latitude ?? "";
+            escola.Longitude = data.Longitude ?? "";
             escola.TotalAlunos = data.NumeroTotalDeAlunos ?? 0;
             escola.TotalDocentes = data.NumeroTotalDeDocentes;
             escola.Telefone = data.Telefone;
@@ -225,7 +117,7 @@ namespace app.Services
             escola.Porte = data.Porte;
             escola.DataAtualizacao = DateTimeOffset.Now;
 
-            atualizarEtapasEnsino(escola, data.EtapasEnsino);
+            atualizarEtapasEnsino(escola, data.EtapasEnsino!);
             await dbContext.SaveChangesAsync();
         }
 
@@ -319,6 +211,135 @@ namespace app.Services
 
             await dbContext.SaveChangesAsync();
         }
+
+        private string obterValorLinha(string[] linha, Coluna coluna)
+        {
+            return linha[(int)coluna];
+        }
+
+        private async Task<Escola?> criarEscolaPorLinhaAsync(string[] linha)
+        {
+            var redes = Enum.GetValues<Rede>().ToDictionary(r => r.ToString().ToLower());
+            var localizacoes = Enum.GetValues<Localizacao>().ToDictionary(l => l.ToString().ToLower());
+            var ufs = Enum.GetValues<UF>().ToDictionary(uf => uf.ToString().ToLower());
+            var portes = Enum.GetValues<Porte>()
+                .ToDictionary(p => p.AsString(EnumFormat.Description)?.ToLower()
+                                    ?? throw new NotImplementedException($"Enum ${nameof(Porte)} deve ter descrição"));
+            var etapas = Enum.GetValues<EtapaEnsino>()
+                .ToDictionary(e => e.AsString(EnumFormat.Description)?.ToLower()
+                                    ?? throw new NotImplementedException($"Enum {nameof(EtapaEnsino)} deve ter descrição"));
+
+            var escola = new EscolaModel()
+            {
+                CodigoEscola = int.Parse(obterValorLinha(linha, Coluna.CodigoInep)),
+                NomeEscola = obterValorLinha(linha, Coluna.NomeEscola),
+                Uf = ufs.GetValueOrDefault(obterValorLinha(linha, Coluna.Uf).ToLower()),
+                Rede = redes.GetValueOrDefault(obterValorLinha(linha, Coluna.Rede).ToLower()),
+                Porte = portes.GetValueOrDefault(obterValorLinha(linha, Coluna.Porte).ToLower()),
+                Localizacao = localizacoes.GetValueOrDefault(obterValorLinha(linha, Coluna.Localizacao).ToLower()),
+                Endereco = obterValorLinha(linha, Coluna.Endereco),
+                Cep = obterValorLinha(linha, Coluna.Cep),
+                Latitude = obterValorLinha(linha, Coluna.Latitude),
+                Longitude = obterValorLinha(linha, Coluna.Longitude),
+                Telefone = obterValorLinha(linha, Coluna.Dddd) + obterValorLinha(linha, Coluna.Telefone),
+                NumeroTotalDeDocentes = int.Parse(obterValorLinha(linha, Coluna.QtdDocentes)),
+                EtapasEnsino = etapasParaIds(etapas, obterValorLinha(linha, Coluna.EtapasEnsino)),
+                IdMunicipio = null,
+            };
+
+            for (int i = (int)Coluna.QtdEnsinoInfantil; i <= (int)Coluna.QtdEnsinoFund9Ano; i++)
+            {
+                int quantidade;
+                if (int.TryParse(linha[i], out quantidade)) escola.NumeroTotalDeAlunos += quantidade;
+            }
+
+            var municipio = await ObterCodigoMunicipioPorCEPAsync(escola.Cep);
+            int codigoMunicipio;
+            if (int.TryParse(municipio, out codigoMunicipio))
+            {
+                escola.IdMunicipio = int.Parse(municipio);
+            }
+
+            validaDadosCadastro(escola, obterValorLinha(linha, Coluna.EtapasEnsino));
+            
+            var escolaExistente = await escolaRepositorio.ObterPorCodigoAsync(escola.CodigoEscola);
+            if (escolaExistente != default)
+            {
+                await AtualizarAsync(escolaExistente, escola);
+                return null;
+            }
+
+            var escolaNova = escolaRepositorio.Criar(escola);
+            foreach (var etapa in escola.EtapasEnsino)
+            {
+                escolaRepositorio.AdicionarEtapaEnsino(escolaNova, etapa);
+            }
+
+            return escolaNova;
+        }
+
+        private void validaDadosCadastro(EscolaModel escola, string etapas)
+        {
+            if (escola.IdMunicipio == null)
+            {
+                throw new ArgumentNullException("Cep", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
+            }
+            if (escola.EtapasEnsino?.Count == 0 || escola.EtapasEnsino?.Count != etapas.Split(",").Count())
+            {
+                throw new ArgumentNullException("EtapasEnsino", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição das etapas de ensino inválida!");
+            }
+
+            if (escola.Rede == default(Rede))
+            {
+                throw new ArgumentNullException("Rede", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
+            }
+
+            if (escola.Uf == default(UF))
+            {
+                throw new ArgumentNullException("Uf", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
+            }
+
+            if (escola.Localizacao == default(Localizacao))
+            {
+                throw new ArgumentNullException("Localizacao", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
+            }
+
+            if (escola.Porte == default(Porte))
+            {
+                throw new ArgumentNullException("Porte", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
+            }
+        }
+    }
+
+    enum Coluna
+    {
+        AnoSenso = 0,
+        Id = 1,
+        CodigoInep = 2,
+        NomeEscola = 3,
+        Rede = 4,
+        Porte = 5,
+        Endereco = 6,
+        Cep = 7,
+        Cidade = 8,
+        Uf = 9,
+        Localizacao = 10,
+        Latitude = 11,
+        Longitude = 12,
+        Dddd = 13,
+        Telefone = 14,
+        EtapasEnsino = 15,
+        QtdEnsinoInfantil = 16,
+        QtdEnsinoFund1Ano= 17,
+        QtdEnsinoFund2Ano = 18,
+        QtdEnsinoFund3Ano = 19,
+        QtdEnsinoFund4Ano = 20,
+        QtdEnsinoFund5Ano = 21,
+        QtdEnsinoFund6Ano = 22,
+        QtdEnsinoFund7Ano = 23,
+        QtdEnsinoFund8Ano = 24,
+        QtdEnsinoFund9Ano = 25,
+        QtdDocentes = 26,
     }
 }
 

@@ -8,7 +8,7 @@ namespace service.Interfaces
     {
         Task CadastrarAsync(CadastroEscolaData cadastroEscolaDTO);
         Task<List<string>> CadastrarAsync(MemoryStream planilha);
-        Task AtualizarAsync(Escola escola, EscolaModel data, List<EtapaEnsino>? etapas = null);
+        Task AtualizarAsync(Escola escola, EscolaModel data);
         Task<ListaEscolaPaginada<EscolaCorretaModel>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro);
         Task ExcluirAsync(Guid id);
         bool SuperaTamanhoMaximo(MemoryStream planilha);

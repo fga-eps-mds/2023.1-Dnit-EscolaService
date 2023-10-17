@@ -63,14 +63,14 @@ namespace app.Repositorios
         {
             var escola = new Escola
             {
-                Nome = escolaData.NomeEscola,
+                Nome = escolaData.NomeEscola!,
                 Codigo = escolaData.CodigoEscola,
-                Cep = escolaData.Cep,
-                Endereco = escolaData.Endereco,
-                Latitude = escolaData.Latitude,
-                Longitude = escolaData.Longitude,
+                Cep = escolaData.Cep!,
+                Endereco = escolaData.Endereco!,
+                Latitude = escolaData.Latitude ?? "",
+                Longitude = escolaData.Longitude ?? "",
                 TotalAlunos = escolaData.NumeroTotalDeAlunos,
-                Telefone = escolaData.Telefone,
+                Telefone = escolaData.Telefone ?? "",
                 TotalDocentes = escolaData.NumeroTotalDeDocentes,
                 Rede = (Rede)escolaData.IdRede,
                 Uf = (UF)escolaData.IdUf,
@@ -85,31 +85,31 @@ namespace app.Repositorios
             return escola;
         }
 
-        public Escola Criar(EscolaModel data)
+        public Escola Criar(EscolaModel dadosEscola)
         {
-            var escola = new Escola()
+            var entidade = new Escola()
             {
                 Id = Guid.NewGuid(),
-                Nome = data.NomeEscola,
-                Codigo = data.CodigoEscola,
-                Cep = data.Cep,
-                Endereco = data.Endereco,
-                Latitude = data.Latitude,
-                Longitude = data.Longitude,
-                TotalAlunos = data.NumeroTotalDeAlunos ?? 0,
-                Telefone = data.Telefone,
-                TotalDocentes = data.NumeroTotalDeDocentes,
-                Rede = data.Rede.Value,
-                Uf = data.Uf,
-                Localizacao = data.Localizacao,
-                MunicipioId = data.IdMunicipio,
-                Porte = data.Porte,
-                Situacao = data.Situacao,
-                Observacao = data.Observacao,
+                Nome = dadosEscola.NomeEscola,
+                Codigo = dadosEscola.CodigoEscola,
+                Cep = dadosEscola.Cep,
+                Endereco = dadosEscola.Endereco,
+                Latitude = dadosEscola.Latitude ?? "",
+                Longitude = dadosEscola.Longitude ?? "",
+                TotalAlunos = dadosEscola.NumeroTotalDeAlunos ?? 0,
+                Telefone = dadosEscola.Telefone,
+                TotalDocentes = dadosEscola.NumeroTotalDeDocentes,
+                Rede = dadosEscola.Rede!.Value,
+                Uf = dadosEscola.Uf,
+                Localizacao = dadosEscola.Localizacao,
+                MunicipioId = dadosEscola.IdMunicipio,
+                Porte = dadosEscola.Porte,
+                Situacao = dadosEscola.Situacao,
+                Observacao = dadosEscola.Observacao,
                 DataAtualizacao = DateTimeOffset.Now,
             };
-            dbContext.Add(escola);
-            return escola;
+            dbContext.Add(entidade);
+            return entidade;
         }
 
         public async Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro)
