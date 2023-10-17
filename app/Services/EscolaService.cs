@@ -63,10 +63,10 @@ namespace app.Services
             var ufs = Enum.GetValues<UF>().ToDictionary(uf => uf.ToString().ToLower());
             var portes = Enum.GetValues<Porte>()
                 .ToDictionary(p => p.AsString(EnumFormat.Description)?.ToLower()
-                                    ?? throw new NotImplementedException($"Enum ${nameof(Porte)} deve ter descrição"));
+                                    ?? throw new NotImplementedException($"Enum ${nameof(Porte)} deve ter descriÃ§Ã£o"));
             var etapas = Enum.GetValues<EtapaEnsino>()
                 .ToDictionary(e => e.AsString(EnumFormat.Description)?.ToLower()
-                                    ?? throw new NotImplementedException($"Enum {nameof(EtapaEnsino)} deve ter descrição"));
+                                    ?? throw new NotImplementedException($"Enum {nameof(EtapaEnsino)} deve ter descriÃ§Ã£o"));
 
             using (var reader = new StreamReader(planilha))
             using (var parser = new TextFieldParser(reader))
@@ -141,7 +141,7 @@ namespace app.Services
                             if (int.TryParse(linha[i], out quantidade)) escola.NumeroTotalDeAlunos += quantidade;
                         }
 
-                        //Lançando exceções para erro nas colunas da planilha inserida
+                        //LanÃ§ando exceÃ§Ã£es para erro nas colunas da planilha inserida
 
                         var municipio = await ObterCodigoMunicipioPorCEPAsync(escola.Cep);
                         int codigoMunicipio;
@@ -151,32 +151,32 @@ namespace app.Services
                         }
                         else
                         {
-                            throw new ArgumentNullException("Cep", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP inválido!");
+                            throw new ArgumentNullException("Cep", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", CEP invÃ¡lido!");
                         }
 
                         if (escola.EtapasEnsino.Count == 0 || escola.EtapasEnsino.Count != linha[colunas["etapas_ensino"]].Split(",").Count())
                         {
-                            throw new ArgumentNullException("EtapasEnsino", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição das etapas de ensino inválida!");
+                            throw new ArgumentNullException("EtapasEnsino", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descriÃ§Ã£o das etapas de ensino invÃ¡lida!");
                         }
 
                         if (escola.Rede == default(Rede))
                         {
-                            throw new ArgumentNullException("Rede", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede inválida!");
+                            throw new ArgumentNullException("Rede", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", rede invÃ¡lida!");
                         }
 
                         if (escola.Uf == default(UF))
                         {
-                            throw new ArgumentNullException("Uf", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF inválida!");
+                            throw new ArgumentNullException("Uf", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", UF invÃ¡lida!");
                         }
 
                         if (escola.Localizacao == default(Localizacao))
                         {
-                            throw new ArgumentNullException("Localizacao", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localização inválida!");
+                            throw new ArgumentNullException("Localizacao", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", localizaÃ§Ã£o invÃ¡lida!");
                         }
 
                         if (escola.Porte == default(Porte))
                         {
-                            throw new ArgumentNullException("Porte", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
+                            throw new ArgumentNullException("Porte", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descriÃ§Ã£o do porte invÃ¡lida!");
                         }
 
 
@@ -200,7 +200,7 @@ namespace app.Services
                     }
                     catch (FormatException)
                     {
-                        throw new FormatException("Planilha com formato incompatível.");
+                        throw new FormatException("Planilha com formato incompatÃ­vel.");
                     }
                 }
             }
