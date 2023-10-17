@@ -121,7 +121,7 @@ namespace test
             var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
             var memoryStream = new MemoryStream(bytes);
 
-            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            var arquivo = new FormFile(memoryStream, 0, bytes.Length, "planilha", "planilha.csv");
             arquivo.Headers = new HeaderDictionary();
             arquivo.Headers.ContentType = "text/csv";
             var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
@@ -146,7 +146,7 @@ namespace test
             var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
             var memoryStream = new MemoryStream(bytes);
 
-            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.pdf");
+            var arquivo = new FormFile(memoryStream, 0, bytes.Length, "planilha", "planilha.pdf");
             arquivo.Headers = new HeaderDictionary();
             arquivo.Headers.ContentType = "application/pdf";
             var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
@@ -163,7 +163,7 @@ namespace test
             var bytes = Encoding.UTF8.GetBytes("");
             var memoryStream = new MemoryStream(bytes);
 
-            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            var arquivo = new FormFile(memoryStream, 0, bytes.Length, "planilha", "planilha.csv");
             arquivo.Headers = new HeaderDictionary();
             arquivo.Headers.ContentType = "text/csv";
 
@@ -181,15 +181,15 @@ namespace test
             var caminhoArquivo = Path.Join("..", "..", "..", "Stubs", "planilha_maior_max.csv");
             var bytes = File.ReadAllBytes(caminhoArquivo);
             var stream = new MemoryStream(bytes);
-            var arquivo = new FormFile(stream, 0, bytes.Count(), "planilha_maior_max", "planilha_maior_max.csv");
+            var arquivo = new FormFile(stream, 0, bytes.Length, "planilha_maior_max", "planilha_maior_max.csv");
             arquivo.Headers = new HeaderDictionary();
             arquivo.Headers.ContentType = "text/csv";
             var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
 
             Assert.IsType<ObjectResult>(resultado);
             var resultadoObjeto = resultado as ObjectResult;
-            Assert.Equal(406, resultadoObjeto.StatusCode);
-            Assert.Equal("Tamanho máximo de arquivo ultrapassado!", resultadoObjeto.Value);
+            Assert.Equal(406, resultadoObjeto?.StatusCode);
+            Assert.Equal("Tamanho máximo de arquivo ultrapassado!", resultadoObjeto?.Value);
         }
 
         [Fact]
@@ -205,7 +205,7 @@ namespace test
             var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
             var memoryStream = new MemoryStream(bytes);
 
-            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            var arquivo = new FormFile(memoryStream, 0, bytes.Length, "planilha", "planilha.csv");
             arquivo.Headers = new HeaderDictionary();
             arquivo.Headers.ContentType = "text/csv";
             var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
@@ -213,7 +213,7 @@ namespace test
             Assert.IsType<ObjectResult>(resultado);
             var resultadoObjeto = resultado as ObjectResult;
             Assert.Equal(500, resultadoObjeto?.StatusCode);
-            Assert.True((resultadoObjeto.Value as string)?.Contains("descrição das etapas de ensino inválida"));
+            Assert.True((resultadoObjeto?.Value as string)?.Contains("descrição das etapas de ensino inválida"));
         }
 
         [Fact]
@@ -229,15 +229,15 @@ namespace test
             var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
             var memoryStream = new MemoryStream(bytes);
 
-            var arquivo = new FormFile(memoryStream, 0, bytes.Count(), "planilha", "planilha.csv");
+            var arquivo = new FormFile(memoryStream, 0, bytes.Length, "planilha", "planilha.csv");
             arquivo.Headers = new HeaderDictionary();
             arquivo.Headers.ContentType = "text/csv";
             var resultado = await escolaController.EnviarPlanilhaAsync(arquivo);
 
             Assert.IsType<ObjectResult>(resultado);
             var resultadoObjeto = resultado as ObjectResult;
-            Assert.Equal(500, resultadoObjeto.StatusCode);
-            Assert.True((resultadoObjeto.Value as string)?.Contains("rede inválida"));
+            Assert.Equal(500, resultadoObjeto?.StatusCode);
+            Assert.True((resultadoObjeto?.Value as string)?.Contains("rede inválida"));
         }
 
         internal new void Dispose()
