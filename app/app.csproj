@@ -42,7 +42,6 @@
   <ItemGroup>
     <SonarQubeSetting Include="sonar.exclusions">
       <Value>**\Migrations\**</Value>
-		<Value>Program.cs</Value>
     </SonarQubeSetting>
    </ItemGroup>
 
