@@ -12,6 +12,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using app.Services;
+using System.ComponentModel;
 
 namespace app.Controllers
 {
@@ -21,11 +23,13 @@ namespace app.Controllers
     {
         private readonly IDominioRepositorio dominioRepositorio;
         private readonly IConfiguration configuration;
+        private readonly AuthService authService;
 
-        public DominioController(IDominioRepositorio dominioRepositorio, IConfiguration configuration)
+        public DominioController(IDominioRepositorio dominioRepositorio, IConfiguration configuration, AuthService authService)
         {
             this.dominioRepositorio = dominioRepositorio;
             this.configuration = configuration;
+            this.authService = authService;
         }
 
         [HttpGet("login/teste")]
@@ -35,41 +39,25 @@ namespace app.Controllers
             {
                 return Results.Unauthorized();
             }
-
-            var configuracaoAutenticaco = configuration.GetSection("Autenticacao");
-
-            var issuer = configuracaoAutenticaco["Issuer"];
-            var audience = configuracaoAutenticaco["Audience"];
-            var key = Encoding.ASCII.GetBytes(configuracaoAutenticaco["Key"]!);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var (token, expiracao) = authService.GenerateToken(new auth.AuthUserModel<Permissao>
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim("Id", Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, username),
-                    new Claim(JwtRegisteredClaimNames.Email, "email@gmail.com"),
-                    new Claim(JwtRegisteredClaimNames.Jti,
-                    Guid.NewGuid().ToString())
-                    }),
-                Expires = DateTime.UtcNow.AddMinutes(int.Parse(configuracaoAutenticaco["ExpireMinutes"]!)),
-                Issuer = issuer,
-                Audience = audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwtToken = tokenHandler.WriteToken(token);
-            var stringToken = tokenHandler.WriteToken(token);
-            return Results.Ok(stringToken);
+                Id = 12,
+                Name = "Cassio",
+                Permissions = new List<Permissao>() { Permissao.VisualizarUnidadeFederativa},
+            }) ;
+            return Results.Ok(token);
         }
+        public enum Permissao {
+            [Description("Visualizar Unidades Federativas")]
+            VisualizarUnidadeFederativa = 5000,
+        }
+
         [HttpGet("unidadeFederativa")]
         [Authorize]
         public IActionResult ObterListaUF()
         {
+            authService.Require(User, Permissao.VisualizarUnidadeFederativa);
             IEnumerable<UnidadeFederativa> listaUnidadeFederativa = dominioRepositorio.ObterUnidadeFederativa();
-
             return new OkObjectResult(listaUnidadeFederativa);
         }
 
