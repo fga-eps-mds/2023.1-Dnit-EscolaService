@@ -1,12 +1,14 @@
-﻿using app.Controllers;
-using dominio;
+﻿using api.Escolas;
+using app.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using service.Interfaces;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using test.Stub;
+using test.Fixtures;
+using test.Stubs;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace test
 {

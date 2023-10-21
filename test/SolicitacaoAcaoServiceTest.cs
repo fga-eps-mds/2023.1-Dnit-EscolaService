@@ -1,15 +1,15 @@
 ﻿using Moq;
-using service;
 using service.Interfaces;
 using System.Net;
 using System.Net.Mail;
-using test.Stub;
 using Moq.Protected;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using test.Stubs;
+using app.Services;
 
 namespace test
 {
@@ -31,12 +31,12 @@ namespace test
 
             ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
-            SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
+            var solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
 
             service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
-            string mensagemEsperada =   "Nova solicitação de ação em escola.\n\n" +
+            var mensagemEsperada = "Nova solicitação de ação em escola.\n\n" +
                                         "Escola: Escola Teste\n" +
                                         "UF: DF\n" +
                                         "Municipio: Brasília\n" +
@@ -63,9 +63,9 @@ namespace test
 
             ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
-            string emailDestinatario = "dnit@email.com";
-            string assunto = "Solicitação de ação";
-            string corpo = "Nova solicitação de ação";
+            var emailDestinatario = "dnit@email.com";
+            var assunto = "Solicitação de ação";
+            var corpo = "Nova solicitação de ação";
 
             service.EnviarEmail(emailDestinatario, assunto, corpo);
 
@@ -86,9 +86,9 @@ namespace test
 
             ISolicitacaoAcaoService service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object);
 
-            string emailDestinatario = "";
-            string assunto = "Solicitação de ação";
-            string corpo = "Nova solicitação de ação";
+            var emailDestinatario = "";
+            var assunto = "Solicitação de ação";
+            var corpo = "Nova solicitação de ação";
 
             Assert.Throws<ArgumentException>(() => service.EnviarEmail(emailDestinatario, assunto, corpo));
         }
@@ -142,7 +142,7 @@ namespace test
             int codEscolaB = 87654321;
             int primeiraPosicao = 0;
             int segundaPosicao = 1;
-            
+
             var escolas = await service.ObterEscolas(municipio);
 
             Assert.Equal(codEscolaA, escolas.ElementAt(primeiraPosicao).Cod);
