@@ -121,4 +121,19 @@ namespace api
         [Description("Municipio não encontrado")]
         MunicipioNaoEncontrado,
     }
+
+    public enum Permissao
+    {
+        [Description("Cadastrar Escola")]
+        EscolaCadastrar = 1000,
+
+        [Description("Editar Escola")]
+        EscolaEditar = 1001,
+
+        [Description("Remover Escola")]
+        EscolaRemover = 1002,
+
+        [Description("Visualizar Escola")]
+        EscolaVisualizar = 1003,
+    }
 }

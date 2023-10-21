@@ -3,7 +3,7 @@ using api.Escolas;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
-using System.ComponentModel;
+using api;
 
 namespace app.Controllers
 {
@@ -18,37 +18,6 @@ namespace app.Controllers
         {
             this.escolaService = escolaService;
             this.authService = authService;
-        }
-
-        public enum Permissao
-        {
-            [Description("Cadastrar Escola")]
-            EscolaCadastrar = 1000,
-
-            [Description("Editar Escola")]
-            EscolaEditar = 1001,
-
-            [Description("Remover Escola")]
-            EscolaRemover = 1002,
-
-            [Description("Visualizar Escola")]
-            EscolaVisualizar = 1003,
-        }
-
-        [HttpGet("login/teste")]
-        public IResult LoginTeste(string username, string password)
-        {
-            if (username != "joydip" || password != "joydip123")
-            {
-                return Results.Unauthorized();
-            }
-            var (token, expiracao) = authService.GenerateToken(new auth.AuthUserModel<Permissao>
-            {
-                Id = 12,
-                Name = "Cassio",
-                Permissions = new List<Permissao>() { Permissao.EscolaVisualizar, Permissao.EscolaRemover, Permissao.EscolaCadastrar },
-            });
-            return Results.Ok(token);
         }
 
         [Authorize]
@@ -124,7 +93,7 @@ namespace app.Controllers
         [HttpPost("removerSituacao")]
         public async Task RemoverSituacaoAsync([FromQuery] Guid idEscola)
         {
-            authService.Require(User, Permissao.EscolaRemover);
+            authService.Require(User, Permissao.EscolaEditar);
             await escolaService.RemoverSituacaoAsync(idEscola);
         }
 
