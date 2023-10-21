@@ -365,3 +365,5 @@ FodyWeavers.xsd
 
 coverage.*
 app/build
+
+report/
