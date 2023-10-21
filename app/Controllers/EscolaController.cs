@@ -1,8 +1,7 @@
 using app.Services;
-using dominio;
+using api.Escolas;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using service;
 using service.Interfaces;
 using System.ComponentModel;
 
@@ -55,7 +54,7 @@ namespace app.Controllers
         [Authorize]
         [Consumes("multipart/form-data")]
         [HttpPost("cadastrarEscolaPlanilha")]
-        public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
+        public async Task<IActionResult> EnviarPlanilhaAsync(IFormFile arquivo)
         {
             authService.Require(User, Permissao.EscolaCadastrar);
             List<string> escolasNovas;
@@ -85,7 +84,7 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    escolasNovas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                    escolasNovas = await escolaService.CadastrarAsync(memoryStream);
                 }
 
                 return Ok(escolasNovas);
@@ -98,62 +97,44 @@ namespace app.Controllers
 
         [Authorize]
         [HttpGet("obter")]
-        public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ObterEscolasAsync([FromQuery] PesquisaEscolaFiltro filtro)
         {
             authService.Require(User, Permissao.EscolaVisualizar);
 
-            ListaPaginada<EscolaCorreta> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
-
-            return new OkObjectResult(listaEscolaPaginada);
+            return await escolaService.ListarPaginadaAsync(filtro);
         }
 
         [Authorize]
         [HttpDelete("excluir")]
-        public IActionResult ExcluirEscola([FromQuery] int id)
+        public async Task ExcluirEscolaAsync([FromQuery] Guid id)
         {
             authService.Require(User, Permissao.EscolaRemover);
-            escolaService.ExcluirEscola(id);
-            return Ok();
+            await escolaService.ExcluirAsync(id);
         }
 
         [Authorize]
         [HttpPost("cadastrarEscola")]
-        public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO cadastroEscolaDTO)
+        public async Task CadastrarEscolaAsync(CadastroEscolaData cadastroEscolaDTO)
         {
             authService.Require(User, Permissao.EscolaCadastrar);
-            escolaService.CadastrarEscola(cadastroEscolaDTO);
-            return Ok();
+            await escolaService.CadastrarAsync(cadastroEscolaDTO);
         }
 
         [Authorize]
         [HttpPost("removerSituacao")]
-        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        public async Task RemoverSituacaoAsync([FromQuery] Guid idEscola)
         {
             authService.Require(User, Permissao.EscolaRemover);
-            escolaService.RemoverSituacaoEscola(idEscola);
-            return Ok();
+            await escolaService.RemoverSituacaoAsync(idEscola);
         }
 
         [Authorize]
         [HttpPut("alterarDadosEscola")]
-        public IActionResult AlterarDadosEscola([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData atualizarDadosEscolaDTO)
         {
             authService.Require(User, Permissao.EscolaEditar);
 
-            try
-            {
-                escolaService.AlterarDadosEscola(atualizarDadosEscolaDTO);
-                return Ok();
-            }
-            catch (Npgsql.PostgresException ex)
-            {
-                if(ex.SqlState == "23503")
-                {
-                    return Conflict("A chave estrangeira é inválida.");
-                }
-                return StatusCode(500, "Houve um erro interno no servidor.");
-            }
+            await escolaService.AlterarDadosEscolaAsync(atualizarDadosEscolaDTO);
         }
-
     }
 }
