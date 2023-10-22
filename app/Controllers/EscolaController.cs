@@ -9,7 +9,7 @@ namespace app.Controllers
 {
     [ApiController]
     [Route("api/escolas")]
-    public class EscolaController : ControllerBase
+    public class EscolaController : AppController
     {
         private readonly IEscolaService escolaService;
         private readonly AuthService authService;
@@ -25,7 +25,7 @@ namespace app.Controllers
         [HttpPost("cadastrarEscolaPlanilha")]
         public async Task<IActionResult> EnviarPlanilhaAsync(IFormFile arquivo)
         {
-            authService.Require(User, Permissao.EscolaCadastrar);
+            authService.Require(Usuario, Permissao.EscolaCadastrar);
             List<string> escolasNovas;
 
             try
@@ -68,7 +68,7 @@ namespace app.Controllers
         [HttpGet("obter")]
         public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ObterEscolasAsync([FromQuery] PesquisaEscolaFiltro filtro)
         {
-            authService.Require(User, Permissao.EscolaVisualizar);
+            authService.Require(Usuario, Permissao.EscolaVisualizar);
 
             return await escolaService.ListarPaginadaAsync(filtro);
         }
@@ -77,7 +77,7 @@ namespace app.Controllers
         [HttpDelete("excluir")]
         public async Task ExcluirEscolaAsync([FromQuery] Guid id)
         {
-            authService.Require(User, Permissao.EscolaRemover);
+            authService.Require(Usuario, Permissao.EscolaRemover);
             await escolaService.ExcluirAsync(id);
         }
 
@@ -85,7 +85,7 @@ namespace app.Controllers
         [HttpPost("cadastrarEscola")]
         public async Task CadastrarEscolaAsync(CadastroEscolaData cadastroEscolaDTO)
         {
-            authService.Require(User, Permissao.EscolaCadastrar);
+            authService.Require(Usuario, Permissao.EscolaCadastrar);
             await escolaService.CadastrarAsync(cadastroEscolaDTO);
         }
 
@@ -93,7 +93,7 @@ namespace app.Controllers
         [HttpPost("removerSituacao")]
         public async Task RemoverSituacaoAsync([FromQuery] Guid idEscola)
         {
-            authService.Require(User, Permissao.EscolaEditar);
+            authService.Require(Usuario, Permissao.EscolaEditar);
             await escolaService.RemoverSituacaoAsync(idEscola);
         }
 
@@ -101,7 +101,7 @@ namespace app.Controllers
         [HttpPut("alterarDadosEscola")]
         public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData atualizarDadosEscolaDTO)
         {
-            authService.Require(User, Permissao.EscolaEditar);
+            authService.Require(Usuario, Permissao.EscolaEditar);
 
             await escolaService.AlterarDadosEscolaAsync(atualizarDadosEscolaDTO);
         }

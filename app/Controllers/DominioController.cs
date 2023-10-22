@@ -10,7 +10,7 @@ namespace app.Controllers
 {
     [ApiController]
     [Route("api/dominio")]
-    public class DominioController : ControllerBase
+    public class DominioController : AppController
     {
         private readonly ModelConverter modelConverter;
         private readonly IMunicipioService municipioService;
