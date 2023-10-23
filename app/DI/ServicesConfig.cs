@@ -1,7 +1,11 @@
-﻿using app.Entidades;
+using auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using app.Entidades;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
+using System.Text;
 
 namespace app.DI
 {
@@ -21,6 +25,8 @@ namespace app.DI
             services.AddControllers(o => o.Filters.Add(typeof(HandleExceptionFilter)));
 
             services.AddHttpClient();
+            services.AddAuth(configuration);
+            
         }
     }
 }

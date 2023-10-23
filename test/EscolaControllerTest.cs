@@ -5,26 +5,24 @@ using app.Entidades;
 using app.Repositorios;
 using app.Repositorios.Interfaces;
 using app.Services;
+using auth;
 using EnumsNET;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using service.Interfaces;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 using test.Fixtures;
 using test.Stubs;
 using Xunit.Abstractions;
-using Xunit.Microsoft.DependencyInjection.Abstracts;
 
 namespace test
 {
-    public class EscolaControllerTest : TestBed<Base>
+    public class EscolaControllerTest : AuthTest
     {
-        const int INTERNAL_SERVER_ERROR = 500;
-
         AppDbContext dbContext;
         EscolaController escolaController;
 
@@ -34,10 +32,11 @@ namespace test
             dbContext.PopulaEscolas(5);
 
             escolaController = fixture.GetService<EscolaController>(testOutputHelper)!;
+            AutenticarUsuario(escolaController);
         }
 
         [Fact]
-        public async Task ObterEscolas_QuandoMetodoForChamado_DeveRetornarListaDeEscolas()
+        public async Task ObterEscolasAsync_QuandoMetodoForChamado_DeveRetornarListaDeEscolas()
         {
             var escolasDb = dbContext.Escolas.ToList();
             var filtro = new PesquisaEscolaFiltro();
@@ -52,12 +51,35 @@ namespace test
         }
 
         [Fact]
+        public async Task ObterEscolasAsync_QuandoNaoTiverPermissao_DeveSerBloqueado()
+        {
+            var escolasDb = dbContext.Escolas.ToList();
+            var filtro = new PesquisaEscolaFiltro();
+            filtro.Pagina = 1;
+            filtro.TamanhoPagina = escolasDb.Count();
+
+            AutenticarUsuario(escolaController, permissoes: new() { });
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await escolaController.ObterEscolasAsync(filtro));
+        }
+
+        [Fact]
         public async Task Excluir_QuandoIdEscolaForPassado_DeveExcluirEscola()
         {
             var idEscola = dbContext.Escolas.First().Id;
             await escolaController.ExcluirEscolaAsync(idEscola);
 
             Assert.False(dbContext.Escolas.Any(e => e.Id == idEscola));
+        }
+
+        [Fact]
+        public async Task Excluir_QuandoNaoTiverPermissao_DeveSerBloqueado()
+        {
+            var idEscola = dbContext.Escolas.First().Id;
+
+            AutenticarUsuario(escolaController, permissoes: new());
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await escolaController.ExcluirEscolaAsync(idEscola));
         }
 
         [Fact]
@@ -83,6 +105,15 @@ namespace test
         }
 
         [Fact]
+        public async Task CadastrarEscola_QuandoNaoTiverPermissao_DeverBloquear()
+        {
+            var escola = EscolaStub.ListarEscolasDto(dbContext.Municipios.ToList(), comEtapas: true).First();
+
+            AutenticarUsuario(escolaController, permissoes: new());
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await escolaController.CadastrarEscolaAsync(escola));
+        }
+
+        [Fact]
         public async Task RemoverSituacaoAsync_QuandoSituacaoForRemovida_DeveRetornarHttpOk()
         {
             var idEscola = dbContext.Escolas.First().Id;
@@ -92,20 +123,24 @@ namespace test
         }
 
         [Fact]
-        public async Task AlterarDadosEscolaAsync_QuandoAlterarDadosDaEscola_DeveRetornarOK()
+        public async Task RemoverSituacaoAsync_QuandoNaoTiverPermissao_DeverBloquear()
+        {
+            var idEscola = dbContext.Escolas.First().Id;
+
+            AutenticarUsuario(escolaController, permissoes: new());
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await escolaController.RemoverSituacaoAsync(idEscola));
+        }
+
+        [Fact]
+        public async Task AlterarDadosEscolaAsync_QuandoNaoTiverPermissao_DeveBloquear()
         {
             var escola = EscolaStub.ListarAtualizarEscolasDto(dbContext.Municipios.ToList(), true).First();
             escola.IdEscola = dbContext.Escolas.Last().Id;
-            await escolaController.AlterarDadosEscolaAsync(escola);
 
-            var escolaDb = dbContext.Escolas.First(e => e.Id == escola.IdEscola);
+            AutenticarUsuario(escolaController, permissoes: new());
 
-            Assert.Equal(escola.Observacao, escolaDb.Observacao);
-            Assert.Equal(escola.Latitude, escolaDb.Latitude);
-            Assert.Equal(escola.Longitude, escolaDb.Longitude);
-            Assert.Equal(escola.NumeroTotalDeAlunos, escolaDb.TotalAlunos);
-            Assert.Equal(escola.NumeroTotalDeDocentes, escolaDb.TotalDocentes);
-            Assert.True(escolaDb.EtapasEnsino?.All(ee => escola.IdEtapasDeEnsino.Exists(eId => (int)ee.EtapaEnsino == eId)));
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await escolaController.AlterarDadosEscolaAsync(escola));
         }
 
         [Fact]
@@ -131,6 +166,28 @@ namespace test
 
             var escolaDb = dbContext.Escolas.First(e => e.Codigo == escolaCodigo);
             Assert.True(valor?.Exists(v => v == escolaDb.Nome));
+        }
+
+        [Fact]
+        public async Task EnviarPlanilhaAsync_QuandoNaoTiverPermissao_DeveSerBloqueado()
+        {
+            var escolaCodigo = 41127226;
+            var etapas = new List<EtapaEnsino>() { EtapaEnsino.Fundamental, EtapaEnsino.JovensAdultos };
+            var descricoesEtapa = string.Join(',', etapas.Select(e => e.AsString(EnumFormat.Description)));
+            var planilha = new StringBuilder();
+            planilha.AppendLine("Ano do Censo Escolar;ID;Cod. INEP;Nome da Instituição de Ensino;Rede;Porte da Instituição de Ensino;Endereço;CEP;Cidade;UF;Localização;Latitude;Longitude;DDD;Telefone da instituição;Etapas de Ensino Contempladas;Nº de Matrículas Ensino Infantil;Nº de Matrículas 1º ano Ensino Fundamental;Nº de Matrículas 2º ano Ensino Fundamental;Nº de Matrículas 3º ano Ensino Fundamental;Nº de Matrículas 4º ano Ensino Fundamental;Nº de Matrículas 5º ano Ensino Fundamental;Nº de Matrículas 6º ano Ensino Fundamental;Nº de Matrículas 7º ano Ensino Fundamental;Nº de Matrículas 8º ano Ensino Fundamental;Nº de Matrículas 9º ano Ensino Fundamental;Nº de Docentes");
+            planilha.AppendLine($"2019;1;{escolaCodigo};ANISIO TEIXEIRA E M EF;Municipal;Entre 201 e 500 matrículas de escolarização;RUA JOAO BATISTA SCUCATO, 80 ATUBA. 82860-130 Curitiba - PR.;82860130;Curitiba;PR;Urbana;-25,38443;-49,2011;41;32562393;{descricoesEtapa};;70;90;92;65;73;0;0;0;0;126\r\n");
+
+            var bytes = Encoding.UTF8.GetBytes(planilha.ToString());
+            var memoryStream = new MemoryStream(bytes);
+
+            var arquivo = new FormFile(memoryStream, 0, bytes.Length, "planilha", "planilha.csv");
+            arquivo.Headers = new HeaderDictionary();
+            arquivo.Headers.ContentType = "text/csv";
+
+            AutenticarUsuario(escolaController, permissoes: new() { });
+
+            await Assert.ThrowsAsync<AuthForbiddenException>(async () => await escolaController.EnviarPlanilhaAsync(arquivo));
         }
 
         [Fact]

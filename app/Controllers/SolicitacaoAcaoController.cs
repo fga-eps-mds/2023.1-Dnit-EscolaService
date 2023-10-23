@@ -1,4 +1,5 @@
 ﻿using api.Escolas;
+using app.Services;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
 using System.Net.Mail;
@@ -7,7 +8,7 @@ namespace app.Controllers
 {
     [ApiController]
     [Route("api/solicitacaoAcao")]
-    public class SolicitacaoAcaoController : ControllerBase
+    public class SolicitacaoAcaoController : AppController
     {
         private readonly ISolicitacaoAcaoService solicitacaoAcaoService;
 
