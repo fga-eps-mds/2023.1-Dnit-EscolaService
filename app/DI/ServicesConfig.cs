@@ -1,5 +1,11 @@
-﻿using service;
+using auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using app.Entidades;
+using app.Services;
+using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
+using System.Text;
 
 namespace app.DI
 {
@@ -7,10 +13,20 @@ namespace app.DI
     {
         public static void AddConfigServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddDbContext<AppDbContext>(optionsBuilder => optionsBuilder.UseNpgsql(configuration.GetConnectionString("PostgreSql")));
+
             services.AddSingleton<ISmtpClientWrapper, SmtpClientWrapper>();
-            services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
+            services.AddSingleton<ModelConverter>();
+
             services.AddScoped<IEscolaService, EscolaService>();
+            services.AddScoped<IMunicipioService, MunicipioService>();
+            services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
+
+            services.AddControllers(o => o.Filters.Add(typeof(HandleExceptionFilter)));
+
             services.AddHttpClient();
+            services.AddAuth(configuration);
+            
         }
     }
 }

@@ -1,27 +1,31 @@
-using dominio;
+using app.Services;
+using api.Escolas;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using service;
 using service.Interfaces;
-
+using api;
 
 namespace app.Controllers
 {
     [ApiController]
     [Route("api/escolas")]
-    public class EscolaController : ControllerBase
+    public class EscolaController : AppController
     {
         private readonly IEscolaService escolaService;
+        private readonly AuthService authService;
 
-        public EscolaController(IEscolaService escolaService)
+        public EscolaController(IEscolaService escolaService, AuthService authService)
         {
             this.escolaService = escolaService;
+            this.authService = authService;
         }
 
+        [Authorize]
         [Consumes("multipart/form-data")]
         [HttpPost("cadastrarEscolaPlanilha")]
-        public async Task<IActionResult> EnviarPlanilha(IFormFile arquivo)
+        public async Task<IActionResult> EnviarPlanilhaAsync(IFormFile arquivo)
         {
-
+            authService.Require(Usuario, Permissao.EscolaCadastrar);
             List<string> escolasNovas;
 
             try
@@ -49,7 +53,7 @@ namespace app.Controllers
                 {
                     await arquivo.CopyToAsync(memoryStream);
                     memoryStream.Seek(0, SeekOrigin.Begin);
-                    escolasNovas = escolaService.CadastrarEscolaViaPlanilha(memoryStream);
+                    escolasNovas = await escolaService.CadastrarAsync(memoryStream);
                 }
 
                 return Ok(escolasNovas);
@@ -60,52 +64,46 @@ namespace app.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("obter")]
-        public IActionResult ObterEscolas([FromQuery] PesquisaEscolaFiltro pesquisaEscolaFiltro)
+        public async Task<ListaEscolaPaginada<EscolaCorretaModel>> ObterEscolasAsync([FromQuery] PesquisaEscolaFiltro filtro)
         {
-            ListaPaginada<EscolaCorreta> listaEscolaPaginada = escolaService.Obter(pesquisaEscolaFiltro);
+            authService.Require(Usuario, Permissao.EscolaVisualizar);
 
-            return new OkObjectResult(listaEscolaPaginada);
+            return await escolaService.ListarPaginadaAsync(filtro);
         }
+
+        [Authorize]
         [HttpDelete("excluir")]
-        public IActionResult ExcluirEscola([FromQuery] int id)
+        public async Task ExcluirEscolaAsync([FromQuery] Guid id)
         {
-            escolaService.ExcluirEscola(id);
-            return Ok();
-
+            authService.Require(Usuario, Permissao.EscolaRemover);
+            await escolaService.ExcluirAsync(id);
         }
 
+        [Authorize]
         [HttpPost("cadastrarEscola")]
-        public IActionResult CadastrarEscola([FromBody] CadastroEscolaDTO cadastroEscolaDTO)
+        public async Task CadastrarEscolaAsync(CadastroEscolaData cadastroEscolaDTO)
         {
-            escolaService.CadastrarEscola(cadastroEscolaDTO);
-            return Ok();
+            authService.Require(Usuario, Permissao.EscolaCadastrar);
+            await escolaService.CadastrarAsync(cadastroEscolaDTO);
         }
 
+        [Authorize]
         [HttpPost("removerSituacao")]
-        public IActionResult RemoverSituacao([FromQuery] int idEscola)
+        public async Task RemoverSituacaoAsync([FromQuery] Guid idEscola)
         {
-            escolaService.RemoverSituacaoEscola(idEscola);
-            return Ok();
+            authService.Require(Usuario, Permissao.EscolaEditar);
+            await escolaService.RemoverSituacaoAsync(idEscola);
         }
 
+        [Authorize]
         [HttpPut("alterarDadosEscola")]
-        public IActionResult AlterarDadosEscola([FromBody] AtualizarDadosEscolaDTO atualizarDadosEscolaDTO)
+        public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData atualizarDadosEscolaDTO)
         {
-            try
-            {
-                escolaService.AlterarDadosEscola(atualizarDadosEscolaDTO);
-                return Ok();
-            }
-            catch (Npgsql.PostgresException ex)
-            {
-                if(ex.SqlState == "23503")
-                {
-                    return Conflict("A chave estrangeira é inválida.");
-                }
-                return StatusCode(500, "Houve um erro interno no servidor.");
-            }
-        }
+            authService.Require(Usuario, Permissao.EscolaEditar);
 
+            await escolaService.AlterarDadosEscolaAsync(atualizarDadosEscolaDTO);
+        }
     }
 }

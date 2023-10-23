@@ -14,6 +14,7 @@ _Observação_: No EscolaServices, é necessario adicionar um arquivo ".env" den
 
     - EMAIL_SERVICE_ADDRESS : email usado para enviar a mensagem.
     - EMAIL_SERVICE_PASSWORD: senha do email acima.
+    - EMAIL_SERVICE_SMTP: endereco do servidor smtp
     - EMAIL_DNIT: email que receberá a mensagem.
 
 #### Windows e MacOs
