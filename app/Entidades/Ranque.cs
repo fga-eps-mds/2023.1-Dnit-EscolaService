@@ -7,6 +7,7 @@ namespace app.Entidades
     public class Ranque
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         
         [NotMapped]
