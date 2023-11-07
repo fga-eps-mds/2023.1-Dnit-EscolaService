@@ -367,3 +367,4 @@ coverage.*
 app/build
 
 report/
+.vscode/
