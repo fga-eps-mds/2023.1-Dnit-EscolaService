@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using app.Entidades;
@@ -11,9 +12,11 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231107223015_Ranque")]
+    partial class Ranque
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,32 +121,6 @@ namespace app.Migrations
                     b.ToTable("EscolaEtapaEnsino");
                 });
 
-            modelBuilder.Entity("app.Entidades.EscolaRanque", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("EscolaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Pontuacao")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RanqueId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EscolaId");
-
-                    b.HasIndex("RanqueId");
-
-                    b.ToTable("EscolaRanques");
-                });
-
             modelBuilder.Entity("app.Entidades.Municipio", b =>
                 {
                     b.Property<int>("Id")
@@ -202,25 +179,6 @@ namespace app.Migrations
                         .IsRequired();
 
                     b.Navigation("Escola");
-                });
-
-            modelBuilder.Entity("app.Entidades.EscolaRanque", b =>
-                {
-                    b.HasOne("app.Entidades.Escola", "Escola")
-                        .WithMany()
-                        .HasForeignKey("EscolaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("app.Entidades.Ranque", "Ranque")
-                        .WithMany()
-                        .HasForeignKey("RanqueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Escola");
-
-                    b.Navigation("Ranque");
                 });
 
             modelBuilder.Entity("app.Entidades.Escola", b =>
