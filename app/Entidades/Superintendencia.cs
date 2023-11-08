@@ -5,6 +5,9 @@ namespace app.Entidades
 {
     public class Superintendencia
     {
+        [Key]
+        public int Id { get; set; }
+        
         [Required]
         public string Endereco { get; set; }  
         
