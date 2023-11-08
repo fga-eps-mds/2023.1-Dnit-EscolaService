@@ -1,9 +1,5 @@
 ﻿using api;
-using api.Municipios;
 using api.Ranques;
-using app.Entidades;
-using app.Repositorios;
-using app.Repositorios.Interfaces;
 using app.Services;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
@@ -27,20 +23,27 @@ namespace app.Controllers
         }
 
         [HttpGet("escolas")]
-        
-        public ListaPaginada<RanqueEscolaModel> Listar(){
-            
-            return new ListaPaginada<RanqueEscolaModel>(new List<RanqueEscolaModel>{
-                new RanqueEscolaModel{
+        public ListaPaginada<RanqueEscolaModel> Listar()
+        {
+            var escolas = new List<RanqueEscolaModel>{
+                new RanqueEscolaModel {
                     IdEscola = Guid.NewGuid(),
-                    Nome = "teste",
-                    Pontuacao = 0
-                }
-            },
-            1,
-            10,
-            1
-            );
+                    Nome = "Escola 1",
+                    Pontuacao = 300
+                },
+                new RanqueEscolaModel {
+                    IdEscola = Guid.NewGuid(),
+                    Nome = "Escola 2",
+                    Pontuacao = 100
+                },
+                new RanqueEscolaModel {
+                    IdEscola = Guid.NewGuid(),
+                    Nome = "Escola 3",
+                    Pontuacao = 100
+                },
+            };
+            var lista = new ListaPaginada<RanqueEscolaModel>(escolas, 1, 10, 1);
+            return lista;
         }
     }
 }
