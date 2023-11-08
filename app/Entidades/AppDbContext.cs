@@ -91,11 +91,11 @@ namespace app.Entidades
                     var row = parser.ReadFields()!;
                     var superintendencia = new Superintendencia
                     {
-                        cep = row[columns["cep"]],
-                        latitude = row[columns["latitude"]],
-                        longitude = row[columns["longitude"]],
+                        Cep = row[columns["cep"]],
+                        Latitude = row[columns["latitude"]],
+                        Longitude = row[columns["longitude"]],
                         Uf = (UF)int.Parse(row[columns["uf"]]),
-                        endereco = row[columns["endereco"]],
+                        Endereco = row[columns["endereco"]],
                     };
 
                     superintendencias.Add(superintendencia);

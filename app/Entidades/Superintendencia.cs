@@ -6,16 +6,16 @@ namespace app.Entidades
     public class Superintendencia
     {
         [Required]
-        public string endereco { get; set; }  
+        public string Endereco { get; set; }  
         
         [Required, MaxLength(10)]
-        public string cep { get; set; }
+        public string Cep { get; set; }
         
         [Required]
-        public string latitude { get; set; }
+        public string Latitude { get; set; }
         
         [Required]
-        public string longitude { get; set; }
+        public string Longitude { get; set; }
         
         [Required]
         public UF Uf { get; set; }
