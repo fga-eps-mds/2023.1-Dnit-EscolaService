@@ -39,6 +39,9 @@ namespace app.Migrations
                     b.Property<DateTime?>("DataAtualizacaoUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("DistanciaSuperintendencia")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Endereco")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -137,6 +140,39 @@ namespace app.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Municipios");
+                });
+
+            modelBuilder.Entity("app.Entidades.Superintendencia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Longitude")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Uf")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Superintendencias");
                 });
 
             modelBuilder.Entity("app.Entidades.Escola", b =>
