@@ -41,6 +41,9 @@ namespace app.Entidades
         
         [Required]
         public Rede Rede { get; set; }
+        
+        [Required]
+        public int DistanciaParaSuperintendencia { get; set; }
 
         public UF? Uf { get; set; }
 
