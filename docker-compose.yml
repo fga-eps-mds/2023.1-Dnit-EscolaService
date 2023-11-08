@@ -10,7 +10,7 @@ services:
       - "7084:7084"
     container_name: escolaService
     volumes:
-      - ./:./app
+      - ./:/app
     env_file:
       - .env
 
