@@ -2,7 +2,7 @@ name: Deploy
 on:
   push:
     branches:
-      - devops/deploy-continuo
+      - devops/deploy_continuo
 
 jobs:
   deploy:
@@ -25,9 +25,7 @@ jobs:
       run: dotnet publish --no-restore -r linux-x64 -p:PublishSingleFile=true --self-contained false -o build app
 
     - name: Compress
-      run: |
-        mv ./build ./build-`git rev-parse HEAD`
-        tar -czvf build.tar.gz ./build-`git rev-parse HEAD`
+      run: tar -czvf build.tar.gz ./build
 
     - name: Upload Build
       env:
