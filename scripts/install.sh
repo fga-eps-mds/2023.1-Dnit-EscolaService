@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -xe
 WORKDIR=$(pwd)
 
 python3 -m venv .venv
