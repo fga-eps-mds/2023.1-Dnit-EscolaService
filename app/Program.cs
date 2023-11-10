@@ -1,6 +1,7 @@
 using app.DI;
 using app.Entidades;
 using Microsoft.EntityFrameworkCore;
+using Hangfire;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +52,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 ////app.UseHttpsRedirection();
+app.UseHangfireDashboard();
 app.UseAuthentication();
 app.UseAuthorization();
 

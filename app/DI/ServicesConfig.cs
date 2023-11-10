@@ -3,6 +3,8 @@ using app.Entidades;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 namespace app.DI
 {
@@ -28,19 +30,15 @@ namespace app.DI
             services.AddHttpClient();
             services.AddAuth(configuration);
 
-            // appsettings.Development.json
-                // "Hangfire": "Host=localhost;Port=5333;Database=upsjobs;Username=postgres;Password=1234",
-                // "HangfireDocker": "Host=dnit-ups-db;Port=5432;Database=upsjobs;Username=postgres;Password=1234"
-
-            // var conexaoHangfire = mode == "container" ? "HangfireDocker" : "Hangfire";
-            // services.AddHangfire(config => config
-            //     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-            //     .UseSimpleAssemblyNameTypeSerializer()
-            //     .UseRecommendedSerializerSettings()
-            //     .UsePostgreSqlStorage(c =>
-            //         c.UseNpgsqlConnection(configuration.GetConnectionString(conexaoHangfire)))
-            // );
-            // services.AddHangfireServer();
+            var conexaoHangfire = mode == "container" ? "HangfireDocker" : "Hangfire";
+            services.AddHangfire(config => config
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(c =>
+                    c.UseNpgsqlConnection(configuration.GetConnectionString(conexaoHangfire)))
+            );
+            services.AddHangfireServer();
             
             // precisa mesmo ou é só um exemplo???
             // services.AddMvc();

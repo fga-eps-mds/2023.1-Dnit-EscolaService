@@ -1,8 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+
 using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
+using Hangfire;
 
 namespace app.Services
 {
@@ -19,20 +21,26 @@ namespace app.Services
 
         public async Task CalcularNovoRanqueAsync()
         {
-            var tamanhoBatelada = 4;
+            var tamanhoBatelada = 5;
             var totalEscolas = dbContext.Escolas.CountAsync();
-
             var novoRanque = new Ranque
             {
                 DataInicio = DateTimeOffset.Now,
             };
-
-            // dbContext.Ranques.Add(novoRanque);
-            // dbContext.SaveChanges();
+            dbContext.Ranques.Add(novoRanque);
+            await dbContext.SaveChangesAsync();
 
             var filtro = new PesquisaEscolaFiltro { Pagina = 1, TamanhoPagina = tamanhoBatelada };
-            var escolas = await escolaRepositorio.ListarPaginadaAsync(filtro);
-            var escolaLocalizacoes = escolas.Items.Select(
+            BackgroundJob.Enqueue(() => ExecutarJobAsync(filtro, novoRanque));
+
+            novoRanque.DataFim = DateTimeOffset.Now;
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task ExecutarJobAsync(PesquisaEscolaFiltro filtro, Ranque novoRanque)
+        {
+            var lista = await escolaRepositorio.ListarPaginadaAsync(filtro);
+            var escolaLocalizacoes = lista.Items.Select(
                 e => new LocalizacaoEscola
                 {
                     // As latitudes no banco são armazenadas com vírgula em vez de ponto.
@@ -40,16 +48,21 @@ namespace app.Services
                     Longitude = double.Parse(e.Longitude.Replace(',', '.')),
                 });
 
-            var client = new UpsClient();
-            var upss = await client.CalcularUps(escolaLocalizacoes);
-
-            for (int i = 0; i < escolas.Items.Count; i++)
+            var upsClient = new UpsClient();
+            var upsCalculados = await upsClient.CalcularUps(escolaLocalizacoes);
+            var ranqueEscolas = new EscolaRanque[lista.Items.Count];
+            for (int i = 0; i < lista.Items.Count; i++)
             {
-                // escolas.Items[i].
+                lista.Items[i].Ups = upsCalculados[i];
+                ranqueEscolas[i] = new()
+                {
+                    Pontuacao = upsCalculados[i],
+                    RanqueId = novoRanque.Id,
+                    EscolaId = lista.Items[i].Id,
+                };
             }
 
-            novoRanque.DataFim = DateTimeOffset.Now;
-            // dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
         }
     }
 
