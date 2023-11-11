@@ -24,6 +24,7 @@ namespace app.DI
             services.AddScoped<IMunicipioService, MunicipioService>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IRanqueService, RanqueService>();
+            services.AddScoped<ICalcularUpsJob, CalcularUpsJob>();
 
             services.AddControllers(o => o.Filters.Add(typeof(HandleExceptionFilter)));
 
@@ -39,9 +40,6 @@ namespace app.DI
                     c.UseNpgsqlConnection(configuration.GetConnectionString(conexaoHangfire)))
             );
             services.AddHangfireServer();
-            
-            // precisa mesmo ou é só um exemplo???
-            // services.AddMvc();
         }
     }
 }

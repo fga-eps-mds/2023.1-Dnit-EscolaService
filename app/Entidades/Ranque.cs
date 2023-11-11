@@ -1,5 +1,4 @@
-﻿using api;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app.Entidades
@@ -20,7 +19,7 @@ namespace app.Entidades
         }
         
         [NotMapped]
-        public DateTimeOffset? DataFim { get; set; }
+        public DateTimeOffset? DataFim { get; set; } = null;
 
         public DateTime? DataFimUtc
         {
