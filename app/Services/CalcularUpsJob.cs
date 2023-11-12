@@ -19,11 +19,13 @@ namespace app.Services
 
         public async Task ExecutarAsync(PesquisaEscolaFiltro filtro, Ranque novoRanque)
         {
+            var raio = 2.0D;
+            var desde = 2019;
+
             var lista = await escolaRepositorio.ListarPaginadaAsync(filtro);
-
-            var upss = await Request(lista.Items);
-
+            var upss = await RequisicaoCalcularUps(lista.Items, raio, desde);
             var ranqueEscolas = new EscolaRanque[lista.Items.Count];
+
             for (int i = 0; i < lista.Items.Count; i++)
             {
                 lista.Items[i].Ups = upss[i];
@@ -38,7 +40,7 @@ namespace app.Services
             await dbContext.SaveChangesAsync();
         }
 
-        private static async Task<List<int>> Request(List<Escola> escolas)
+        private static async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno)
         {
             var localizacoes = escolas.Select(
                 e => new LocalizacaoEscola
@@ -52,13 +54,11 @@ namespace app.Services
             {
                 Timeout = TimeSpan.FromMinutes(10)
             };
-            var raio = 2.0D;
-            var desde = 2019;
 
             var conteudo = JsonContent.Create(localizacoes);
-            
+
             var resposta = await client.PostAsync(
-                $"http://localhost:7085/api/calcular/ups/escolas?desde={desde}&raiokm={raio}",
+                $"http://localhost:7085/api/calcular/ups/escolas?desde={desdeAno}&raiokm={raioKm}",
                 conteudo);
 
             resposta.EnsureSuccessStatusCode();

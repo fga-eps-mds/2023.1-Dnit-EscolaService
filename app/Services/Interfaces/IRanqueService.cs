@@ -2,6 +2,6 @@ namespace service.Interfaces
 {
     public interface IRanqueService
     {
-        public Task CalcularNovoRanqueAsync();
+        public Task CalcularNovoRanqueAsync(int tamanhoBatelada);
     }
 }

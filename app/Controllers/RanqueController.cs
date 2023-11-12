@@ -52,7 +52,8 @@ namespace app.Controllers
         [HttpPost("escolas/novo")]
         public async Task NovoRanque()
         {
-            await ranqueService.CalcularNovoRanqueAsync();
+            int tamanhoBatelada = 100;
+            await ranqueService.CalcularNovoRanqueAsync(tamanhoBatelada);
         }
     }
 }

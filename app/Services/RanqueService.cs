@@ -19,10 +19,9 @@ namespace app.Services
             this.dbContext = dbContext;
         }
 
-        public async Task CalcularNovoRanqueAsync()
+        public async Task CalcularNovoRanqueAsync(int tamanhoBatelada = 100)
         {
-            var tamanhoBatelada = 200;
-            var totalEscolas = dbContext.Escolas.CountAsync();
+            var totalEscolas = await dbContext.Escolas.CountAsync();
             var novoRanque = new Ranque
             {
                 DataInicio = DateTimeOffset.Now,
@@ -30,13 +29,22 @@ namespace app.Services
             dbContext.Ranques.Add(novoRanque);
             await dbContext.SaveChangesAsync();
 
-            var filtro = new PesquisaEscolaFiltro { Pagina = 1, TamanhoPagina = tamanhoBatelada };
-            BackgroundJob.Enqueue<ICalcularUpsJob>(
-                (calcularUpsJob) => 
-                    calcularUpsJob.ExecutarAsync(filtro, novoRanque));
+            var filtro = new PesquisaEscolaFiltro { TamanhoPagina = tamanhoBatelada };
+            var totalPaginas = Math.Ceiling((double) totalEscolas / tamanhoBatelada);
+            for (int pagina = 1; pagina <= totalPaginas; pagina++)
+            {
+                filtro.Pagina = pagina;
+                BackgroundJob.Enqueue<ICalcularUpsJob>(
+                    (calcularUpsJob) => 
+                        calcularUpsJob.ExecutarAsync(filtro, novoRanque));
+            }
 
             novoRanque.DataFim = DateTimeOffset.Now;
             await dbContext.SaveChangesAsync();
+            Console.WriteLine(">> INFO");
+            Console.WriteLine($"     total escolas   : {totalEscolas}");
+            Console.WriteLine($"     tamanho batelada: {tamanhoBatelada}");
+            Console.WriteLine($"     total paginas   : {totalPaginas}");
         }
     }
 
