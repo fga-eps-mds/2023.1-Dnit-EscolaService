@@ -10,12 +10,18 @@ namespace app.Services
     public class CalcularUpsJob : ICalcularUpsJob
     {
         private readonly IEscolaRepositorio escolaRepositorio;
+        private readonly IRanqueRepositorio ranqueRepositorio;
         private readonly AppDbContext dbContext;
 
-        public CalcularUpsJob(IEscolaRepositorio escolaRepositorio, AppDbContext dbContext)
+        public CalcularUpsJob(
+            IEscolaRepositorio escolaRepositorio,
+            IRanqueRepositorio ranqueRepositorio,
+            AppDbContext dbContext
+        )
         {
             this.dbContext = dbContext;
             this.escolaRepositorio = escolaRepositorio;
+            this.ranqueRepositorio = ranqueRepositorio;
         }
 
         [MaximumConcurrentExecutions(3, timeoutInSeconds: 20 * 60)]
@@ -39,7 +45,10 @@ namespace app.Services
                 };
             }
 
+            await dbContext.EscolaRanques.AddRangeAsync(ranqueEscolas);
             await dbContext.SaveChangesAsync();
+            BackgroundJob.Enqueue<ICalcularUpsJob>(
+                job => job.FinalizarCalcularUpsJob(novoRanqueId));
         }
 
         private static async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno)
@@ -69,6 +78,22 @@ namespace app.Services
                 ?? throw new ApiException(ErrorCodes.Unknown);
 
             return upss;
+        }
+
+        // Não pode ser mais que 1. Essa limitação serve como um Mutex
+        [MaximumConcurrentExecutions(1)]
+        public async Task FinalizarCalcularUpsJob(int ranqueId)
+        {
+            var ranqueEmProgresso = (await ranqueRepositorio.ObterPorIdAsync(ranqueId))!;
+            if (ranqueEmProgresso.DataFim != null || ranqueEmProgresso.BateladasEmProgresso == 0)
+                return;
+
+            ranqueEmProgresso.BateladasEmProgresso--;
+
+            if (ranqueEmProgresso.BateladasEmProgresso == 0)
+                ranqueEmProgresso.DataFim = DateTimeOffset.Now;
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

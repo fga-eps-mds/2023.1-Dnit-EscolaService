@@ -12,14 +12,12 @@ namespace app.Services
 {
     public class RanqueService : IRanqueService
     {
-        private readonly IEscolaRepositorio escolaRepositorio;
         private readonly AppDbContext dbContext;
         private readonly IRanqueRepositorio ranqueRepositorio;
         private readonly ModelConverter mc;
 
-        public RanqueService(IEscolaRepositorio escolaRepositorio, AppDbContext dbContext, IRanqueRepositorio ranqueRepositorio, ModelConverter mc)
+        public RanqueService(AppDbContext dbContext, IRanqueRepositorio ranqueRepositorio, ModelConverter mc)
         {
-            this.escolaRepositorio = escolaRepositorio;
             this.dbContext = dbContext;
             this.ranqueRepositorio = ranqueRepositorio;
             this.mc = mc;
@@ -28,31 +26,34 @@ namespace app.Services
         public async Task CalcularNovoRanqueAsync(int tamanhoBatelada = 100)
         {
             var totalEscolas = await dbContext.Escolas.CountAsync();
+            var filtro = new PesquisaEscolaFiltro { TamanhoPagina = tamanhoBatelada };
+            var totalPaginas = (int)Math.Ceiling((double)totalEscolas / tamanhoBatelada);
+
             var novoRanque = new Ranque
             {
                 DataInicio = DateTimeOffset.Now,
+                BateladasEmProgresso = totalPaginas,
             };
             dbContext.Ranques.Add(novoRanque);
             await dbContext.SaveChangesAsync();
 
-            var filtro = new PesquisaEscolaFiltro { TamanhoPagina = tamanhoBatelada };
-            var totalPaginas = Math.Ceiling((double)totalEscolas / tamanhoBatelada);
             for (int pagina = 1; pagina <= totalPaginas; pagina++)
             {
                 filtro.Pagina = pagina;
-                BackgroundJob.Enqueue<CalcularUpsJob>(
-                    (calcularUpsJob) =>
-                        calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id));
+                BackgroundJob.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
+                    calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id));
             }
 
-            novoRanque.DataFim = DateTimeOffset.Now;
+            // TODO: Calcular outros fatores para a pontuação. 
+            // Vai ser feito na US 5.
+
             await dbContext.SaveChangesAsync();
         }
 
         public async Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(PesquisaEscolaFiltro filtro)
         {
             var ultimoRanque = await ranqueRepositorio.ObterUltimoRanqueAsync();
-            
+
             if (ultimoRanque == null)
                 return new ListaPaginada<RanqueEscolaModel>(new(), filtro.Pagina, filtro.TamanhoPagina, 0);
 

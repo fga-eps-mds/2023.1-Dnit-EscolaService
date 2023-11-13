@@ -18,6 +18,10 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
+        public async Task<Ranque?> ObterPorIdAsync(int id) {
+            return await dbContext.Ranques.FindAsync(id);
+        }
+
         public async Task<Ranque?> ObterUltimoRanqueAsync()
         {
             return await dbContext.Ranques

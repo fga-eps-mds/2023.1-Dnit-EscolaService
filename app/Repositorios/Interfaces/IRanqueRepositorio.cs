@@ -8,5 +8,6 @@ namespace app.Repositorios.Interfaces
     {
         Task<ListaPaginada<EscolaRanque>> ListarEscolasAsync(int ranqueId, PesquisaEscolaFiltro filtro);
         Task<Ranque?> ObterUltimoRanqueAsync();
+        Task<Ranque?> ObterPorIdAsync(int id);
     }
 }
