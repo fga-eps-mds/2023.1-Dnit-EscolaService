@@ -137,6 +137,8 @@ namespace api
         EscolaVisualizar = 1003,
 
         [Description("Visualizar Ranking de Escolas")]
-        UpsVisualizar = 5002,
+        RanqueVisualizar = 5002,
+        [Description("Calcular Ranking de Escolas")]
+        RanqueCalcular = 5003,
     }
 }

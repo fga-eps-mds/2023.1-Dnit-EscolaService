@@ -28,13 +28,16 @@ namespace app.Controllers
         [Authorize]
         public async Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanque([FromQuery] PesquisaEscolaFiltro filtro)
         {
-            authService.Require(Usuario, Permissao.UpsVisualizar);
+            authService.Require(Usuario, Permissao.RanqueVisualizar);
             return await ranqueService.ListarEscolasUltimoRanqueAsync(filtro);
         }
 
+        [Authorize]
         [HttpPost("escolas/novo")]
-        public async Task NovoRanque()
+        public async Task CalcularRanque()
         {
+            authService.Require(Usuario, Permissao.RanqueCalcular);
+
             int tamanhoBatelada = 100;
             await ranqueService.CalcularNovoRanqueAsync(tamanhoBatelada);
         }
