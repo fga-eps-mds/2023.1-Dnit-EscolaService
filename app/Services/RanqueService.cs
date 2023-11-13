@@ -30,21 +30,17 @@ namespace app.Services
             await dbContext.SaveChangesAsync();
 
             var filtro = new PesquisaEscolaFiltro { TamanhoPagina = tamanhoBatelada };
-            var totalPaginas = Math.Ceiling((double) totalEscolas / tamanhoBatelada);
+            var totalPaginas = Math.Ceiling((double)totalEscolas / tamanhoBatelada);
             for (int pagina = 1; pagina <= totalPaginas; pagina++)
             {
                 filtro.Pagina = pagina;
-                BackgroundJob.Enqueue<ICalcularUpsJob>(
-                    (calcularUpsJob) => 
+                BackgroundJob.Enqueue<CalcularUpsJob>(
+                    (calcularUpsJob) =>
                         calcularUpsJob.ExecutarAsync(filtro, novoRanque));
             }
 
             novoRanque.DataFim = DateTimeOffset.Now;
             await dbContext.SaveChangesAsync();
-            Console.WriteLine(">> INFO");
-            Console.WriteLine($"     total escolas   : {totalEscolas}");
-            Console.WriteLine($"     tamanho batelada: {tamanhoBatelada}");
-            Console.WriteLine($"     total paginas   : {totalPaginas}");
         }
     }
 

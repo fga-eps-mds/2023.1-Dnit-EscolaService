@@ -40,6 +40,7 @@ namespace app.DI
                     c.UseNpgsqlConnection(configuration.GetConnectionString(conexaoHangfire)))
             );
             services.AddHangfireServer();
+            services.AddMvc();
         }
     }
 }

@@ -2,6 +2,7 @@ using api;
 using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
+using Hangfire;
 using service.Interfaces;
 
 namespace app.Services
@@ -17,6 +18,7 @@ namespace app.Services
             this.escolaRepositorio = escolaRepositorio;
         }
 
+        [MaximumConcurrentExecutions(3, timeoutInSeconds: 20 * 60)]
         public async Task ExecutarAsync(PesquisaEscolaFiltro filtro, Ranque novoRanque)
         {
             var raio = 2.0D;
