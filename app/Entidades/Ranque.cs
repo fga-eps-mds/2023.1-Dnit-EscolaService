@@ -8,6 +8,8 @@ namespace app.Entidades
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        // Quando chega em 0, o processamento do ranking terminou
+        public int BateladasEmProgresso { get; set; }
         
         [NotMapped]
         public DateTimeOffset DataInicio { get; set; }
