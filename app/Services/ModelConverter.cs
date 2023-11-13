@@ -1,6 +1,7 @@
 ﻿using api;
 using api.Escolas;
 using api.Municipios;
+using api.Ranques;
 using app.Entidades;
 using EnumsNET;
 
@@ -70,6 +71,22 @@ namespace app.Services
             new SituacaoModel {
                 Id = (int)value,
                 Descricao = value.AsString(EnumFormat.Description)!,
+            };
+
+        public RanqueEscolaModel ToModel(EscolaRanque escolaRanque, int posicao) =>
+            new RanqueEscolaModel
+            {
+                RanqueId = escolaRanque.RanqueId,
+                Pontuacao = escolaRanque.Pontuacao,
+                Posicao = posicao,
+                Escola = new EscolaRanqueInfo
+                {
+                    Id = escolaRanque.Escola.Id,
+                    Nome = escolaRanque.Escola.Nome,
+                    EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
+                    Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
+                    Uf = escolaRanque.Escola.Uf,
+                }
             };
     }
 }

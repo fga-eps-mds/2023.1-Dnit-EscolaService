@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
 using Hangfire;
 using Hangfire.PostgreSql;
+using app.Repositorios.Interfaces;
+using app.Repositorios;
 
 namespace app.DI
 {
@@ -25,6 +27,7 @@ namespace app.DI
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IRanqueService, RanqueService>();
             services.AddScoped<ICalcularUpsJob, CalcularUpsJob>();
+            services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
 
             services.AddControllers(o => o.Filters.Add(typeof(HandleExceptionFilter)));
 

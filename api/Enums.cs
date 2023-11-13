@@ -135,5 +135,8 @@ namespace api
 
         [Description("Visualizar Escola")]
         EscolaVisualizar = 1003,
+
+        [Description("Visualizar Ranking de Escolas")]
+        UpsVisualizar = 5002,
     }
 }
