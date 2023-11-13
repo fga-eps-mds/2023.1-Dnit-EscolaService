@@ -36,7 +36,7 @@ namespace app.Services
                 filtro.Pagina = pagina;
                 BackgroundJob.Enqueue<CalcularUpsJob>(
                     (calcularUpsJob) =>
-                        calcularUpsJob.ExecutarAsync(filtro, novoRanque));
+                        calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id));
             }
 
             novoRanque.DataFim = DateTimeOffset.Now;

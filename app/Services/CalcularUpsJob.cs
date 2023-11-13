@@ -19,7 +19,7 @@ namespace app.Services
         }
 
         [MaximumConcurrentExecutions(3, timeoutInSeconds: 20 * 60)]
-        public async Task ExecutarAsync(PesquisaEscolaFiltro filtro, Ranque novoRanque)
+        public async Task ExecutarAsync(PesquisaEscolaFiltro filtro, int novoRanqueId)
         {
             var raio = 2.0D;
             var desde = 2019;
@@ -34,7 +34,7 @@ namespace app.Services
                 ranqueEscolas[i] = new()
                 {
                     Pontuacao = upss[i],
-                    RanqueId = novoRanque.Id,
+                    RanqueId = novoRanqueId,
                     EscolaId = lista.Items[i].Id,
                 };
             }
