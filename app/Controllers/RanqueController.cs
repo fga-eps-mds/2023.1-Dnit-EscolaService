@@ -1,6 +1,8 @@
 ﻿using api;
+using api.Escolas;
 using api.Ranques;
 using app.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using service.Interfaces;
 
@@ -10,43 +12,24 @@ namespace app.Controllers
     [Route("api/ranque")]
     public class RanqueController : AppController
     {
-        private readonly ModelConverter modelConverter;
-        private readonly IMunicipioService municipioService;
         private readonly IRanqueService ranqueService;
+        private readonly AuthService authService;
 
         public RanqueController(
-            ModelConverter modelConverter,
-            IMunicipioService municipioService,
-            IRanqueService ranqueService
+            IRanqueService ranqueService,
+            AuthService authService
         )
         {
-            this.modelConverter = modelConverter;
-            this.municipioService = municipioService;
             this.ranqueService = ranqueService;
+            this.authService = authService;
         }
 
         [HttpGet("escolas")]
-        public ListaPaginada<RanqueEscolaModel> Listar()
+        [Authorize]
+        public async Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanque([FromQuery] PesquisaEscolaFiltro filtro)
         {
-            var escolas = new List<RanqueEscolaModel> {
-                new() {
-                    IdEscola = Guid.NewGuid(),
-                    Nome = "Escola 1",
-                    Pontuacao = 300
-                },
-                new() {
-                    IdEscola = Guid.NewGuid(),
-                    Nome = "Escola 2",
-                    Pontuacao = 100
-                },
-                new() {
-                    IdEscola = Guid.NewGuid(),
-                    Nome = "Escola 3",
-                    Pontuacao = 100
-                },
-            };
-            var lista = new ListaPaginada<RanqueEscolaModel>(escolas, 1, 10, 1);
-            return lista;
+            authService.Require(Usuario, Permissao.UpsVisualizar);
+            return await ranqueService.ListarEscolasUltimoRanqueAsync(filtro);
         }
 
         [HttpPost("escolas/novo")]

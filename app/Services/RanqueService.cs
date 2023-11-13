@@ -5,6 +5,8 @@ using app.Entidades;
 using app.Repositorios.Interfaces;
 using service.Interfaces;
 using Hangfire;
+using api;
+using api.Ranques;
 
 namespace app.Services
 {
@@ -12,11 +14,15 @@ namespace app.Services
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly AppDbContext dbContext;
+        private readonly IRanqueRepositorio ranqueRepositorio;
+        private readonly ModelConverter mc;
 
-        public RanqueService(IEscolaRepositorio escolaRepositorio, AppDbContext dbContext)
+        public RanqueService(IEscolaRepositorio escolaRepositorio, AppDbContext dbContext, IRanqueRepositorio ranqueRepositorio, ModelConverter mc)
         {
             this.escolaRepositorio = escolaRepositorio;
             this.dbContext = dbContext;
+            this.ranqueRepositorio = ranqueRepositorio;
+            this.mc = mc;
         }
 
         public async Task CalcularNovoRanqueAsync(int tamanhoBatelada = 100)
@@ -41,6 +47,19 @@ namespace app.Services
 
             novoRanque.DataFim = DateTimeOffset.Now;
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(PesquisaEscolaFiltro filtro)
+        {
+            var ultimoRanque = await ranqueRepositorio.ObterUltimoRanqueAsync();
+            
+            if (ultimoRanque == null)
+                return new ListaPaginada<RanqueEscolaModel>(new(), filtro.Pagina, filtro.TamanhoPagina, 0);
+
+            var resultado = await ranqueRepositorio.ListarEscolasAsync(ultimoRanque.Id, filtro);
+
+            var items = resultado.Items.Select((i, index) => mc.ToModel(i, ((resultado.Pagina - 1) * resultado.ItemsPorPagina) + index + 1)).ToList();
+            return new ListaPaginada<RanqueEscolaModel>(items, resultado.Pagina, resultado.ItemsPorPagina, resultado.Total);
         }
     }
 

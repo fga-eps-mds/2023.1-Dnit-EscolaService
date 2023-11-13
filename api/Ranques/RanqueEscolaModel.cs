@@ -1,9 +1,21 @@
+using api.Municipios;
+
 namespace api.Ranques
 {
     public class RanqueEscolaModel
     {
-        public Guid IdEscola { get; set; }
-        public string Nome { get; set; }
+        public int RanqueId { get; set; }
         public int Pontuacao { get; set; }
+        public int Posicao { get; set; }
+        public EscolaRanqueInfo Escola { get; set; }
+    }
+
+    public class EscolaRanqueInfo
+    {
+        public Guid Id { get; set; }
+        public string Nome { get; set; }
+        public UF? Uf { get; set; }
+        public List<EtapasdeEnsinoModel>? EtapaEnsino { get; set; }
+        public MunicipioModel? Municipio { get; set; }
     }
 }

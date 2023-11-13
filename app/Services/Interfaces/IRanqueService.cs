@@ -1,7 +1,11 @@
+using api;
+using api.Ranques;
+
 namespace service.Interfaces
 {
     public interface IRanqueService
     {
-        public Task CalcularNovoRanqueAsync(int tamanhoBatelada);
+        Task CalcularNovoRanqueAsync(int tamanhoBatelada);
+        Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(api.Escolas.PesquisaEscolaFiltro filtro);
     }
 }
