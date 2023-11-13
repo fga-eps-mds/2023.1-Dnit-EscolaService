@@ -3,6 +3,7 @@ using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using Hangfire;
+using Microsoft.Extensions.Options;
 using service.Interfaces;
 
 namespace app.Services
@@ -12,16 +13,20 @@ namespace app.Services
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IRanqueRepositorio ranqueRepositorio;
         private readonly AppDbContext dbContext;
+        private readonly string UpsServiceHost;
+        private static readonly string Endpoint = "api/calcular/ups/escolas";
 
         public CalcularUpsJob(
             IEscolaRepositorio escolaRepositorio,
             IRanqueRepositorio ranqueRepositorio,
+            IOptions<UpsServiceConfig> upsServiceConfig,
             AppDbContext dbContext
         )
         {
             this.dbContext = dbContext;
             this.escolaRepositorio = escolaRepositorio;
             this.ranqueRepositorio = ranqueRepositorio;
+            this.UpsServiceHost = upsServiceConfig.Value.Host;
         }
 
         [MaximumConcurrentExecutions(3, timeoutInSeconds: 20 * 60)]
@@ -51,7 +56,7 @@ namespace app.Services
                 job => job.FinalizarCalcularUpsJob(novoRanqueId));
         }
 
-        private static async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno)
+        private async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno)
         {
             var localizacoes = escolas.Select(
                 e => new LocalizacaoEscola
@@ -69,7 +74,8 @@ namespace app.Services
             var conteudo = JsonContent.Create(localizacoes);
 
             var resposta = await client.PostAsync(
-                $"http://localhost:7085/api/calcular/ups/escolas?desde={desdeAno}&raiokm={raioKm}",
+                UpsServiceHost + Endpoint + $"?desde={desdeAno}&raiokm={raioKm}",
+                // $"http://localhost:7085/api/calcular/ups/escolas?desde={desdeAno}&raiokm={raioKm}",
                 conteudo);
 
             resposta.EnsureSuccessStatusCode();
