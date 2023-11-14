@@ -71,7 +71,7 @@ namespace app.Services
             var client = new HttpClient
             {
                 Timeout = expiracaoMinutos <= 0 
-                    ? new TimeSpan(0, 0, 0, -1) // tempo infinito para expiração
+                    ? new TimeSpan(0, 0, 0, 0, -1) // tempo infinito para expiração
                     : TimeSpan.FromMinutes(expiracaoMinutos),
             };
 
