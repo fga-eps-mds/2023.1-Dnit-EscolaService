@@ -30,13 +30,13 @@ namespace app.Services
         }
 
         [MaximumConcurrentExecutions(3, timeoutInSeconds: 20 * 60)]
-        public async Task ExecutarAsync(PesquisaEscolaFiltro filtro, int novoRanqueId)
+        public async Task ExecutarAsync(PesquisaEscolaFiltro filtro, int novoRanqueId, int timeoutMinutos)
         {
             var raio = 2.0D;
             var desde = 2019;
 
             var lista = await escolaRepositorio.ListarPaginadaAsync(filtro);
-            var upss = await RequisicaoCalcularUps(lista.Items, raio, desde);
+            var upss = await RequisicaoCalcularUps(lista.Items, raio, desde, timeoutMinutos);
             var ranqueEscolas = new EscolaRanque[lista.Items.Count];
 
             for (int i = 0; i < lista.Items.Count; i++)
@@ -56,7 +56,7 @@ namespace app.Services
                 job => job.FinalizarCalcularUpsJob(novoRanqueId));
         }
 
-        private async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno)
+        private async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno, int timeoutMinutos)
         {
             var localizacoes = escolas.Select(
                 e => new LocalizacaoEscola
@@ -66,9 +66,11 @@ namespace app.Services
                     Longitude = double.Parse(e.Longitude.Replace(',', '.')),
                 });
 
+            // TODO: Autenticar e autorizar esse cliente com a permissão
+            // de /calcular/ups/escolas.
             var client = new HttpClient
             {
-                Timeout = TimeSpan.FromMinutes(10)
+                Timeout = TimeSpan.FromMinutes(timeoutMinutos)
             };
 
             var conteudo = JsonContent.Create(localizacoes);

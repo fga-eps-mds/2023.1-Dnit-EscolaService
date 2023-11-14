@@ -5,7 +5,7 @@ namespace service.Interfaces
 {
     public interface IRanqueService
     {
-        Task CalcularNovoRanqueAsync(int tamanhoBatelada);
+        Task CalcularNovoRanqueAsync(int timeoutMinutos, int tamanhoBatelada);
         Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(api.Escolas.PesquisaEscolaFiltro filtro);
     }
 }

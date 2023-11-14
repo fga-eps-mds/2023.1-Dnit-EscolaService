@@ -23,7 +23,7 @@ namespace app.Services
             this.mc = mc;
         }
 
-        public async Task CalcularNovoRanqueAsync(int tamanhoBatelada = 100)
+        public async Task CalcularNovoRanqueAsync(int timeoutMinutos, int tamanhoBatelada = 100)
         {
             var totalEscolas = await dbContext.Escolas.CountAsync();
             var filtro = new PesquisaEscolaFiltro { TamanhoPagina = tamanhoBatelada };
@@ -41,7 +41,7 @@ namespace app.Services
             {
                 filtro.Pagina = pagina;
                 BackgroundJob.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
-                    calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id));
+                    calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id, timeoutMinutos));
             }
 
             // TODO: Calcular outros fatores para a pontuação. 

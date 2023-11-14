@@ -34,12 +34,10 @@ namespace app.Controllers
 
         [Authorize]
         [HttpPost("escolas/novo")]
-        public async Task CalcularRanque()
+        public async Task CalcularRanque([FromQuery] int batelada = 100, [FromQuery] int timeoutMinutos = 10)
         {
             authService.Require(Usuario, Permissao.RanqueCalcular);
-
-            int tamanhoBatelada = 100;
-            await ranqueService.CalcularNovoRanqueAsync(tamanhoBatelada);
+            await ranqueService.CalcularNovoRanqueAsync(timeoutMinutos, batelada);
         }
     }
 }

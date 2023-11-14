@@ -8,6 +8,7 @@ namespace app.Entidades
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        // Mudar pra BateladasRestantes
         // Quando chega em 0, o processamento do ranking terminou
         public int BateladasEmProgresso { get; set; }
         
