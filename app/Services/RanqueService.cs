@@ -7,6 +7,7 @@ using service.Interfaces;
 using Hangfire;
 using api;
 using api.Ranques;
+using Microsoft.Extensions.Options;
 
 namespace app.Services
 {
@@ -16,18 +17,28 @@ namespace app.Services
         private readonly IRanqueRepositorio ranqueRepositorio;
         private readonly ModelConverter mc;
 
-        public RanqueService(AppDbContext dbContext, IRanqueRepositorio ranqueRepositorio, ModelConverter mc)
+        private int ExpiracaoMinutos { get; set; }
+        private int TamanhoBatelada { get; set; }
+
+        public RanqueService(
+            AppDbContext dbContext,
+            IRanqueRepositorio ranqueRepositorio,
+            ModelConverter mc,
+            IOptions<CalcularUpsJobConfig> calcularUpsJobConfig
+        )
         {
             this.dbContext = dbContext;
             this.ranqueRepositorio = ranqueRepositorio;
             this.mc = mc;
+            ExpiracaoMinutos = calcularUpsJobConfig.Value.ExpiracaoMinutos;
+            TamanhoBatelada = calcularUpsJobConfig.Value.TamanhoBatelada;
         }
 
-        public async Task CalcularNovoRanqueAsync(int timeoutMinutos, int tamanhoBatelada = 100)
+        public async Task CalcularNovoRanqueAsync()
         {
             var totalEscolas = await dbContext.Escolas.CountAsync();
-            var filtro = new PesquisaEscolaFiltro { TamanhoPagina = tamanhoBatelada };
-            var totalPaginas = (int)Math.Ceiling((double)totalEscolas / tamanhoBatelada);
+            var filtro = new PesquisaEscolaFiltro { TamanhoPagina = TamanhoBatelada };
+            var totalPaginas = (int)Math.Ceiling((double)totalEscolas / TamanhoBatelada);
 
             var novoRanque = new Ranque
             {
@@ -41,7 +52,7 @@ namespace app.Services
             {
                 filtro.Pagina = pagina;
                 BackgroundJob.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
-                    calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id, timeoutMinutos));
+                    calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id, ExpiracaoMinutos));
             }
 
             // TODO: Calcular outros fatores para a pontuação. 

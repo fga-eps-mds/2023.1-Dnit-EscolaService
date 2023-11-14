@@ -29,7 +29,8 @@ namespace app.DI
             services.AddScoped<ICalcularUpsJob, CalcularUpsJob>();
             services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
 
-            services.Configure<UpsServiceConfig>(configuration.GetSection("UpsService"));
+            services.Configure<UpsServiceConfig>(configuration.GetSection("UpsServiceConfig"));
+            services.Configure<CalcularUpsJobConfig>(configuration.GetSection("CalcularUpsJobConfig"));
 
             services.AddControllers(o => o.Filters.Add(typeof(HandleExceptionFilter)));
 

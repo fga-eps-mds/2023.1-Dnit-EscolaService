@@ -26,7 +26,7 @@ namespace app.Services
             this.dbContext = dbContext;
             this.escolaRepositorio = escolaRepositorio;
             this.ranqueRepositorio = ranqueRepositorio;
-            this.UpsServiceHost = upsServiceConfig.Value.Host;
+            UpsServiceHost = upsServiceConfig.Value.Host;
         }
 
         [MaximumConcurrentExecutions(3, timeoutInSeconds: 20 * 60)]
@@ -56,7 +56,7 @@ namespace app.Services
                 job => job.FinalizarCalcularUpsJob(novoRanqueId));
         }
 
-        private async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno, int timeoutMinutos)
+        private async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno, int expiracaoMinutos)
         {
             var localizacoes = escolas.Select(
                 e => new LocalizacaoEscola
@@ -70,14 +70,15 @@ namespace app.Services
             // de /calcular/ups/escolas.
             var client = new HttpClient
             {
-                Timeout = TimeSpan.FromMinutes(timeoutMinutos)
+                Timeout = expiracaoMinutos <= 0 
+                    ? new TimeSpan(0, 0, 0, -1) // tempo infinito para expiração
+                    : TimeSpan.FromMinutes(expiracaoMinutos),
             };
 
             var conteudo = JsonContent.Create(localizacoes);
 
             var resposta = await client.PostAsync(
                 UpsServiceHost + Endpoint + $"?desde={desdeAno}&raiokm={raioKm}",
-                // $"http://localhost:7085/api/calcular/ups/escolas?desde={desdeAno}&raiokm={raioKm}",
                 conteudo);
 
             resposta.EnsureSuccessStatusCode();
