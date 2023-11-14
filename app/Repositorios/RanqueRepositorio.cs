@@ -30,6 +30,13 @@ namespace app.Repositorios
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Ranque?> ObterRanqueEmProcessamentoAsync()
+        {
+            return await dbContext.Ranques
+                .OrderByDescending(r => r.DataFimUtc)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<ListaPaginada<EscolaRanque>> ListarEscolasAsync(int ranqueId, PesquisaEscolaFiltro filtro)
         {
             var query = dbContext.EscolaRanques

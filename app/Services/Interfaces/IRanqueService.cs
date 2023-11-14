@@ -7,5 +7,6 @@ namespace service.Interfaces
     {
         Task CalcularNovoRanqueAsync();
         Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(api.Escolas.PesquisaEscolaFiltro filtro);
+        Task<RanqueEmProcessamentoModel> ObterRanqueEmProcessamento();
     }
 }

@@ -48,6 +48,9 @@ namespace app.Services
             dbContext.Ranques.Add(novoRanque);
             await dbContext.SaveChangesAsync();
 
+            // FIXME: Se já houver ranque em processamento, deve-se abortar ou
+            // enfileirar o job mais recente?
+
             for (int pagina = 1; pagina <= totalPaginas; pagina++)
             {
                 filtro.Pagina = pagina;
@@ -72,6 +75,26 @@ namespace app.Services
 
             var items = resultado.Items.Select((i, index) => mc.ToModel(i, ((resultado.Pagina - 1) * resultado.ItemsPorPagina) + index + 1)).ToList();
             return new ListaPaginada<RanqueEscolaModel>(items, resultado.Pagina, resultado.ItemsPorPagina, resultado.Total);
+        }
+
+        // ObterUltimoRanque?
+        // O que esse serviço faz é obter o status do **último ranque**, esteja ele em processamento ou não
+        public async Task<RanqueEmProcessamentoModel> ObterRanqueEmProcessamento()
+        {
+            var ultimoRanque = await ranqueRepositorio.ObterRanqueEmProcessamentoAsync();
+            // FIXME: O que mandar aqui?
+            if (ultimoRanque == null)
+                return new RanqueEmProcessamentoModel();
+
+            var ranque = new RanqueEmProcessamentoModel {
+                Id = ultimoRanque.Id,
+                DataFim = ultimoRanque.DataFim,
+                DataInicio = ultimoRanque.DataInicio,
+                // precisa checar por DataFim?
+                EmProgresso = ultimoRanque.BateladasEmProgresso > 0 || ultimoRanque.DataFim == null,
+            };
+
+            return ranque;
         }
     }
 

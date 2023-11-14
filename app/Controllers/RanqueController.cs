@@ -39,5 +39,13 @@ namespace app.Controllers
             authService.Require(Usuario, Permissao.RanqueCalcular);
             await ranqueService.CalcularNovoRanqueAsync();
         }
+
+        [Authorize]
+        [HttpGet("processamento")]
+        public async Task<RanqueEmProcessamentoModel> RanqueProcessamento()
+        {
+            authService.Require(Usuario, Permissao.RanquePollProcessamento);
+            return await ranqueService.ObterRanqueEmProcessamento();
+        }
     }
 }
