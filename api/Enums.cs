@@ -120,6 +120,8 @@ namespace api
         EscolaNaoEncontrada,
         [Description("Municipio não encontrado")]
         MunicipioNaoEncontrado,
+        [Description("Superintendência não encontrada")]
+        SuperIntendenciaNaoEncontrada,
     }
 
     public enum Permissao
