@@ -39,8 +39,8 @@ namespace app.Migrations
                     b.Property<DateTime?>("DataAtualizacaoUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("DistanciaSuperintendencia")
-                        .HasColumnType("integer");
+                    b.Property<double>("DistanciaSuperintendencia")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Endereco")
                         .IsRequired()

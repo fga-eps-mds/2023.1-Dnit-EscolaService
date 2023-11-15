@@ -43,7 +43,7 @@ namespace app.Entidades
         public Rede Rede { get; set; }
         
         [Required]
-        public int DistanciaSuperintendencia { get; set; }
+        public double DistanciaSuperintendencia { get; set; }
 
         public UF? Uf { get; set; }
 

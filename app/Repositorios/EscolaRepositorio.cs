@@ -59,7 +59,7 @@ namespace app.Repositorios
             return model;
         }
 
-        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio)
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia)
         {
             var escola = new Escola
             {
@@ -80,6 +80,7 @@ namespace app.Repositorios
                 DataAtualizacao = DateTimeOffset.Now,
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
+                DistanciaSuperintendencia = distanciaSuperintendencia,
             };
             dbContext.Add(escola);
             return escola;
