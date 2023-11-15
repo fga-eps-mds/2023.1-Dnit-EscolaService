@@ -50,8 +50,14 @@ namespace app.Services
             dbContext.Ranques.Add(novoRanque);
             await dbContext.SaveChangesAsync();
 
-            // FIXME: Se já houver ranque em processamento, deve-se abortar ou
-            // enfileirar o job mais recente?
+            // TODO: Se já houver ranque em processamento enfileirar o job mais recente
+            /*
+            ultimoRanque = ranqueRepo.ObterUltimoRanque()
+            if (ultimoRanque != null && ultimoRanque.BateladasEmProgresso > 0 || ultimoRanque.DataFim == null) {
+                BackgroundJob.Enqueue(() => CalcularNovoRanqueAsync());
+                return;
+            }
+            */
 
             for (int pagina = 1; pagina <= totalPaginas; pagina++)
             {
