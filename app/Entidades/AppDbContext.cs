@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using api;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic.FileIO;
 
@@ -25,7 +27,7 @@ namespace app.Entidades
         {
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
             
-            PopulaSuperintendenciasPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+            PopulaSuperintendenciasPorArquivo(Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
         }
 
         public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
@@ -68,45 +70,17 @@ namespace app.Entidades
             return municipios;
         }
 
-        public List<Superintendencia>? PopulaSuperintendenciasPorArquivo(int? limit, string caminho)
+        public List<Superintendencia>? PopulaSuperintendenciasPorArquivo(string caminho)
         {
             var hasSuperintendencias = Superintendencias.Any();
             if(hasSuperintendencias) return null;
             
             var superintendencias = new List<Superintendencia>();
-            
-            using (var fs = File.OpenRead(caminho))
-            using (var parser = new TextFieldParser(fs))
+            using (var streamReader = new StreamReader(caminho))
+            using (var csvReader = new CsvReader(streamReader, new CsvConfiguration(new CultureInfo("pt-BR")){Delimiter = ";"}) )
             {
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(";");
-
-                var columns = new Dictionary<string, int>
-                {
-                    { "endereco", 0 }, { "latitude", 1 }, { "longitude", 2 }, { "cep", 3 }, { "Id" , 4}, { "Uf" , 5}
-                };
-
-                while (!parser.EndOfData)
-                {
-                    var row = parser.ReadFields()!;
-                    var superintendencia = new Superintendencia
-                    {   
-                        Endereco = row[columns["endereco"]],
-                        Latitude = row[columns["latitude"]],
-                        Longitude = row[columns["longitude"]],
-                        Cep = row[columns["cep"]],
-                        Id = int.Parse(row[columns["id"]]),
-                        Uf = (UF)int.Parse(row[columns["uf"]]),
-                    };
-
-                    superintendencias.Add(superintendencia);
-                    
-                    if (limit.HasValue && superintendencias.Count >= limit.Value)
-                    {
-                        break;
-                    }
-                }
-            }
+                superintendencias = csvReader.GetRecords<Superintendencia>().ToList();
+            }    
             AddRange(superintendencias);
             SaveChanges();
             return superintendencias;
