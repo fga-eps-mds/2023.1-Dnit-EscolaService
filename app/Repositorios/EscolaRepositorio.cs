@@ -42,6 +42,7 @@ namespace app.Repositorios
                 ?? throw new ApiException(ErrorCodes.EscolaNaoEncontrada);
         }
 
+
         public async Task<Escola?> ObterPorCodigoAsync(int codigo, bool incluirEtapas = false, bool incluirMunicipio = false)
         {
             return await SelecaoEscola(incluirEtapas, incluirMunicipio).FirstOrDefaultAsync(e => e.Codigo == codigo);
@@ -59,7 +60,8 @@ namespace app.Repositorios
             return model;
         }
 
-        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia, Superintendencia? superintendencia)
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, Superintendencia? superintendencia,
+            double distanciaSuperintendencia)
         {
             var escola = new Escola
             {
@@ -81,12 +83,13 @@ namespace app.Repositorios
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
                 DistanciaSuperintendencia = distanciaSuperintendencia,
-                SuperintedenenciaId = superintendencia?.Id,
                 Superintendencia = superintendencia,
+                SuperintendenciaId = superintendencia?.Id,
             };
             dbContext.Add(escola);
             return escola;
         }
+
         
         public Escola Criar(CadastroEscolaData escolaData, Municipio municipio)
         {
