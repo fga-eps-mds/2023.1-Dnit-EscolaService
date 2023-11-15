@@ -74,11 +74,11 @@ namespace app.Services
                             double.Parse(s.Longitude, culture)))
                     .MinBy(s => s.Value);
 
-                distanciaSuperintendecia = menorDistancia.Value;
                 superintendenciaMaisProxima = menorDistancia.Key;
+                distanciaSuperintendecia = menorDistancia.Value;
             }
 
-            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, superintendenciaMaisProxima, distanciaSuperintendecia);
+            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
