@@ -81,9 +81,6 @@ namespace app.Migrations
                     b.Property<int?>("Situacao")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SuperintedenenciaId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("SuperintendenciaId")
                         .HasColumnType("integer");
 

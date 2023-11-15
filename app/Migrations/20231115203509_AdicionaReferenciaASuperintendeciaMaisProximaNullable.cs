@@ -11,12 +11,6 @@ namespace app.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "SuperintedenenciaId",
-                table: "Escolas",
-                type: "integer",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
                 name: "SuperintendenciaId",
                 table: "Escolas",
                 type: "integer",
@@ -44,10 +38,6 @@ namespace app.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_Escolas_SuperintendenciaId",
-                table: "Escolas");
-
-            migrationBuilder.DropColumn(
-                name: "SuperintedenenciaId",
                 table: "Escolas");
 
             migrationBuilder.DropColumn(
