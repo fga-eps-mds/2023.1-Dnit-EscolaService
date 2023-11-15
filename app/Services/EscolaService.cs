@@ -7,6 +7,7 @@ using api;
 using app.Repositorios.Interfaces;
 using api.Escolas;
 using System.Data;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace app.Services
@@ -15,6 +16,7 @@ namespace app.Services
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IMunicipioRepositorio municipioRepositorio;
+        private readonly ISuperintendenciaRepositorio superIntendenciaRepositorio;
         private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
         private const double raioTerraEmKm = 6371.0;
@@ -23,13 +25,13 @@ namespace app.Services
             IEscolaRepositorio escolaRepositorio,
             IMunicipioRepositorio municipioRepositorio,
             ModelConverter modelConverter,
-            AppDbContext dbContext
-        )
+            AppDbContext dbContext, ISuperintendenciaRepositorio superIntendenciaRepositorio)
         {
             this.escolaRepositorio = escolaRepositorio;
             this.municipioRepositorio = municipioRepositorio;
             this.modelConverter = modelConverter;
             this.dbContext = dbContext;
+            this.superIntendenciaRepositorio = superIntendenciaRepositorio;
         }
 
         public bool SuperaTamanhoMaximo(MemoryStream planilha)
@@ -49,7 +51,30 @@ namespace app.Services
         {
             var municipioId = cadastroEscolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
-            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio);
+
+            double distanciaSuperintendecia;
+            var uf = (UF)cadastroEscolaData.IdUf;
+            if (cadastroEscolaData.Latitude == null || cadastroEscolaData.Longitude == null)
+                distanciaSuperintendecia = 0;
+            else
+            {
+                var culture = new CultureInfo("pt-BR");
+                var latEscola = double.Parse(cadastroEscolaData.Latitude, culture);
+                var lonEscola = double.Parse(cadastroEscolaData.Longitude, culture);
+                
+                var superintendecias = await superIntendenciaRepositorio.ListarAsync(uf);
+                var menorDistancia = superintendecias.ToDictionary(s => s,
+                    s => CalcularDistancia(
+                        latEscola,
+                        lonEscola,
+                        double.Parse(s.Latitude),
+                        double.Parse(s.Longitude)))
+                    .MinBy(s => s.Value);
+
+                distanciaSuperintendecia = menorDistancia.Value;
+            }
+            
+            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia);
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
