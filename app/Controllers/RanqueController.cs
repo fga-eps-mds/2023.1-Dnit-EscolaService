@@ -32,6 +32,14 @@ namespace app.Controllers
             return await ranqueService.ListarEscolasUltimoRanqueAsync(filtro);
         }
 
+        [HttpGet("escolas/{escolaId}")]
+        [Authorize]
+        public async Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque([FromRoute] Guid escolaId)
+        {
+            // authService.Require(Usuario, Permissao.RanqueVisualizar);
+            return await ranqueService.ObterDetalhesEscolaRanque(escolaId);
+        }
+
         [Authorize]
         [HttpPost("escolas/novo")]
         public async Task CalcularRanque()

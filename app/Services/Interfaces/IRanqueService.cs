@@ -1,4 +1,5 @@
 using api;
+using api.Escolas;
 using api.Ranques;
 
 namespace service.Interfaces
@@ -6,7 +7,8 @@ namespace service.Interfaces
     public interface IRanqueService
     {
         Task CalcularNovoRanqueAsync();
-        Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(api.Escolas.PesquisaEscolaFiltro filtro);
+        Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(PesquisaEscolaFiltro filtro);
         Task<RanqueEmProcessamentoModel> ObterRanqueEmProcessamento();
+        Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque(Guid escolaId);
     }
 }

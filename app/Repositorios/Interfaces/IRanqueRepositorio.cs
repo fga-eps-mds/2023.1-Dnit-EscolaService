@@ -10,5 +10,6 @@ namespace app.Repositorios.Interfaces
         Task<Ranque?> ObterUltimoRanqueAsync();
         Task<Ranque?> ObterRanqueEmProcessamentoAsync();
         Task<Ranque?> ObterPorIdAsync(int id);
+        Task<(EscolaRanque?, int)> ObterEscolaRanqueEPosicaoPorIdAsync(Guid escolaId, int ranqueId);
     }
 }

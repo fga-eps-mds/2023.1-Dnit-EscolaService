@@ -15,20 +15,22 @@ namespace app.Services
     {
         private readonly AppDbContext dbContext;
         private readonly IRanqueRepositorio ranqueRepositorio;
+        private readonly IEscolaRepositorio escolaRepositorio;
         private readonly ModelConverter mc;
-
         private int ExpiracaoMinutos { get; set; }
         private int TamanhoBatelada { get; set; }
 
         public RanqueService(
             AppDbContext dbContext,
             IRanqueRepositorio ranqueRepositorio,
+            IEscolaRepositorio escolaRepositorio,
             ModelConverter mc,
             IOptions<CalcularUpsJobConfig> calcularUpsJobConfig
         )
         {
             this.dbContext = dbContext;
             this.ranqueRepositorio = ranqueRepositorio;
+            this.escolaRepositorio = escolaRepositorio;
             this.mc = mc;
             ExpiracaoMinutos = calcularUpsJobConfig.Value.ExpiracaoMinutos;
             TamanhoBatelada = calcularUpsJobConfig.Value.TamanhoBatelada;
@@ -73,7 +75,9 @@ namespace app.Services
 
             var resultado = await ranqueRepositorio.ListarEscolasAsync(ultimoRanque.Id, filtro);
 
-            var items = resultado.Items.Select((i, index) => mc.ToModel(i, ((resultado.Pagina - 1) * resultado.ItemsPorPagina) + index + 1)).ToList();
+            var items = resultado.Items.Select((i, index) => mc
+                .ToModel(i, ((resultado.Pagina - 1) * resultado.ItemsPorPagina) + index + 1))
+                .ToList();
             return new ListaPaginada<RanqueEscolaModel>(items, resultado.Pagina, resultado.ItemsPorPagina, resultado.Total);
         }
 
@@ -86,7 +90,8 @@ namespace app.Services
             if (ultimoRanque == null)
                 return new RanqueEmProcessamentoModel();
 
-            var ranque = new RanqueEmProcessamentoModel {
+            var ranque = new RanqueEmProcessamentoModel
+            {
                 Id = ultimoRanque.Id,
                 DataFim = ultimoRanque.DataFim,
                 DataInicio = ultimoRanque.DataInicio,
@@ -95,6 +100,31 @@ namespace app.Services
             };
 
             return ranque;
+        }
+
+        public async Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque(Guid escolaId)
+        {
+            var escola = await escolaRepositorio.ObterPorIdAsync(escolaId);
+            var ranque = await ranqueRepositorio.ObterUltimoRanqueAsync();
+            var (escolaRanque, posicao) = await ranqueRepositorio.ObterEscolaRanqueEPosicaoPorIdAsync(escolaId, ranque!.Id);
+
+            // FIXME: Dados mockados. Tem que buscar do banco de dados no futuro.
+            FatorModel[] fatores = { 
+                new() { Nome = "UPS", Peso = 1, Valor = escola.Ups } ,
+            };
+            
+            var detalhes = new DetalhesEscolaRanqueModel
+            {
+                Escola = mc.ToModel(escola),
+                RanqueInfo = new RanqueInfo { 
+                    Fatores = fatores,
+                    Pontuacao = escolaRanque!.Pontuacao,
+                    Posicao = posicao, 
+                    RanqueId = ranque.Id,
+                }
+            };
+
+            return detalhes;
         }
     }
 
