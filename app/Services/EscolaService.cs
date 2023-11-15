@@ -17,7 +17,8 @@ namespace app.Services
         private readonly IMunicipioRepositorio municipioRepositorio;
         private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
-
+        private const double raioTerraEmKm = 6371.0;
+        
         public EscolaService(
             IEscolaRepositorio escolaRepositorio,
             IMunicipioRepositorio municipioRepositorio,
@@ -308,6 +309,27 @@ namespace app.Services
             {
                 throw new ArgumentNullException("Porte", "Erro. A leitura do arquivo parou na escola: " + escola.NomeEscola + ", descrição do porte inválida!");
             }
+        }
+        
+        public static double ConverterParaRadianos(double grau)
+        {
+            return grau * Math.PI / 180.0;
+        }
+    
+        public double CalcularDistancia(double lat1, double long1, double lat2, double long2)
+        {
+            var diferencaLatitude = ConverterParaRadianos(lat2 - lat1);
+            var diferencaLongitude = ConverterParaRadianos(long2 - long1);
+
+            var primeiraParteFormula = Math.Sin(diferencaLatitude / 2) * Math.Sin(diferencaLatitude / 2) +
+                                       Math.Cos(ConverterParaRadianos(lat1)) * Math.Cos(ConverterParaRadianos(lat2)) *
+                                       Math.Sin(diferencaLongitude / 2) * Math.Sin(diferencaLongitude / 2);
+
+            var resultadoFormula = 2 * Math.Atan2(Math.Sqrt(primeiraParteFormula), Math.Sqrt(1 - primeiraParteFormula));
+
+            var distance = raioTerraEmKm * resultadoFormula;
+
+            return distance;
         }
     }
 
