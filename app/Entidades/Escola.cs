@@ -1,6 +1,7 @@
 ﻿using api;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CsvHelper.Configuration.Attributes;
 
 namespace app.Entidades
 {
@@ -44,6 +45,12 @@ namespace app.Entidades
         
         [Required]
         public double DistanciaSuperintendencia { get; set; }
+
+        [Optional]
+        public int? SuperintedenenciaId { get; set; }
+        
+        [Optional]
+        public Superintendencia? Superintendencia { get; set; }
 
         public UF? Uf { get; set; }
 

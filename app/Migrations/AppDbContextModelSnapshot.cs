@@ -81,6 +81,12 @@ namespace app.Migrations
                     b.Property<int?>("Situacao")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SuperintedenenciaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SuperintendenciaId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Telefone")
                         .IsRequired()
                         .HasMaxLength(11)
@@ -98,6 +104,8 @@ namespace app.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MunicipioId");
+
+                    b.HasIndex("SuperintendenciaId");
 
                     b.ToTable("Escolas");
                 });
@@ -181,7 +189,13 @@ namespace app.Migrations
                         .WithMany()
                         .HasForeignKey("MunicipioId");
 
+                    b.HasOne("app.Entidades.Superintendencia", "Superintendencia")
+                        .WithMany()
+                        .HasForeignKey("SuperintendenciaId");
+
                     b.Navigation("Municipio");
+
+                    b.Navigation("Superintendencia");
                 });
 
             modelBuilder.Entity("app.Entidades.EscolaEtapaEnsino", b =>
