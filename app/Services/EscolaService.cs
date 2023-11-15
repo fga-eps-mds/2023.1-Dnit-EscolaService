@@ -55,6 +55,7 @@ namespace app.Services
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
 
             double distanciaSuperintendecia;
+            Superintendencia? superintendenciaMaisProxima = null;
             var uf = (UF)cadastroEscolaData.IdUf;
             if (cadastroEscolaData.Latitude == null || cadastroEscolaData.Longitude == null)
                 distanciaSuperintendecia = 0;
@@ -73,10 +74,11 @@ namespace app.Services
                             double.Parse(s.Longitude, culture)))
                     .MinBy(s => s.Value);
 
+                superintendenciaMaisProxima = menorDistancia.Key;
                 distanciaSuperintendecia = menorDistancia.Value;
             }
 
-            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia);
+            var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
