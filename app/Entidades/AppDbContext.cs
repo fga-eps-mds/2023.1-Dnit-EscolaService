@@ -95,8 +95,8 @@ namespace app.Entidades
                         Latitude = row[columns["latitude"]],
                         Longitude = row[columns["longitude"]],
                         Cep = row[columns["cep"]],
-                        Id = int.Parse(row[columns["id"]]),
-                        Uf = (UF)int.Parse(row[columns["uf"]]),
+                        Id = int.Parse(row[columns["Id"]]),
+                        Uf = (UF)int.Parse(row[columns["Uf"]]),
                     };
 
                     superintendencias.Add(superintendencia);
