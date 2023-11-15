@@ -69,8 +69,8 @@ namespace app.Services
                         s => CalcularDistancia(
                             latEscola,
                             lonEscola,
-                            double.Parse(s.Latitude),
-                            double.Parse(s.Longitude)))
+                            double.Parse(s.Latitude, culture),
+                            double.Parse(s.Longitude, culture)))
                     .MinBy(s => s.Value);
 
                 distanciaSuperintendecia = menorDistancia.Value;
