@@ -59,7 +59,7 @@ namespace app.Repositorios
             return model;
         }
 
-        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia)
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia, Superintendencia? superintendencia)
         {
             var escola = new Escola
             {
@@ -81,6 +81,34 @@ namespace app.Repositorios
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
                 DistanciaSuperintendencia = distanciaSuperintendencia,
+                SuperintedenenciaId = superintendencia?.Id,
+                Superintendencia = superintendencia,
+            };
+            dbContext.Add(escola);
+            return escola;
+        }
+        
+        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio)
+        {
+            var escola = new Escola
+            {
+                Nome = escolaData.NomeEscola!,
+                Codigo = escolaData.CodigoEscola,
+                Cep = escolaData.Cep!,
+                Endereco = escolaData.Endereco!,
+                Latitude = escolaData.Latitude ?? "",
+                Longitude = escolaData.Longitude ?? "",
+                TotalAlunos = escolaData.NumeroTotalDeAlunos,
+                Telefone = escolaData.Telefone ?? "",
+                TotalDocentes = escolaData.NumeroTotalDeDocentes,
+                Rede = (Rede)escolaData.IdRede,
+                Uf = (UF)escolaData.IdUf,
+                Localizacao = (Localizacao?)escolaData.IdLocalizacao,
+                Porte = (Porte?)escolaData.IdPorte,
+                Situacao = (Situacao?)escolaData.IdSituacao,
+                DataAtualizacao = DateTimeOffset.Now,
+                MunicipioId = municipio.Id,
+                Municipio = municipio,
             };
             dbContext.Add(escola);
             return escola;
