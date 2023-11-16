@@ -79,7 +79,6 @@ namespace app.Repositorios
             return await dbContext.EscolaRanques.Where(er => er.RanqueId == ranqueId).OrderByDescending(e => e.Pontuacao).ToListAsync();
         }
 
-        // https://stackoverflow.com/questions/56482415/entity-framework-6-calculate-numeric-index-position-of-row-in-a-given-table-s
         public async Task<EscolaRanque?> ObterEscolaRanquePorIdAsync(Guid escolaId, int ranqueId)
         {
             var escola = await dbContext.EscolaRanques

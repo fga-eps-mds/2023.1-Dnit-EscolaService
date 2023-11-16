@@ -1,4 +1,3 @@
-using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
 using app.Services;
@@ -11,7 +10,6 @@ using test.Fixtures;
 using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 using test.Stubs;
-using System.Net.Http.Json;
 using System.Linq;
 
 
@@ -57,9 +55,9 @@ namespace test
                 .When(upsServiceConfig.Host + "*")
                 .Respond("application/json", "[1, 2, 3]");
 
-            await upsJob.ExecutarAsync(new (), 1, 1);
+            await upsJob.ExecutarAsync(new(), 1, 1);
 
-            var escolas = db.Escolas.ToList();
+            var escolas = db.Escolas.OrderBy(e => e.Nome).ToList();
             Assert.Equal(1, escolas[0].Ups);
             Assert.Equal(2, escolas[1].Ups);
             Assert.Equal(3, escolas[2].Ups);
@@ -73,10 +71,39 @@ namespace test
                 .When(upsServiceConfig.Host + "*")
                 .Respond("application/json", "[2, 2, 2, 2, 3, 3]");
 
-            await upsJob.ExecutarAsync(new (), 1, 1);
+            await upsJob.ExecutarAsync(new(), 1, 1);
 
             var ersCount = db.EscolaRanques.Count();
             Assert.Equal(6, ersCount);
+        }
+
+        [Fact]
+        public async void FinalizarCalcularUpsJob_QuandoCalculoEmProgresso_DecrementaBateladasEmProgresso()
+        {
+            var ranqueId = 1;
+            db.Ranques.Add(new Ranque() { Id = ranqueId, BateladasEmProgresso = 10 });
+            db.SaveChanges();
+
+            await upsJob.FinalizarCalcularUpsJob(ranqueId);
+
+            var ranque = db.Ranques.FirstOrDefault();
+
+            Assert.Equal(9, ranque!.BateladasEmProgresso);
+        }
+
+        [Fact]
+        public async void FinalizarCalcularUpsJob_QuandoUltimabatelada_InvocaConcluirRanqueamentoAsync()
+        {
+            var ranqueId = 1;
+            db.Ranques.Add(new Ranque() { Id = ranqueId, BateladasEmProgresso = 1 });
+            db.SaveChanges();
+
+            await upsJob.FinalizarCalcularUpsJob(ranqueId);
+
+            var ranque = db.Ranques.FirstOrDefault();
+            Assert.Equal(0, ranque!.BateladasEmProgresso);
+            ranqueServiceMock
+                .Verify(x => x.ConcluirRanqueamentoAsync(ranque), Times.AtLeastOnce());
         }
     }
 }
