@@ -48,34 +48,36 @@ namespace app.Services
                 return quantidade_escolas > tamanho_max;
             }
         }
-
+        
+        private async Task<KeyValuePair<Superintendencia, double>> calcularSuperintendenciaMaisProxima(string lat, string lon)
+        {
+            var culture = new CultureInfo("pt-BR");
+            var escolaLat = double.Parse(lat, culture);
+            var escolaLon = double.Parse(lon, culture);
+            var superintendencias = await superIntendenciaRepositorio.ListarAsync();
+            return  superintendencias.ToDictionary(s => s,
+                    s => CalcularDistancia(
+                        escolaLat,
+                        escolaLon,
+                        double.Parse(s.Latitude, culture),
+                        double.Parse(s.Longitude, culture)))
+                .MinBy(s => s.Value);
+        }
+        
         public async Task CadastrarAsync(CadastroEscolaData cadastroEscolaData)
         {
             var municipioId = cadastroEscolaData.IdMunicipio ?? throw new ApiException(ErrorCodes.MunicipioNaoEncontrado);
             var municipio = await municipioRepositorio.ObterPorIdAsync(municipioId);
-
-            double distanciaSuperintendecia;
+            
+            double distanciaSuperintendecia = 0;
             Superintendencia? superintendenciaMaisProxima = null;
-            var uf = (UF)cadastroEscolaData.IdUf;
-            if (cadastroEscolaData.Latitude == null || cadastroEscolaData.Longitude == null)
-                distanciaSuperintendecia = 0;
-            else
+            if (cadastroEscolaData.Latitude != null && cadastroEscolaData.Longitude != null)
             {
-                var culture = new CultureInfo("pt-BR");
-                var latEscola = double.Parse(cadastroEscolaData.Latitude, culture);
-                var lonEscola = double.Parse(cadastroEscolaData.Longitude, culture);
+                KeyValuePair<Superintendencia, double> superIntendenciaDistancia = await
+                    calcularSuperintendenciaMaisProxima(cadastroEscolaData.Latitude, cadastroEscolaData.Longitude);
 
-                var superintendecias = await superIntendenciaRepositorio.ListarAsync();
-                var menorDistancia = superintendecias.ToDictionary(s => s,
-                        s => CalcularDistancia(
-                            latEscola,
-                            lonEscola,
-                            double.Parse(s.Latitude, culture),
-                            double.Parse(s.Longitude, culture)))
-                    .MinBy(s => s.Value);
-
-                superintendenciaMaisProxima = menorDistancia.Key;
-                distanciaSuperintendecia = menorDistancia.Value;
+                distanciaSuperintendecia = superIntendenciaDistancia.Value;
+                superintendenciaMaisProxima = superIntendenciaDistancia.Key;
             }
 
             var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
@@ -222,7 +224,7 @@ namespace app.Services
             var resultado = etapas_separadas.Select(e => etapas.GetValueOrDefault(e.ToLower())).Where(e => e != default(EtapaEnsino)).ToList();
             return resultado;
         }
-
+        
         public async Task AlterarDadosEscolaAsync(AtualizarDadosEscolaData dados)
         {
             var escola = await escolaRepositorio.ObterPorIdAsync(dados.IdEscola, incluirEtapas: true);
