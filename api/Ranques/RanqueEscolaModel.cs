@@ -14,7 +14,7 @@ namespace api.Ranques
     {
         public Guid Id { get; set; }
         public string Nome { get; set; }
-        public UF? Uf { get; set; }
+        public UfModel? Uf { get; set; }
         public List<EtapasdeEnsinoModel>? EtapaEnsino { get; set; }
         public MunicipioModel? Municipio { get; set; }
     }

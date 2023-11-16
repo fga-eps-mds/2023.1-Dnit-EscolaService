@@ -73,19 +73,19 @@ namespace app.Services
                 Descricao = value.AsString(EnumFormat.Description)!,
             };
 
-        public RanqueEscolaModel ToModel(EscolaRanque escolaRanque, int posicao) =>
+        public RanqueEscolaModel ToModel(EscolaRanque escolaRanque) =>
             new RanqueEscolaModel
             {
                 RanqueId = escolaRanque.RanqueId,
                 Pontuacao = escolaRanque.Pontuacao,
-                Posicao = posicao,
+                Posicao = escolaRanque.Posicao,
                 Escola = new EscolaRanqueInfo
                 {
                     Id = escolaRanque.Escola.Id,
                     Nome = escolaRanque.Escola.Nome,
                     EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
                     Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
-                    Uf = escolaRanque.Escola.Uf,
+                    Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
                 }
             };
     }

@@ -74,6 +74,11 @@ namespace app.Repositorios
             return new ListaPaginada<EscolaRanque>(items, filtro.Pagina, filtro.TamanhoPagina, total);
         }
 
+        public async Task<List<EscolaRanque>> ListarEscolasAsync(int ranqueId)
+        {
+            return await dbContext.EscolaRanques.Where(er => er.RanqueId == ranqueId).OrderByDescending(e => e.Pontuacao).ToListAsync();
+        }
+
         // https://stackoverflow.com/questions/56482415/entity-framework-6-calculate-numeric-index-position-of-row-in-a-given-table-s
         public async Task<(EscolaRanque?, int)> ObterEscolaRanqueEPosicaoPorIdAsync(Guid escolaId, int ranqueId)
         {

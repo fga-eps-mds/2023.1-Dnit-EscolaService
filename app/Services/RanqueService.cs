@@ -76,7 +76,7 @@ namespace app.Services
             var resultado = await ranqueRepositorio.ListarEscolasAsync(ultimoRanque.Id, filtro);
 
             var items = resultado.Items.Select((i, index) => mc
-                .ToModel(i, ((resultado.Pagina - 1) * resultado.ItemsPorPagina) + index + 1))
+                .ToModel(i))
                 .ToList();
             return new ListaPaginada<RanqueEscolaModel>(items, resultado.Pagina, resultado.ItemsPorPagina, resultado.Total);
         }
@@ -126,6 +126,23 @@ namespace app.Services
             };
 
             return detalhes;
+        }
+
+        public async Task ConcluirRanqueamentoAsync(Ranque ranque)
+        {
+            ranque.DataFim = DateTimeOffset.Now;
+
+            await ConcluirEscolaRanqueAsync(ranque.Id);
+        }
+
+        private async Task ConcluirEscolaRanqueAsync(int ranqueId)
+        {
+            var escolas = await ranqueRepositorio.ListarEscolasAsync(ranqueId);
+
+            foreach (var (index, escolaRanque) in escolas.OrderByDescending(e => e.Pontuacao).Select((e, i) => (i, e)))
+            {
+                escolaRanque.Posicao = index;
+            }
         }
     }
 
