@@ -4,6 +4,7 @@ using app.Repositorios;
 using app.Repositorios.Interfaces;
 using app.Services;
 using auth;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

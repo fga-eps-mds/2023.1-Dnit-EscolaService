@@ -56,8 +56,9 @@ namespace test.Stubs
             dbContext.RemoveRange(dbContext.EscolaEtapaEnsino);
             dbContext.RemoveRange(dbContext.Municipios);
             dbContext.RemoveRange(dbContext.Escolas);
+            dbContext.RemoveRange(dbContext.EscolaRanques);
+            dbContext.RemoveRange(dbContext.Ranques);
             dbContext.SaveChanges();
         }
-
     }
 }

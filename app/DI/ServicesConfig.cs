@@ -26,6 +26,7 @@ namespace app.DI
             services.AddScoped<IMunicipioService, MunicipioService>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IRanqueService, RanqueService>();
+            services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();
             services.AddScoped<ICalcularUpsJob, CalcularUpsJob>();
             services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
 

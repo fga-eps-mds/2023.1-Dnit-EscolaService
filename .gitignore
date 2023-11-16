@@ -368,3 +368,5 @@ app/build
 
 report/
 .vscode/
+cov.sh
+coveragereport

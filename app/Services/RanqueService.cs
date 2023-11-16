@@ -17,6 +17,7 @@ namespace app.Services
         private readonly IRanqueRepositorio ranqueRepositorio;
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly ModelConverter mc;
+        private readonly IBackgroundJobClient jobClient;
         private int ExpiracaoMinutos { get; set; }
         private int TamanhoBatelada { get; set; }
 
@@ -25,12 +26,14 @@ namespace app.Services
             IRanqueRepositorio ranqueRepositorio,
             IEscolaRepositorio escolaRepositorio,
             ModelConverter mc,
-            IOptions<CalcularUpsJobConfig> calcularUpsJobConfig
+            IOptions<CalcularUpsJobConfig> calcularUpsJobConfig,
+            IBackgroundJobClient jobClient
         )
         {
             this.dbContext = dbContext;
             this.ranqueRepositorio = ranqueRepositorio;
             this.escolaRepositorio = escolaRepositorio;
+            this.jobClient = jobClient;
             this.mc = mc;
             ExpiracaoMinutos = calcularUpsJobConfig.Value.ExpiracaoMinutos;
             TamanhoBatelada = calcularUpsJobConfig.Value.TamanhoBatelada;
@@ -50,19 +53,10 @@ namespace app.Services
             dbContext.Ranques.Add(novoRanque);
             await dbContext.SaveChangesAsync();
 
-            // TODO: Se já houver ranque em processamento enfileirar o job mais recente
-            /*
-            ultimoRanque = ranqueRepo.ObterUltimoRanque()
-            if (ultimoRanque != null && ultimoRanque.BateladasEmProgresso > 0 || ultimoRanque.DataFim == null) {
-                BackgroundJob.Enqueue(() => CalcularNovoRanqueAsync());
-                return;
-            }
-            */
-
             for (int pagina = 1; pagina <= totalPaginas; pagina++)
             {
                 filtro.Pagina = pagina;
-                BackgroundJob.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
+                jobClient.Enqueue<ICalcularUpsJob>((calcularUpsJob) =>
                     calcularUpsJob.ExecutarAsync(filtro, novoRanque.Id, ExpiracaoMinutos));
             }
 
@@ -115,17 +109,18 @@ namespace app.Services
             var (escolaRanque, posicao) = await ranqueRepositorio.ObterEscolaRanqueEPosicaoPorIdAsync(escolaId, ranque!.Id);
 
             // FIXME: Dados mockados. Tem que buscar do banco de dados no futuro.
-            FatorModel[] fatores = { 
-                new() { Nome = "UPS", Peso = 1, Valor = escola.Ups } ,
+            FatorModel[] fatores = {
+                new() { Nome = "UPS", Peso = 1, Valor = escola.Ups },
             };
-            
+
             var detalhes = new DetalhesEscolaRanqueModel
             {
                 Escola = mc.ToModel(escola),
-                RanqueInfo = new RanqueInfo { 
+                RanqueInfo = new RanqueInfo
+                {
                     Fatores = fatores,
                     Pontuacao = escolaRanque!.Pontuacao,
-                    Posicao = posicao, 
+                    Posicao = posicao,
                     RanqueId = ranque.Id,
                 }
             };
