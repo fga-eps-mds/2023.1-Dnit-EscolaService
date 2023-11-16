@@ -34,4 +34,9 @@ public class SuperIntendenciaRepositorio : ISuperintendenciaRepositorio
         return await query.ToListAsync();
 
     }
+
+    public async Task<List<Superintendencia>> ListarAsync()
+    {
+        return await _dbContext.Superintendencias.ToListAsync();
+    }
 }

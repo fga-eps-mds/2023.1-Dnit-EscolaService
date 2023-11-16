@@ -7,4 +7,5 @@ public interface ISuperintendenciaRepositorio
 {
     Task<Superintendencia> ObterPorIdAsync(int id);
     Task<List<Superintendencia>> ListarAsync(UF? uf);
+    Task<List<Superintendencia>> ListarAsync();
 }
