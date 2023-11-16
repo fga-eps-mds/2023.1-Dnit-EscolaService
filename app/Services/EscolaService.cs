@@ -64,13 +64,13 @@ namespace app.Services
                 superintendencias.Select(s => new
                 {
                     Superintendencia = s,
-                    Latitude = double.Parse(s.Latitude, culture),
-                    Longitude = double.Parse(s.Longitude, culture),
+                    lat = double.Parse(s.Latitude, culture),
+                    lon = double.Parse(s.Longitude, culture),
                 })
                 .Select(s => new
                 {
                     s.Superintendencia,
-                    Distancia = CalcularDistancia(escolaLat, escolaLon, s.Latitude, s.Longitude)
+                    Distancia = CalcularDistancia(lat, lon, s.lat, s.lon)
                 })
                 .MinBy(s => s.Distancia);
 
