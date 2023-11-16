@@ -74,7 +74,7 @@ namespace app.Repositorios
             return new ListaPaginada<EscolaRanque>(items, filtro.Pagina, filtro.TamanhoPagina, total);
         }
 
-        public Task<List<EscolaRanque>> ListarEscolasAsync(int ranqueId)
+        public async Task<List<EscolaRanque>> ListarEscolasAsync(int ranqueId)
         {
             return await dbContext.EscolaRanques.Where(er => er.RanqueId == ranqueId).OrderByDescending(e => e.Pontuacao).ToListAsync();
         }
