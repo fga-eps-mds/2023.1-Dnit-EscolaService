@@ -81,7 +81,7 @@ namespace app.Repositorios
                 MunicipioId = municipio.Id,
                 Municipio = municipio,
                 DistanciaSuperintendencia = distanciaSuperintendencia,
-                SuperintedenenciaId = superintendencia?.Id,
+                SuperintendenciaId = superintendencia?.Id,
                 Superintendencia = superintendencia,
             };
             dbContext.Add(escola);
