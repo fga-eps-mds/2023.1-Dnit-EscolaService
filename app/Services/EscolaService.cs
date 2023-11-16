@@ -65,7 +65,7 @@ namespace app.Services
                 var latEscola = double.Parse(cadastroEscolaData.Latitude, culture);
                 var lonEscola = double.Parse(cadastroEscolaData.Longitude, culture);
 
-                var superintendecias = await superIntendenciaRepositorio.ListarAsync(uf);
+                var superintendecias = await superIntendenciaRepositorio.ListarAsync();
                 var menorDistancia = superintendecias.ToDictionary(s => s,
                         s => CalcularDistancia(
                             latEscola,
