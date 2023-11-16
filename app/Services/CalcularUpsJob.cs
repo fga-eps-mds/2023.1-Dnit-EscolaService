@@ -12,23 +12,29 @@ namespace app.Services
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IRanqueRepositorio ranqueRepositorio;
+        private readonly IBackgroundJobClient jobClient;
         private readonly IRanqueService ranqueService;
         private readonly AppDbContext dbContext;
+        private readonly HttpClient httpClient;
         private readonly string UpsServiceHost;
         private static readonly string Endpoint = "api/calcular/ups/escolas";
 
         public CalcularUpsJob(
+            AppDbContext dbContext,
             IEscolaRepositorio escolaRepositorio,
             IRanqueRepositorio ranqueRepositorio,
-            IOptions<UpsServiceConfig> upsServiceConfig,
             IRanqueService ranqueService,
-            AppDbContext dbContext
+            IBackgroundJobClient jobClient,
+            HttpClient httpClient,
+            IOptions<UpsServiceConfig> upsServiceConfig
         )
         {
             this.dbContext = dbContext;
             this.escolaRepositorio = escolaRepositorio;
             this.ranqueRepositorio = ranqueRepositorio;
+            this.jobClient = jobClient;
             this.ranqueService = ranqueService;
+            this.httpClient = httpClient;
             UpsServiceHost = upsServiceConfig.Value.Host;
         }
 
@@ -55,7 +61,7 @@ namespace app.Services
 
             await dbContext.EscolaRanques.AddRangeAsync(ranqueEscolas);
             await dbContext.SaveChangesAsync();
-            BackgroundJob.Enqueue<ICalcularUpsJob>(
+            jobClient.Enqueue<ICalcularUpsJob>(
                 job => job.FinalizarCalcularUpsJob(novoRanqueId));
         }
 
@@ -71,16 +77,13 @@ namespace app.Services
 
             // TODO: Autenticar e autorizar esse cliente com a permissão
             // de /calcular/ups/escolas.
-            var client = new HttpClient
-            {
-                Timeout = expiracaoMinutos <= 0 
+            httpClient.Timeout = expiracaoMinutos <= 0
                     ? new TimeSpan(0, 0, 0, 0, -1) // tempo infinito para expiração
-                    : TimeSpan.FromMinutes(expiracaoMinutos),
-            };
+                    : TimeSpan.FromMinutes(expiracaoMinutos);
 
             var conteudo = JsonContent.Create(localizacoes);
 
-            var resposta = await client.PostAsync(
+            var resposta = await httpClient.PostAsync(
                 UpsServiceHost + Endpoint + $"?desde={desdeAno}&raiokm={raioKm}",
                 conteudo);
 
