@@ -85,7 +85,7 @@ namespace app.Services
                     Nome = escolaRanque.Escola.Nome,
                     EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
                     Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
-                    Uf = escolaRanque.Escola.Uf,
+                    Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
                 }
             };
     }
