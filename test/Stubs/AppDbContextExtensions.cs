@@ -15,6 +15,7 @@ namespace test.Stubs
         public static List<Escola> PopulaEscolas(this AppDbContext dbContext, int limite = 1, bool comEtapas = true)
         {
             dbContext.Clear();
+            // dbContext.Escolas.RemoveRange(dbContext.Escolas);
             var escolas = new List<Escola>();
             
             if (!dbContext.Municipios.Any())

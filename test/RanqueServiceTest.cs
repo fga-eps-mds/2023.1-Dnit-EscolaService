@@ -24,7 +24,6 @@ namespace test
         private readonly Mock<IBackgroundJobClient> jobClientMock;
         private readonly CalcularUpsJobConfig jobConfig = new() { ExpiracaoMinutos = -1, TamanhoBatelada = 10 };
 
-
         public RanqueServiceTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
             db = fixture.GetService<AppDbContext>(testOutputHelper)!;
@@ -55,11 +54,7 @@ namespace test
         public async void ListarEscolasUltimoRanque_TiverUmRanque_RetornaEscolasDoRanque()
         {
             var escolas = db.PopulaEscolas(3);
-            var ranqueId = 1;
-            db.Ranques.Add(new() { DataFim = DateTimeOffset.Now, DataInicio = DateTimeOffset.Now, Id = ranqueId });
-            var escolaRanques = GeraEscolaRanques(escolas, ranqueId);
-            db.EscolaRanques.AddRange(escolaRanques);
-            db.SaveChanges();
+            GeraRanque(escolas);
 
             var lista = await service.ListarEscolasUltimoRanqueAsync(FiltroVazio);
             Assert.Equal(escolas.Count, lista.Items.Count);
@@ -80,13 +75,15 @@ namespace test
                 Times.Exactly(chamadasEsperadas));
         }
 
-        [Fact(Skip = "Apenas rascunhando")]
-        public void RequisicaoHttpParaUpsServiceDeveSerAutenticado() { }
-
-        [Fact(Skip = "Apenas rascunhando")]
-        public void ObterEscolaEmRanqueDetalhes_RetornaPosicaoCorreta()
+        [Fact]
+        public async void ObterEscolaEmRanqueDetalhes_QuandoEscolaExiste_RetornaPosicaoCorreta()
         {
-            // endpoint do olhozinho. O que deve retornar ?
+            var escolas = db.PopulaEscolas(3);
+            var (escolaRanques, _) = GeraRanque(escolas);
+
+            var detalhes = await service.ObterDetalhesEscolaRanque(escolas[0].Id);
+
+            Assert.Equal(escolaRanques[0].EscolaId, detalhes.Escola.IdEscola);
         }
 
         [Fact(Skip = "O que fazer?")]
@@ -95,17 +92,25 @@ namespace test
             // Na real eu não sei o que deve retonar de vdd
         }
 
-        private static List<EscolaRanque> GeraEscolaRanques(List<Escola> escolas, int ranqueId)
+        private (List<EscolaRanque>, Ranque) GeraRanque(List<Escola> escolas)
         {
+            var ranque = new Ranque { Id = Random.Shared.Next(), DataInicio = DateTimeOffset.Now, DataFim = DateTimeOffset.Now, BateladasEmProgresso = 0 };
+            db.Ranques.Add(ranque);
+            db.SaveChanges();
+
             var escolasRanques = new List<EscolaRanque>(escolas.Count);
             for (int i = 0; i < escolas.Count; i++)
                 escolasRanques.Add(new()
                 {
                     EscolaId = escolas[i].Id,
-                    RanqueId = ranqueId,
-                    Pontuacao = Random.Shared.Next() % 100
+                    RanqueId = ranque.Id,
+                    Pontuacao = i,
+                    Posicao = i + 1,
                 });
-            return escolasRanques;
+
+            db.EscolaRanques.AddRange(escolasRanques);
+            db.SaveChanges();
+            return (escolasRanques, ranque);
         }
 
         protected new void Dispose()

@@ -69,7 +69,6 @@ namespace app.Services
         public async Task<ListaPaginada<RanqueEscolaModel>> ListarEscolasUltimoRanqueAsync(PesquisaEscolaFiltro filtro)
         {
             var ultimoRanque = await ranqueRepositorio.ObterUltimoRanqueAsync();
-
             if (ultimoRanque == null)
                 return new ListaPaginada<RanqueEscolaModel>(new(), filtro.Pagina, filtro.TamanhoPagina, 0);
 
