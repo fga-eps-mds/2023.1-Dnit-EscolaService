@@ -132,6 +132,23 @@ namespace app.Services
 
             return detalhes;
         }
+
+        public async Task ConcluirRanqueamentoAsync(Ranque ranque)
+        {
+            ranque.DataFim = DateTimeOffset.Now;
+
+            await ConcluirEscolaRanqueAsync(ranque.Id);
+        }
+
+        private async Task ConcluirEscolaRanqueAsync(int ranqueId)
+        {
+            var escolas = await ranqueRepositorio.ListarEscolasAsync(ranqueId);
+
+            foreach (var (index, escolaRanque) in escolas.OrderByDescending(e => e.Pontuacao).Select((e, i) => (i, e)))
+            {
+                escolaRanque.Posicao = index;
+            }
+        }
     }
 
     public class LocalizacaoEscola

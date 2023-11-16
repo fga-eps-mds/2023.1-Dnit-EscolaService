@@ -20,6 +20,6 @@ namespace app.Entidades
         
         public int Pontuacao { get; set; }
 
-
+        public int Posicao { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace app.Services
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IRanqueRepositorio ranqueRepositorio;
+        private readonly IRanqueService ranqueService;
         private readonly AppDbContext dbContext;
         private readonly string UpsServiceHost;
         private static readonly string Endpoint = "api/calcular/ups/escolas";
@@ -20,12 +21,14 @@ namespace app.Services
             IEscolaRepositorio escolaRepositorio,
             IRanqueRepositorio ranqueRepositorio,
             IOptions<UpsServiceConfig> upsServiceConfig,
+            IRanqueService ranqueService,
             AppDbContext dbContext
         )
         {
             this.dbContext = dbContext;
             this.escolaRepositorio = escolaRepositorio;
             this.ranqueRepositorio = ranqueRepositorio;
+            this.ranqueService = ranqueService;
             UpsServiceHost = upsServiceConfig.Value.Host;
         }
 
@@ -100,7 +103,7 @@ namespace app.Services
             ranqueEmProgresso.BateladasEmProgresso--;
 
             if (ranqueEmProgresso.BateladasEmProgresso == 0)
-                ranqueEmProgresso.DataFim = DateTimeOffset.Now;
+                await ranqueService.ConcluirRanqueamentoAsync(ranqueEmProgresso);
 
             await dbContext.SaveChangesAsync();
         }
