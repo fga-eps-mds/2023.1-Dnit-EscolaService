@@ -12,6 +12,8 @@ services:
     container_name: escola-service
     volumes:
       - ./:/app
+    environment:
+      - MODE=container
     env_file:
       - .env
     environment:
