@@ -249,6 +249,13 @@ namespace app.Services
             escola.Observacao = dados.Observacao;
             escola.Situacao = (Situacao?)dados.IdSituacao;
 
+            var (superIntendenciaMaisProxima, distanciaSuper) = await
+                CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
+
+            escola.Superintendencia = superIntendenciaMaisProxima;
+            escola.SuperintendenciaId = superIntendenciaMaisProxima?.Id;
+            escola.DistanciaSuperintendencia = distanciaSuper;
+            
             atualizarEtapasEnsino(escola, dados.IdEtapasDeEnsino.ConvertAll(e => (EtapaEnsino)e));
 
             await dbContext.SaveChangesAsync();
