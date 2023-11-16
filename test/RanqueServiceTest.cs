@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
@@ -86,17 +87,45 @@ namespace test
             Assert.Equal(escolaRanques[0].EscolaId, detalhes.Escola.IdEscola);
         }
 
-        [Fact(Skip = "O que fazer?")]
-        public void CalcularRanque_QuandoHouverErro_TentaDeNovo_AgendaOutraTentativa_SoRetornaErro()
+        [Fact]
+        public async void ObterRanqueEmProcessamento_QuandoNaoTemRanque_RetornaRanqueComEmProgressoFalso()
         {
-            // Na real eu não sei o que deve retonar de vdd
+            // Esse teste tem que melhorar. Deixar mais claro que é Ranque Vazio
+            var ranque = await service.ObterRanqueEmProcessamento();
+            Assert.False(ranque.EmProgresso);
         }
 
-        private (List<EscolaRanque>, Ranque) GeraRanque(List<Escola> escolas)
+        [Fact]
+        public async void ObterRanqueEmProcessamento_QuandoTemRanque_RetornaRanque()
+        {
+            var ranqueId = 1;
+            var dataFim = DateTimeOffset.Now;
+            db.Ranques.Add(new() { BateladasEmProgresso = 1, Id = ranqueId, DataFim = dataFim });
+            db.SaveChanges();
+
+            var ranque = await service.ObterRanqueEmProcessamento();
+
+            Assert.True(ranque.EmProgresso);
+            Assert.Equal(dataFim, ranque.DataFim);
+        }
+
+        [Fact]
+        public async void ConcluirEscolaRanqueAsync_QuandoNormal_EscolasSaoPosicionadasCorretamente()
+        {
+            var escolas = db.PopulaEscolas(5);
+            var (_, ranque) = GeraRanque(escolas, definirPosicao: false);
+
+            await service.ConcluirRanqueamentoAsync(ranque);
+
+            var ers = db.EscolaRanques.OrderBy(e => e.Posicao).ToList();
+            for (int i = 1; i < ers.Count; i++)
+                Assert.True(ers[i - 1].Posicao + 1 == ers[i].Posicao);
+        }
+
+        private (List<EscolaRanque>, Ranque) GeraRanque(List<Escola> escolas, bool definirPosicao = true)
         {
             var ranque = new Ranque { Id = Random.Shared.Next(), DataInicio = DateTimeOffset.Now, DataFim = DateTimeOffset.Now, BateladasEmProgresso = 0 };
             db.Ranques.Add(ranque);
-            db.SaveChanges();
 
             var escolasRanques = new List<EscolaRanque>(escolas.Count);
             for (int i = 0; i < escolas.Count; i++)
@@ -105,8 +134,11 @@ namespace test
                     EscolaId = escolas[i].Id,
                     RanqueId = ranque.Id,
                     Pontuacao = i,
-                    Posicao = i + 1,
                 });
+
+            if (definirPosicao)
+                for (int i = 0; i < escolas.Count; i++)
+                    escolasRanques[i].Posicao = i + 1;
 
             db.EscolaRanques.AddRange(escolasRanques);
             db.SaveChanges();
