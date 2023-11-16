@@ -9,6 +9,7 @@ using api.Escolas;
 using System.Globalization;
 using System.Data;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace app.Services
 {
@@ -49,19 +50,27 @@ namespace app.Services
             }
         }
         
-        private async Task<KeyValuePair<Superintendencia, double>> calcularSuperintendenciaMaisProxima(string lat, string lon)
+        private async Task<(Superintendencia, double)> CalcularSuperintendenciaMaisProxima(string lat, string lon)
         {
             var culture = new CultureInfo("pt-BR");
             var escolaLat = double.Parse(lat, culture);
             var escolaLon = double.Parse(lon, culture);
             var superintendencias = await superIntendenciaRepositorio.ListarAsync();
-            return  superintendencias.ToDictionary(s => s,
-                    s => CalcularDistancia(
-                        escolaLat,
-                        escolaLon,
-                        double.Parse(s.Latitude, culture),
-                        double.Parse(s.Longitude, culture)))
-                .MinBy(s => s.Value);
+            var superintendenciaProxima = 
+                superintendencias.Select(s => new
+                {
+                    Superintendencia = s,
+                    Latitude = double.Parse(s.Latitude, culture),
+                    Longitude = double.Parse(s.Longitude, culture),
+                })
+                .Select(s => new
+                {
+                    s.Superintendencia,
+                    Distancia = CalcularDistancia(escolaLat, escolaLon, s.Latitude, s.Longitude)
+                })
+                .MinBy(s => s.Distancia);
+
+            return (superintendenciaProxima.Superintendencia, superintendenciaProxima.Distancia);
         }
         
         public async Task CadastrarAsync(CadastroEscolaData cadastroEscolaData)
@@ -73,11 +82,8 @@ namespace app.Services
             Superintendencia? superintendenciaMaisProxima = null;
             if (cadastroEscolaData.Latitude != null && cadastroEscolaData.Longitude != null)
             {
-                KeyValuePair<Superintendencia, double> superIntendenciaDistancia = await
-                    calcularSuperintendenciaMaisProxima(cadastroEscolaData.Latitude, cadastroEscolaData.Longitude);
-
-                distanciaSuperintendecia = superIntendenciaDistancia.Value;
-                superintendenciaMaisProxima = superIntendenciaDistancia.Key;
+                (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
+                    CalcularSuperintendenciaMaisProxima(cadastroEscolaData.Latitude, cadastroEscolaData.Longitude);
             }
 
             var escola = escolaRepositorio.Criar(cadastroEscolaData, municipio, distanciaSuperintendecia, superintendenciaMaisProxima);
