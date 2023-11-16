@@ -53,8 +53,12 @@ namespace app.Services
         private async Task<(Superintendencia, double)> CalcularSuperintendenciaMaisProxima(string lat, string lon)
         {
             var culture = new CultureInfo("pt-BR");
-            var escolaLat = double.Parse(lat, culture);
-            var escolaLon = double.Parse(lon, culture);
+            return await CalcularSuperintendenciaMaisProxima(double.Parse(lat, culture), double.Parse(lon, culture));
+        }
+        
+        private async Task<(Superintendencia, double)> CalcularSuperintendenciaMaisProxima(double lat, double lon)
+        {
+            var culture = new CultureInfo("pt-BR");
             var superintendencias = await superIntendenciaRepositorio.ListarAsync();
             var superintendenciaProxima = 
                 superintendencias.Select(s => new
