@@ -73,12 +73,12 @@ namespace app.Services
                 Descricao = value.AsString(EnumFormat.Description)!,
             };
 
-        public RanqueEscolaModel ToModel(EscolaRanque escolaRanque, int posicao) =>
+        public RanqueEscolaModel ToModel(EscolaRanque escolaRanque) =>
             new RanqueEscolaModel
             {
                 RanqueId = escolaRanque.RanqueId,
                 Pontuacao = escolaRanque.Pontuacao,
-                Posicao = posicao,
+                Posicao = escolaRanque.Posicao,
                 Escola = new EscolaRanqueInfo
                 {
                     Id = escolaRanque.Escola.Id,
