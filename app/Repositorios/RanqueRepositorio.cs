@@ -80,32 +80,12 @@ namespace app.Repositorios
         }
 
         // https://stackoverflow.com/questions/56482415/entity-framework-6-calculate-numeric-index-position-of-row-in-a-given-table-s
-        public async Task<(EscolaRanque?, int)> ObterEscolaRanqueEPosicaoPorIdAsync(Guid escolaId, int ranqueId)
+        public async Task<EscolaRanque?> ObterEscolaRanquePorIdAsync(Guid escolaId, int ranqueId)
         {
             var escola = await dbContext.EscolaRanques
                 .Where(er => er.EscolaId == escolaId && er.RanqueId == ranqueId)
                 .FirstOrDefaultAsync();
-
-            Console.WriteLine(">>> Pontucao " + escola!.Pontuacao);
-
-            // var posicao = await dbContext.EscolaRanques
-            //     .OrderByDescending(er => er.Pontuacao)
-            //     .Where(er => er.RanqueId == ranqueId && er.Pontuacao >= escola!.Pontuacao)
-            //     .Select((row, i) => new AlgumaCoisa { RanqueId = row.RanqueId, Pontuacao = row.Pontuacao, Posicao = i })
-            //     // .Where(er => )
-            //     // .Where(er => er.EscolaId == escolaId)
-            //     // .FirstAsync()
-            //     .ToListAsync()
-            //     ;
-            var posicao = 1;
-            return (escola, posicao);
+            return escola;
         }
-    }
-
-    class AlgumaCoisa
-    {
-        public int RanqueId { get; set; }
-        public int Pontuacao { get; set; }
-        public int Posicao { get; set; }
     }
 }

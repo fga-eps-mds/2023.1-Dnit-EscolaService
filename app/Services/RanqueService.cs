@@ -106,7 +106,7 @@ namespace app.Services
         {
             var escola = await escolaRepositorio.ObterPorIdAsync(escolaId);
             var ranque = await ranqueRepositorio.ObterUltimoRanqueAsync();
-            var (escolaRanque, posicao) = await ranqueRepositorio.ObterEscolaRanqueEPosicaoPorIdAsync(escolaId, ranque!.Id);
+            var escolaRanque = await ranqueRepositorio.ObterEscolaRanquePorIdAsync(escolaId, ranque!.Id);
 
             // FIXME: Dados mockados. Tem que buscar do banco de dados no futuro.
             FatorModel[] fatores = {
@@ -120,7 +120,7 @@ namespace app.Services
                 {
                     Fatores = fatores,
                     Pontuacao = escolaRanque!.Pontuacao,
-                    Posicao = posicao,
+                    Posicao = escolaRanque.Posicao,
                     RanqueId = ranque.Id,
                 }
             };
