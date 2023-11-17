@@ -308,7 +308,7 @@ namespace app.Services
             {
                 escola.IdMunicipio = int.Parse(municipio);
             }
-
+            
             validaDadosCadastro(escola, obterValorLinha(linha, Coluna.EtapasEnsino));
             
             var escolaExistente = await escolaRepositorio.ObterPorCodigoAsync(escola.CodigoEscola);
@@ -318,11 +318,17 @@ namespace app.Services
                 return null;
             }
 
-            var escolaNova = escolaRepositorio.Criar(escola);
+
+            var superIntendenciaProxima = 
+                await CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
+
+            
+            var escolaNova = escolaRepositorio.Criar(escola, superIntendenciaProxima.Item2, superIntendenciaProxima.Item1);
             foreach (var etapa in escola.EtapasEnsino)
             {
                 escolaRepositorio.AdicionarEtapaEnsino(escolaNova, etapa);
             }
+            
 
             return escolaNova;
         }
