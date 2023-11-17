@@ -39,7 +39,8 @@ namespace app.Services
                 NumeroTotalDeDocentes = value.TotalDocentes,
                 NumeroTotalDeAlunos = value.TotalAlunos,
                 IdMunicipio = value.MunicipioId,
-
+                SuperintendenciaId = value.SuperintendenciaId,
+                DistanciaSuperintendencia = value.DistanciaSuperintendencia,
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
