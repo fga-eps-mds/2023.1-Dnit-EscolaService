@@ -159,6 +159,13 @@ namespace app.Services
             escola.Porte = data.Porte;
             escola.DataAtualizacao = DateTimeOffset.Now;
 
+            var (superintendenciaMaisProxima, distanciaSuperintendecia) = await 
+                CalcularSuperintendenciaMaisProxima(escola.Latitude, escola.Longitude);
+
+            escola.SuperintendenciaId = superintendenciaMaisProxima?.Id;
+            escola.Superintendencia = superintendenciaMaisProxima;
+            escola.DistanciaSuperintendencia = distanciaSuperintendecia;
+            
             atualizarEtapasEnsino(escola, data.EtapasEnsino!);
             await dbContext.SaveChangesAsync();
         }
