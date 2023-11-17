@@ -6,6 +6,7 @@ using app.Services;
 using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
 using System.Text;
+using app.Services.Interfaces;
 
 namespace app.DI
 {
@@ -20,6 +21,7 @@ namespace app.DI
 
             services.AddScoped<IEscolaService, EscolaService>();
             services.AddScoped<IMunicipioService, MunicipioService>();
+            services.AddScoped<ISuperintendenciaService, SuperintendenciaService>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
 
             services.AddControllers(o => o.Filters.Add(typeof(HandleExceptionFilter)));
