@@ -11,6 +11,7 @@ namespace app.Repositorios.Interfaces
         Escola Criar(CadastroEscolaData escolaData, Municipio municipio, double distanciaSuperintendencia,
             Superintendencia? superintendencia);
         Escola Criar(CadastroEscolaData escolaData, Municipio municipio);
+        Escola Criar(EscolaModel escola, double distanciaSuperintendencia, Superintendencia? superintendencia);
         Escola Criar(EscolaModel escola);
         Task<ListaPaginada<Escola>> ListarPaginadaAsync(PesquisaEscolaFiltro filtro);
         Task<Escola?> ObterPorCodigoAsync(int codigo, bool incluirEtapas = false, bool incluirMunicipio = false);

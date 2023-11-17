@@ -114,6 +114,36 @@ namespace app.Repositorios
             return escola;
         }
 
+        public Escola Criar(EscolaModel dadosEscola, double distanciaSuperintendencia, Superintendencia? superintendencia)
+        {
+            var entidade = new Escola()
+            {
+                Id = Guid.NewGuid(),
+                Nome = dadosEscola.NomeEscola,
+                Codigo = dadosEscola.CodigoEscola,
+                Cep = dadosEscola.Cep,
+                Endereco = dadosEscola.Endereco,
+                Latitude = dadosEscola.Latitude ?? "",
+                Longitude = dadosEscola.Longitude ?? "",
+                TotalAlunos = dadosEscola.NumeroTotalDeAlunos ?? 0,
+                Telefone = dadosEscola.Telefone,
+                TotalDocentes = dadosEscola.NumeroTotalDeDocentes,
+                Rede = dadosEscola.Rede!.Value,
+                Uf = dadosEscola.Uf,
+                Localizacao = dadosEscola.Localizacao,
+                MunicipioId = dadosEscola.IdMunicipio,
+                Porte = dadosEscola.Porte,
+                Situacao = dadosEscola.Situacao,
+                Observacao = dadosEscola.Observacao,
+                DataAtualizacao = DateTimeOffset.Now,
+                DistanciaSuperintendencia = distanciaSuperintendencia,
+                Superintendencia = superintendencia,
+                SuperintendenciaId = superintendencia?.Id,
+            };
+            dbContext.Add(entidade);
+            return entidade;
+        }
+
         public Escola Criar(EscolaModel dadosEscola)
         {
             var entidade = new Escola()
