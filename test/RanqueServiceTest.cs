@@ -117,9 +117,12 @@ namespace test
 
             await service.ConcluirRanqueamentoAsync(ranque);
 
-            var ers = db.EscolaRanques.OrderBy(e => e.Posicao).ToList();
-            for (int i = 1; i < ers.Count; i++)
-                Assert.True(ers[i - 1].Posicao + 1 == ers[i].Posicao);
+            var ers = db.EscolaRanques.OrderByDescending(e => e.Pontuacao).ToList();
+            Assert.Equal(1, ers[0].Posicao);
+            Assert.Equal(2, ers[1].Posicao);
+            Assert.Equal(3, ers[2].Posicao);
+            Assert.Equal(4, ers[3].Posicao);
+            Assert.Equal(5, ers[4].Posicao);
         }
 
         private (List<EscolaRanque>, Ranque) GeraRanque(List<Escola> escolas, bool definirPosicao = true)
@@ -134,6 +137,7 @@ namespace test
                     EscolaId = escolas[i].Id,
                     RanqueId = ranque.Id,
                     Pontuacao = i,
+                    Posicao = 0,
                 });
 
             if (definirPosicao)
