@@ -34,6 +34,7 @@ namespace test.Fixtures
             services.AddScoped<IMunicipioService, MunicipioService>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IRanqueService, RanqueService>();
+            services.AddScoped<IUpsService, UpsServiceMock>();
             services.AddSingleton<ModelConverter>();
 
             // Controllers

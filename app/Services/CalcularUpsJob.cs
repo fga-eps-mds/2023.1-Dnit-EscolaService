@@ -15,9 +15,7 @@ namespace app.Services
         private readonly IBackgroundJobClient jobClient;
         private readonly IRanqueService ranqueService;
         private readonly AppDbContext dbContext;
-        private readonly HttpClient httpClient;
-        private readonly string UpsServiceHost;
-        private static readonly string Endpoint = "api/calcular/ups/escolas";
+        private readonly IUpsService upsService;
 
         public CalcularUpsJob(
             AppDbContext dbContext,
@@ -25,8 +23,7 @@ namespace app.Services
             IRanqueRepositorio ranqueRepositorio,
             IRanqueService ranqueService,
             IBackgroundJobClient jobClient,
-            HttpClient httpClient,
-            IOptions<UpsServiceConfig> upsServiceConfig
+            IUpsService upsService
         )
         {
             this.dbContext = dbContext;
@@ -34,8 +31,7 @@ namespace app.Services
             this.ranqueRepositorio = ranqueRepositorio;
             this.jobClient = jobClient;
             this.ranqueService = ranqueService;
-            this.httpClient = httpClient;
-            UpsServiceHost = upsServiceConfig.Value.Host;
+            this.upsService = upsService;
         }
 
         [MaximumConcurrentExecutions(3, timeoutInSeconds: 20 * 60)]
@@ -45,7 +41,10 @@ namespace app.Services
             var desde = 2019;
 
             var lista = await escolaRepositorio.ListarPaginadaAsync(filtro);
-            var upss = await RequisicaoCalcularUps(lista.Items, raio, desde, timeoutMinutos);
+            
+            var upss = await upsService.CalcularUpsEscolasAsync(lista.Items, raio, desde, timeoutMinutos);
+                // ?? throw new ApiException(ErrorCodes.Unknown);
+
             var ranqueEscolas = new EscolaRanque[lista.Items.Count];
 
             for (int i = 0; i < lista.Items.Count; i++)
@@ -63,36 +62,6 @@ namespace app.Services
             await dbContext.SaveChangesAsync();
             jobClient.Enqueue<ICalcularUpsJob>(
                 job => job.FinalizarCalcularUpsJob(novoRanqueId));
-        }
-
-        private async Task<List<int>> RequisicaoCalcularUps(List<Escola> escolas, double raioKm, int desdeAno, int expiracaoMinutos)
-        {
-            var localizacoes = escolas.Select(
-                e => new LocalizacaoEscola
-                {
-                    // As latitudes no banco são armazenadas com vírgula em vez de ponto.
-                    Latitude = double.Parse(e.Latitude.Replace(',', '.')),
-                    Longitude = double.Parse(e.Longitude.Replace(',', '.')),
-                });
-
-            // TODO: Autenticar e autorizar esse cliente com a permissão
-            // de /calcular/ups/escolas.
-            httpClient.Timeout = expiracaoMinutos <= 0
-                    ? new TimeSpan(0, 0, 0, 0, -1) // tempo infinito para expiração
-                    : TimeSpan.FromMinutes(expiracaoMinutos);
-
-            var conteudo = JsonContent.Create(localizacoes);
-
-            var resposta = await httpClient.PostAsync(
-                UpsServiceHost + Endpoint + $"?desde={desdeAno}&raiokm={raioKm}",
-                conteudo);
-
-            resposta.EnsureSuccessStatusCode();
-
-            var upss = await resposta.Content.ReadFromJsonAsync<List<int>>()
-                ?? throw new ApiException(ErrorCodes.Unknown);
-
-            return upss;
         }
 
         // Não pode ser mais que 1. Essa limitação serve como um Mutex
