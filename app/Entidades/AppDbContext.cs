@@ -29,7 +29,7 @@ namespace app.Entidades
         {
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
 
-            PopulaSuperintendenciasPorArquivo(Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+            //PopulaSuperintendenciasPorArquivo(Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
         }
 
         public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
