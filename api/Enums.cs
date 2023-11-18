@@ -122,6 +122,8 @@ namespace api
         MunicipioNaoEncontrado,
         [Description("Superintendência não encontrada")]
         SuperIntendenciaNaoEncontrada,
+        [Description("Já tem um ranque sendo calculado, tente novamente mais tarde")]
+        RanqueJaSendoCalculado,
     }
 
     public enum Permissao
@@ -137,5 +139,12 @@ namespace api
 
         [Description("Visualizar Escola")]
         EscolaVisualizar = 1003,
+
+        [Description("Visualizar Ranking de Escolas")]
+        RanqueVisualizar = 5002,
+        [Description("Calcular Ranking de Escolas")]
+        RanqueCalcular = 5003,
+        [Description("Calcular Ranking de Escolas")]
+        RanquePollProcessamento = 5004,
     }
 }

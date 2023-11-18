@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using app.Entidades;
@@ -11,9 +12,11 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231109051837_AdicionaUpsEmEscola")]
+    partial class AdicionaUpsEmEscola
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,9 +138,6 @@ namespace app.Migrations
                     b.Property<int>("Pontuacao")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Posicao")
-                        .HasColumnType("integer");
-
                     b.Property<int>("RanqueId")
                         .HasColumnType("integer");
 
@@ -178,9 +178,6 @@ namespace app.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BateladasEmProgresso")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("DataFimUtc")
                         .HasColumnType("timestamp with time zone");

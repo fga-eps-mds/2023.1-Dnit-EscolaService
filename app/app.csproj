@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>e331e52c-cb88-490e-abd2-47688edecd37</UserSecretsId>
+    <RuntimeIdentifiers>win10-x64;osx.10.11-x64;linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'EscolaService' " />
@@ -12,6 +13,10 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="Enums.NET" Version="4.0.1" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.6" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.6" />
+    <PackageReference Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />
+    <PackageReference Include="Hangfire.PostgreSql" Version="1.20.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
       <PrivateAssets>all</PrivateAssets>
@@ -21,9 +26,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
+    <PackageReference Include="RichardSzalay.MockHttp" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
     <PackageReference Include="DotNetEnv" Version="2.5.0" />

@@ -38,7 +38,7 @@ namespace app.Entidades
 
         [MaxLength(500)]
         public string? Observacao { get; set; }
-        
+
         [Required]
         public Rede Rede { get; set; }
         
@@ -54,6 +54,8 @@ namespace app.Entidades
         public Porte? Porte { get; set; }
 
         public Situacao? Situacao { get; set; }
+
+        public int Ups { get; set; }
 
         public int? MunicipioId { get; set; }
         public Municipio? Municipio { get; set; }
