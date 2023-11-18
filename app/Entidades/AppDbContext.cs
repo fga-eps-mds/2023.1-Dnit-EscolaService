@@ -76,13 +76,35 @@ namespace app.Entidades
         public List<Superintendencia>? PopulaSuperintendenciasPorArquivo(string caminho)
         {
             var hasSuperintendencias = Superintendencias.Any();
+            var superintendencias = new List<Superintendencia>();
             if (hasSuperintendencias) return null;
 
-            var superintendencias = new List<Superintendencia>();
-            using (var streamReader = new StreamReader(caminho))
-            using (var csvReader = new CsvReader( streamReader, new CsvConfiguration(new CultureInfo("pt-BR")) { Delimiter = ";" }) )
+            using (var fs = File.OpenRead(caminho))
+            using (var parser = new TextFieldParser(fs))
             {
-                superintendencias = csvReader.GetRecords<Superintendencia>().ToList();
+                parser.TextFieldType = FieldType.Delimited;
+                parser.SetDelimiters(";");
+
+                var columns = new Dictionary<string, int>
+                {
+                    { "id", 0 }, { "endereco", 1 }, { "cep", 2 }, { "latitude", 3 }, { "longitude" , 4}, { "uf" , 5}
+                };
+
+                while (!parser.EndOfData)
+                {
+                    var row = parser.ReadFields()!;
+                    var superintendencia = new Superintendencia
+                    {   
+                        Id = int.Parse(row[columns["id"]]),
+                        Endereco = row[columns["endereco"]],
+                        Cep = row[columns["cep"]],
+                        Latitude = row[columns["latitude"]],
+                        Longitude = row[columns["longitude"]],
+                        Uf = (UF)int.Parse(row[columns["uf"]]),
+                    };
+
+                    superintendencias.Add(superintendencia);
+                }           
             }
 
             AddRange(superintendencias);
