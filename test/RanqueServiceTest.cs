@@ -80,11 +80,11 @@ namespace test
         public async void ObterEscolaEmRanqueDetalhes_QuandoEscolaExiste_RetornaPosicaoCorreta()
         {
             var escolas = db.PopulaEscolas(3);
-            var (escolaRanques, _) = GeraRanque(escolas);
+            GeraRanque(escolas, definirPosicao: true);
 
-            var detalhes = await service.ObterDetalhesEscolaRanque(escolas[0].Id);
+            var detalhes = await service.ObterDetalhesEscolaRanque(escolas[1].Id);
 
-            Assert.Equal(escolaRanques[0].EscolaId, detalhes.Id);
+            Assert.Equal(2, detalhes.RanqueInfo.Posicao);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace test
 
             if (definirPosicao)
                 for (int i = 0; i < escolas.Count; i++)
-                    escolasRanques[i].Posicao = i + 1;
+                    escolasRanques[i].Posicao = escolas.Count - i;
 
             db.EscolaRanques.AddRange(escolasRanques);
             db.SaveChanges();
