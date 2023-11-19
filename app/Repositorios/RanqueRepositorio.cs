@@ -34,7 +34,7 @@ namespace app.Repositorios
         public async Task<Ranque?> ObterRanqueEmProcessamentoAsync()
         {
             return await dbContext.Ranques
-                .OrderByDescending(r => r.DataFimUtc)
+                .OrderByDescending(r => r.DataInicioUtc)
                 .FirstOrDefaultAsync();
         }
 
