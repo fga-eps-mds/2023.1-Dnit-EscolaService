@@ -36,7 +36,7 @@ namespace app.Controllers
         [Authorize]
         public async Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque([FromRoute] Guid escolaId)
         {
-            // authService.Require(Usuario, Permissao.RanqueVisualizar);
+            authService.Require(Usuario, Permissao.RanqueVisualizar);
             return await ranqueService.ObterDetalhesEscolaRanque(escolaId);
         }
 

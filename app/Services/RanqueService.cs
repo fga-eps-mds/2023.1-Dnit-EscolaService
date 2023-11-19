@@ -103,7 +103,7 @@ namespace app.Services
 
         public async Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque(Guid escolaId)
         {
-            var escola = await escolaRepositorio.ObterPorIdAsync(escolaId);
+            var escola = await escolaRepositorio.ObterPorIdAsync(escolaId, incluirEtapas: true);
             var ranque = await ranqueRepositorio.ObterUltimoRanqueAsync();
             var escolaRanque = await ranqueRepositorio.ObterEscolaRanquePorIdAsync(escolaId, ranque!.Id);
 
@@ -112,19 +112,15 @@ namespace app.Services
                 new() { Nome = "UPS", Peso = 1, Valor = escola.Ups },
             };
 
-            var detalhes = new DetalhesEscolaRanqueModel
+            var ranqueInfo = new RanqueInfo
             {
-                Escola = mc.ToModel(escola),
-                RanqueInfo = new RanqueInfo
-                {
-                    Fatores = fatores,
-                    Pontuacao = escolaRanque!.Pontuacao,
-                    Posicao = escolaRanque.Posicao,
-                    RanqueId = ranque.Id,
-                }
+                Fatores = fatores,
+                Pontuacao = escolaRanque!.Pontuacao,
+                Posicao = escolaRanque.Posicao,
+                RanqueId = ranque.Id,
             };
 
-            return detalhes;
+            return mc.ToModel(escola, ranqueInfo);
         }
 
         public async Task ConcluirRanqueamentoAsync(Ranque ranque)

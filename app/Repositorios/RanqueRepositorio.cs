@@ -34,7 +34,7 @@ namespace app.Repositorios
         public async Task<Ranque?> ObterRanqueEmProcessamentoAsync()
         {
             return await dbContext.Ranques
-                .OrderByDescending(r => r.DataFimUtc)
+                .OrderByDescending(r => r.DataInicioUtc)
                 .FirstOrDefaultAsync();
         }
 
@@ -66,7 +66,7 @@ namespace app.Repositorios
 
             var total = await query.CountAsync();
             var items = await query
-                .OrderByDescending(er => er.Pontuacao)
+                .OrderBy(er => er.Posicao)
                 .Skip((filtro.Pagina - 1) * filtro.TamanhoPagina)
                 .Take(filtro.TamanhoPagina)
                 .ToListAsync();
@@ -83,6 +83,8 @@ namespace app.Repositorios
         {
             var escola = await dbContext.EscolaRanques
                 .Where(er => er.EscolaId == escolaId && er.RanqueId == ranqueId)
+                .Include(e => e.Escola).ThenInclude(e => e.Municipio)
+                .Include(e => e.Escola).ThenInclude(e => e.EtapasEnsino)
                 .FirstOrDefaultAsync();
             return escola;
         }

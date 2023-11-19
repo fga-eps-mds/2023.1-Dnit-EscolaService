@@ -32,6 +32,8 @@ namespace app.DI
             services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();
             services.AddScoped<ICalcularUpsJob, CalcularUpsJob>();
             services.AddScoped<IRanqueRepositorio, RanqueRepositorio>();
+            services.AddScoped<IUpsService, UpsService>();
+            services.AddHttpClient<UpsService>();
 
             services.Configure<UpsServiceConfig>(configuration.GetSection("UpsServiceConfig"));
             services.Configure<CalcularUpsJobConfig>(configuration.GetSection("CalcularUpsJobConfig"));

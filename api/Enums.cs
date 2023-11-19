@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace api
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum UF
     {
         [Description("Acre")]
@@ -60,12 +62,14 @@ namespace api
         DF
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Localizacao
     {
         Rural = 1,
         Urbana,
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Porte
     {
         [Description("Até 50 matrículas de escolarização")]
@@ -92,6 +96,7 @@ namespace api
         EscolaCritica,
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Rede
     {
         Municipal = 1,
@@ -124,6 +129,8 @@ namespace api
         SuperIntendenciaNaoEncontrada,
         [Description("Já tem um ranque sendo calculado, tente novamente mais tarde")]
         RanqueJaSendoCalculado,
+        [Description("Formato JSON não reconhecido")]
+        FormatoJsonNaoReconhecido,
     }
 
     public enum Permissao

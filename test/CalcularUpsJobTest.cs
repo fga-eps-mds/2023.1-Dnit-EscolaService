@@ -11,6 +11,7 @@ using Xunit.Abstractions;
 using Xunit.Microsoft.DependencyInjection.Abstracts;
 using test.Stubs;
 using System.Linq;
+using System.Collections.Generic;
 
 
 namespace test
@@ -23,8 +24,10 @@ namespace test
         private readonly Mock<IRanqueService> ranqueServiceMock;
         private readonly Mock<IBackgroundJobClient> jobClientMock;
         private readonly MockHttpMessageHandler handlerMock;
+        private readonly Mock<IUpsService> upsServiceMock;
         private readonly UpsServiceConfig upsServiceConfig = new() { Host = "http://localhost/" };
-        private readonly CalcularUpsJob upsJob;
+        private CalcularUpsJob upsJob;
+
 
         public CalcularUpsJobTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
@@ -35,6 +38,7 @@ namespace test
             jobClientMock = new Mock<IBackgroundJobClient>();
             ranqueServiceMock = new Mock<IRanqueService>();
             handlerMock = new MockHttpMessageHandler();
+            upsServiceMock = new Mock<IUpsService>();
 
             upsJob = new(
                 db,
@@ -42,22 +46,21 @@ namespace test
                 ranqueRepositorio,
                 ranqueServiceMock.Object,
                 jobClientMock.Object,
-                handlerMock.ToHttpClient(),
-                Options.Create(upsServiceConfig)
+                upsServiceMock.Object
             );
         }
 
         [Fact]
         public async void ExecutarAsync_QuandoTudoCerto_DefineUpsDeAcordoComARespostaDoMicroservicoUps()
         {
-            db.PopulaEscolas(3);
-            handlerMock
-                .When(upsServiceConfig.Host + "*")
-                .Respond("application/json", "[1, 2, 3]");
+            var escolas = db.PopulaEscolas(3);
+            upsServiceMock
+                .Setup(x => x.CalcularUpsEscolasAsync(It.IsAny<List<Escola>>(), It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(new List<int> { 1, 2, 3 });
 
             await upsJob.ExecutarAsync(new(), 1, 1);
 
-            var escolas = db.Escolas.OrderBy(e => e.Nome).ToList();
+            escolas = db.Escolas.OrderBy(e => e.Nome).ToList();
             Assert.Equal(1, escolas[0].Ups);
             Assert.Equal(2, escolas[1].Ups);
             Assert.Equal(3, escolas[2].Ups);
@@ -67,9 +70,10 @@ namespace test
         public async void ExecutarAsync_QuandoTudoCerto_CriaEscolaRanques()
         {
             db.PopulaEscolas(6);
-            handlerMock
-                .When(upsServiceConfig.Host + "*")
-                .Respond("application/json", "[2, 2, 2, 2, 3, 3]");
+            upsServiceMock
+                .Setup(x => x.CalcularUpsEscolasAsync(It.IsAny<List<Escola>>(), It.IsAny<double>(), It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync(new List<int> { 2, 2, 2, 2, 3, 3 });
+
 
             await upsJob.ExecutarAsync(new(), 1, 1);
 

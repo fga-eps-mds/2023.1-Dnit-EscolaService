@@ -84,7 +84,7 @@ namespace test
 
             var detalhes = await service.ObterDetalhesEscolaRanque(escolas[0].Id);
 
-            Assert.Equal(escolaRanques[0].EscolaId, detalhes.Escola.IdEscola);
+            Assert.Equal(escolaRanques[0].EscolaId, detalhes.Id);
         }
 
         [Fact]
