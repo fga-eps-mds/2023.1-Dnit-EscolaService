@@ -83,6 +83,8 @@ namespace app.Repositorios
         {
             var escola = await dbContext.EscolaRanques
                 .Where(er => er.EscolaId == escolaId && er.RanqueId == ranqueId)
+                .Include(e => e.Escola).ThenInclude(e => e.Municipio)
+                .Include(e => e.Escola).ThenInclude(e => e.EtapasEnsino)
                 .FirstOrDefaultAsync();
             return escola;
         }
