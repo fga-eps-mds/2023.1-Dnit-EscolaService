@@ -18,6 +18,7 @@ namespace app.Services
         {
             this.httpClient = httpClient;
             this.config = config.Value;
+            this.httpClient.DefaultRequestHeaders.Add("Authorization", config.Value.ApiKey);
         }
         public async Task<List<int>> CalcularUpsEscolasAsync(List<Escola> escolas, double raioKm, int desdeAno, int expiracaoMinutos)
         {
