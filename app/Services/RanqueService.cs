@@ -103,7 +103,7 @@ namespace app.Services
 
         public async Task<DetalhesEscolaRanqueModel> ObterDetalhesEscolaRanque(Guid escolaId)
         {
-            var escola = await escolaRepositorio.ObterPorIdAsync(escolaId);
+            var escola = await escolaRepositorio.ObterPorIdAsync(escolaId, incluirEtapas: true);
             var ranque = await ranqueRepositorio.ObterUltimoRanqueAsync();
             var escolaRanque = await ranqueRepositorio.ObterEscolaRanquePorIdAsync(escolaId, ranque!.Id);
 
