@@ -22,18 +22,6 @@ public class SuperIntendenciaRepositorio : ISuperintendenciaRepositorio
             ?? throw new ApiException(ErrorCodes.SuperIntendenciaNaoEncontrada);
     }
 
-    public async Task<List<Superintendencia>> ListarAsync(UF? uf)
-    {
-        var query = dbContext.Superintendencias.AsQueryable();
-
-        if (uf.HasValue)
-        {
-            query = query.Where(m => m.Uf == uf.Value);
-        }
-
-        return await query.ToListAsync();
-    }
-
     public async Task<List<Superintendencia>> ListarAsync()
     {
         return await dbContext.Superintendencias.ToListAsync();
