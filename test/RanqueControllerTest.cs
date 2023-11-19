@@ -1,6 +1,8 @@
 ﻿using api.Escolas;
+using api.Escolas;
 using app.Controllers;
 using app.Entidades;
+using System.Threading.Tasks;
 using test.Fixtures;
 using Xunit.Abstractions;
 

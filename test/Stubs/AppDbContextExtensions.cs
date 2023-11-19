@@ -15,7 +15,6 @@ namespace test.Stubs
         public static List<Escola> PopulaEscolas(this AppDbContext dbContext, int limite = 1, bool comEtapas = true)
         {
             dbContext.Clear();
-            // dbContext.Escolas.RemoveRange(dbContext.Escolas);
             var escolas = new List<Escola>();
             
             if (!dbContext.Municipios.Any())
@@ -50,6 +49,14 @@ namespace test.Stubs
             municipios = municipiosDb.ToList();
             municipios_mutex.ReleaseMutex();
             return municipiosDb;
+        }
+
+        public static List<Superintendencia> PopulaSuperintendencias(this AppDbContext dbContext, int limit, int idStart = 1)
+        {
+            var superintendencias = SuperintendenciaStub.Listar(idStart).Take(limit).ToList();
+            dbContext.AddRange(superintendencias);
+            dbContext.SaveChanges();
+            return superintendencias;
         }
 
         public static void Clear(this AppDbContext dbContext)

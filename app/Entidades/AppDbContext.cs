@@ -9,7 +9,7 @@ namespace app.Entidades
     {
         public DbSet<Municipio> Municipios { get; set; }
         public DbSet<Escola> Escolas { get; set; }
-        public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }        
+        public DbSet<EscolaEtapaEnsino> EscolaEtapaEnsino { get; set; }
         public DbSet<Ranque> Ranques { get; set; }
         public DbSet<EscolaRanque> EscolaRanques { get; set; }
         public DbSet<Superintendencia> Superintendencias { get; set; }
@@ -33,7 +33,7 @@ namespace app.Entidades
         {
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
 
-            PopulaSuperintendenciasPorArquivo(Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+            PopulaSuperintendenciasPorArquivo(null, Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
         }
 
         public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
@@ -77,11 +77,13 @@ namespace app.Entidades
             return municipios;
         }
 
-        public List<Superintendencia>? PopulaSuperintendenciasPorArquivo(string caminho)
+        public List<Superintendencia>? PopulaSuperintendenciasPorArquivo(int? limit, string caminho)
         {
             var hasSuperintendencias = Superintendencias.Any();
             var superintendencias = new List<Superintendencia>();
-            if (hasSuperintendencias) return null;
+
+            if (hasSuperintendencias)
+                return null;
 
             using (var fs = File.OpenRead(caminho))
             using (var parser = new TextFieldParser(fs))
@@ -98,7 +100,7 @@ namespace app.Entidades
                 {
                     var row = parser.ReadFields()!;
                     var superintendencia = new Superintendencia
-                    {   
+                    {
                         Id = int.Parse(row[columns["id"]]),
                         Endereco = row[columns["endereco"]],
                         Cep = row[columns["cep"]],
@@ -108,7 +110,11 @@ namespace app.Entidades
                     };
 
                     superintendencias.Add(superintendencia);
-                }           
+                    limit--;
+
+                    if (limit == 0)
+                        break;
+                }
             }
 
             AddRange(superintendencias);

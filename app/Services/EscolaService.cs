@@ -98,6 +98,11 @@ namespace app.Services
             cadastroEscolaData.IdEtapasDeEnsino
                 ?.Select(e => escolaRepositorio.AdicionarEtapaEnsino(escola, (EtapaEnsino)e))
                 ?.ToList();
+
+            // FIXME: seria melhor que fosse pedido apenas para calcular apenas
+            // os UPSs das escolas recém adicionadas.
+            await ranqueService.CalcularNovoRanqueAsync();
+
             await dbContext.SaveChangesAsync();
         }
 

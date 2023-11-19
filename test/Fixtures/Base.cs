@@ -50,7 +50,7 @@ namespace test.Fixtures
             services.AddScoped<DominioController>();
             services.AddScoped<EscolaController>();
             services.AddScoped<RanqueController>();
-            services.AddScoped<SuperintendenciasController>();
+            services.AddScoped<SuperintendenciaController>();
 
             services.AddAuth(configuration);
         }

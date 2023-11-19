@@ -6,15 +6,15 @@ namespace app.Services;
 
 public class SuperintendenciaService : ISuperintendenciaService
 {
-    private readonly ISuperintendenciaRepositorio _superintendenciaRepositorio;
+    private readonly ISuperintendenciaRepositorio superintendenciaRepositorio;
 
     public SuperintendenciaService(ISuperintendenciaRepositorio superintendenciaRepositorio)
     {
-        _superintendenciaRepositorio = superintendenciaRepositorio;
+        this.superintendenciaRepositorio = superintendenciaRepositorio;
     }
 
     public async Task<Superintendencia> ObterPorIdAsync(int id)
     {
-        return await _superintendenciaRepositorio.ObterPorIdAsync(id);
+        return await superintendenciaRepositorio.ObterPorIdAsync(id);
     }
 }

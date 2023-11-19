@@ -9,22 +9,22 @@ namespace app.Repositorios;
 public class SuperIntendenciaRepositorio : ISuperintendenciaRepositorio
 {
 
-    private readonly AppDbContext _dbContext;
+    private readonly AppDbContext dbContext;
 
     public SuperIntendenciaRepositorio(AppDbContext dbContext)
     {
-        _dbContext = dbContext;
+        this.dbContext = dbContext;
     }
 
     public async Task<Superintendencia> ObterPorIdAsync(int id)
     {
-        return await _dbContext.Superintendencias.FirstOrDefaultAsync(x => x.Id == id)
-               ?? throw new ApiException(ErrorCodes.SuperIntendenciaNaoEncontrada);
+        return await dbContext.Superintendencias.FirstOrDefaultAsync(x => x.Id == id)
+            ?? throw new ApiException(ErrorCodes.SuperIntendenciaNaoEncontrada);
     }
 
     public async Task<List<Superintendencia>> ListarAsync(UF? uf)
     {
-        var query = _dbContext.Superintendencias.AsQueryable();
+        var query = dbContext.Superintendencias.AsQueryable();
 
         if (uf.HasValue)
         {
@@ -32,11 +32,10 @@ public class SuperIntendenciaRepositorio : ISuperintendenciaRepositorio
         }
 
         return await query.ToListAsync();
-
     }
 
     public async Task<List<Superintendencia>> ListarAsync()
     {
-        return await _dbContext.Superintendencias.ToListAsync();
+        return await dbContext.Superintendencias.ToListAsync();
     }
 }
