@@ -120,8 +120,8 @@ namespace api
         EscolaNaoEncontrada,
         [Description("Municipio não encontrado")]
         MunicipioNaoEncontrado,
-        [Description("Já tem um ranque sendo calculado, tente novamente mais tarde")]
-        RanqueJaSendoCalculado,
+        [Description("Formato JSON não reconhecido")]
+        FormatoJsonNaoReconhecido,
     }
 
     public enum Permissao

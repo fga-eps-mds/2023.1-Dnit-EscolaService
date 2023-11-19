@@ -1,3 +1,5 @@
+using System.Text.Json;
+using api;
 using app.Entidades;
 using Microsoft.Extensions.Options;
 using service.Interfaces;
@@ -38,9 +40,19 @@ namespace app.Services
 
             resposta.EnsureSuccessStatusCode();
 
-            var upss = await resposta.Content.ReadFromJsonAsync<List<int>>()
-                ?? throw new ApiException(api.ErrorCodes.Unknown);
-            return upss;
+            try
+            {
+                List<int> upss = await resposta.Content.ReadFromJsonAsync<List<int>>()
+                    ?? throw new ApiException(ErrorCodes.FormatoJsonNaoReconhecido);
+                return upss;
+            }
+            catch (JsonException e)
+            {
+                if (e.Message.ToLower().Contains("the json value could not be converted"))
+                    throw new ApiException(ErrorCodes.FormatoJsonNaoReconhecido);
+
+                throw e;
+            }
         }
     }
 }
