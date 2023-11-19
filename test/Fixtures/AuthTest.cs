@@ -35,6 +35,7 @@ namespace test.Fixtures
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IRanqueService, RanqueService>();
             services.AddScoped<IUpsService, UpsServiceMock>();
+            services.AddScoped<IBackgroundJobClient, BackgroundJobClientFake>();
             services.AddSingleton<ModelConverter>();
 
             // Controllers

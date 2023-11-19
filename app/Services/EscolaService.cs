@@ -15,18 +15,21 @@ namespace app.Services
     {
         private readonly IEscolaRepositorio escolaRepositorio;
         private readonly IMunicipioRepositorio municipioRepositorio;
+        private readonly IRanqueService ranqueService;
         private readonly ModelConverter modelConverter;
         private readonly AppDbContext dbContext;
 
         public EscolaService(
             IEscolaRepositorio escolaRepositorio,
             IMunicipioRepositorio municipioRepositorio,
+            IRanqueService ranqueService,
             ModelConverter modelConverter,
             AppDbContext dbContext
         )
         {
             this.escolaRepositorio = escolaRepositorio;
             this.municipioRepositorio = municipioRepositorio;
+            this.ranqueService = ranqueService;
             this.modelConverter = modelConverter;
             this.dbContext = dbContext;
         }
@@ -96,6 +99,11 @@ namespace app.Services
                     }
                 }
             }
+
+            // FIXME: seria melhor que fosse pedido apenas para calcular apenas
+            // os UPSs das escolas recém adicionadas.
+            await ranqueService.CalcularNovoRanqueAsync();
+
             return escolasNovas;
         }
 
