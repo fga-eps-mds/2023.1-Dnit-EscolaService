@@ -1,4 +1,5 @@
 using api.Municipios;
+using api.Superintendencias;
 
 namespace api.Ranques
 {
@@ -17,5 +18,7 @@ namespace api.Ranques
         public UfModel? Uf { get; set; }
         public List<EtapasdeEnsinoModel>? EtapaEnsino { get; set; }
         public MunicipioModel? Municipio { get; set; }
+        public double DistanciaSuperintendencia { get; set; }
+        public SuperintendenciaModel Superintendencia { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using api.Escolas;
 using api.Municipios;
 using api.Ranques;
+using api.Superintendencias;
 using app.Entidades;
 using EnumsNET;
 
@@ -90,6 +91,8 @@ namespace app.Services
                     EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
                     Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
                     Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
+                    Superintendencia = escolaRanque.Escola.Superintendencia != null ? ToModel(escolaRanque.Escola.Superintendencia): null,
+                    DistanciaSuperintendencia = escolaRanque.Escola.DistanciaSuperintendencia,
                 }
             };
 
@@ -114,6 +117,8 @@ namespace app.Services
                 Localizacao = escola.Localizacao.HasValue ? ToModel(escola.Localizacao.Value) : null,
                 Situacao = escola.Situacao.HasValue ? ToModel(escola.Situacao.Value) : null,
                 EtapasEnsino = escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
+                Superintendencia = ToModel(escola.Superintendencia),
+                DistanciaSuperintendencia = escola.DistanciaSuperintendencia,
             };
 
         public PorteModel ToModel(Porte porte) =>
@@ -135,6 +140,13 @@ namespace app.Services
             {
                 Id = localizacao,
                 Descricao = localizacao.ToString(),
+            };
+
+        public SuperintendenciaModel ToModel(Superintendencia superintendencia) =>
+            new SuperintendenciaModel
+            {
+                Id = superintendencia.Id,
+                Uf = superintendencia.Uf,
             };
     }
 }

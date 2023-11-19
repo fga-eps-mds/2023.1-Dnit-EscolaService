@@ -44,6 +44,7 @@ namespace app.Repositorios
                 .Include(er => er.Ranque)
                 .Include(er => er.Escola).ThenInclude(e => e.EtapasEnsino)
                 .Include(er => er.Escola).ThenInclude(e => e.Municipio)
+                .Include(er => er.Escola).ThenInclude(e => e.Superintendencia)
                 .Where(er => er.RanqueId == ranqueId);
 
             if (filtro.Nome != null)
@@ -85,6 +86,7 @@ namespace app.Repositorios
                 .Where(er => er.EscolaId == escolaId && er.RanqueId == ranqueId)
                 .Include(e => e.Escola).ThenInclude(e => e.Municipio)
                 .Include(e => e.Escola).ThenInclude(e => e.EtapasEnsino)
+                .Include(er => er.Escola).ThenInclude(e => e.Superintendencia)
                 .FirstOrDefaultAsync();
             return escola;
         }

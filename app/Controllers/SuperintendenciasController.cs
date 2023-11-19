@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace app.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/superintendencias")]
 public class SuperintendenciasController
 {
     private ISuperintendenciaService _superintendenciaService;
