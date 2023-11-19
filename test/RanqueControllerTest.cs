@@ -10,7 +10,6 @@ namespace test
     {
         private readonly RanqueController controller;
         private readonly AppDbContext dbContext;
-        private readonly PesquisaEscolaFiltro FiltroVazio = new();
 
         public RanqueControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {

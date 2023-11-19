@@ -54,11 +54,12 @@ namespace test.Stubs
 
         public static void Clear(this AppDbContext dbContext)
         {
+            dbContext.RemoveRange(dbContext.Escolas);
             dbContext.RemoveRange(dbContext.EscolaEtapaEnsino);
             dbContext.RemoveRange(dbContext.Municipios);
-            dbContext.RemoveRange(dbContext.Escolas);
             dbContext.RemoveRange(dbContext.EscolaRanques);
             dbContext.RemoveRange(dbContext.Ranques);
+            dbContext.RemoveRange(dbContext.Superintendencias);
             dbContext.SaveChanges();
         }
     }

@@ -149,7 +149,7 @@ namespace test
             return (escolasRanques, ranque);
         }
 
-        protected new void Dispose()
+        public new void Dispose()
         {
             db.Clear();
         }
