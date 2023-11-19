@@ -1,7 +1,5 @@
 ﻿using System.Globalization;
 using api;
-using CsvHelper;
-using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic.FileIO;
 
@@ -35,7 +33,7 @@ namespace app.Entidades
         {
             PopulaMunicipiosPorArquivo(null, Path.Join(".", "Migrations", "Data", "municipios.csv"));
 
-            //PopulaSuperintendenciasPorArquivo(Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
+            PopulaSuperintendenciasPorArquivo(Path.Join(".", "Migrations", "Data", "superintendencias.csv"));
         }
 
         public List<Municipio>? PopulaMunicipiosPorArquivo(int? limit, string caminho)
