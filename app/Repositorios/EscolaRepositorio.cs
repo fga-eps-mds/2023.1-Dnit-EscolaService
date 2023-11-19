@@ -176,6 +176,7 @@ namespace app.Repositorios
             var query = dbContext.Escolas
                 .Include(e => e.EtapasEnsino)
                 .Include(e => e.Municipio)
+                .Include(e => e.Superintendencia)
                 .AsQueryable();
 
             if (filtro.Nome != null)

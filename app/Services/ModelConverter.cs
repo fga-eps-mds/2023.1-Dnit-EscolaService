@@ -42,6 +42,7 @@ namespace app.Services
                 IdMunicipio = value.MunicipioId,
                 SuperintendenciaId = value.SuperintendenciaId,
                 DistanciaSuperintendencia = value.DistanciaSuperintendencia,
+                UfSuperintendencia = value.Superintendencia?.Uf.ToString(),
                 NomeMunicipio = value.Municipio?.Nome,
                 EtapasEnsino = value.EtapasEnsino?.ConvertAll(e => e.EtapaEnsino),
                 EtapaEnsino = value.EtapasEnsino?.ToDictionary(e => (int)e.EtapaEnsino, e => e.EtapaEnsino.AsString(EnumFormat.Description) ?? ""),
