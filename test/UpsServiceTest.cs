@@ -3,6 +3,7 @@ using app.Entidades;
 using app.Services;
 using Microsoft.Extensions.Options;
 using RichardSzalay.MockHttp;
+using System.Threading.Tasks;
 using test.Fixtures;
 using test.Stubs;
 using Xunit.Abstractions;
@@ -27,7 +28,7 @@ namespace test
         }
 
         [Fact]
-        public async void CalcularUpsEscolasAsync_QuandoTudoNormal_RetornaListaDeUps()
+        public async Task CalcularUpsEscolasAsync_QuandoTudoNormal_RetornaListaDeUps()
         {
             var escolas = db.PopulaEscolas(5);
             var ano = DateTime.Now.AddYears(-2).Year;
@@ -43,7 +44,7 @@ namespace test
         }
 
         [Fact]
-        public async void CalcularUpsEscolasAsync_QuandoRespostaNaoEhListaDeInteiros_LancaExcecao()
+        public async Task CalcularUpsEscolasAsync_QuandoRespostaNaoEhListaDeInteiros_LancaExcecao()
         {
             var escolas = db.PopulaEscolas(5);
             var ano = DateTime.Now.AddYears(-2).Year;
