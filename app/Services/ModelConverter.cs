@@ -1,6 +1,7 @@
 ﻿using api;
 using api.Escolas;
 using api.Municipios;
+using api.Ranques;
 using app.Entidades;
 using EnumsNET;
 
@@ -33,7 +34,7 @@ namespace app.Services
                 Observacao = value.Observacao,
                 IdLocalizacao = (int?)value.Localizacao,
                 Localizacao = value.Localizacao,
-                DescricaoLocalizacao = value.Localizacao?.AsString(EnumFormat.Description),
+                DescricaoLocalizacao = value.Localizacao?.ToString(),
                 Latitude = value.Latitude,
                 Longitude = value.Longitude,
                 NumeroTotalDeDocentes = value.TotalDocentes,
@@ -61,15 +62,77 @@ namespace app.Services
             };
 
         public MunicipioModel ToModel(Municipio value) =>
-            new MunicipioModel {
+            new MunicipioModel
+            {
                 Id = value.Id,
                 Nome = value.Nome,
             };
 
         public SituacaoModel ToModel(Situacao value) =>
-            new SituacaoModel {
+            new SituacaoModel
+            {
                 Id = (int)value,
                 Descricao = value.AsString(EnumFormat.Description)!,
+            };
+
+        public RanqueEscolaModel ToModel(EscolaRanque escolaRanque) =>
+            new RanqueEscolaModel
+            {
+                RanqueId = escolaRanque.RanqueId,
+                Pontuacao = escolaRanque.Pontuacao,
+                Posicao = escolaRanque.Posicao,
+                Escola = new EscolaRanqueInfo
+                {
+                    Id = escolaRanque.Escola.Id,
+                    Nome = escolaRanque.Escola.Nome,
+                    EtapaEnsino = escolaRanque.Escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
+                    Municipio = escolaRanque.Escola.Municipio != null ? ToModel(escolaRanque.Escola.Municipio) : null,
+                    Uf = escolaRanque.Escola.Uf.HasValue ? ToModel(escolaRanque.Escola.Uf.Value) : null,
+                }
+            };
+
+        public DetalhesEscolaRanqueModel ToModel(Escola escola, RanqueInfo ranque)
+            => new DetalhesEscolaRanqueModel
+            {
+                RanqueInfo = ranque,
+                Id = escola.Id,
+                Nome = escola.Nome,
+                Telefone = escola.Telefone,
+                Cep = escola.Cep,
+                Codigo = escola.Codigo,
+                Longitude = escola.Longitude,
+                Latitude = escola.Latitude,
+                Endereco = escola.Endereco,
+                TotalAlunos = escola.TotalAlunos,
+                TotalDocentes = escola.TotalDocentes,
+                Uf = escola.Uf.HasValue ? ToModel(escola.Uf.Value) : null,
+                Municipio = escola.Municipio != null ? ToModel(escola.Municipio) : null,
+                Porte = escola.Porte.HasValue ? ToModel(escola.Porte.Value) : null,
+                Rede = ToModel(escola.Rede),
+                Localizacao = escola.Localizacao.HasValue ? ToModel(escola.Localizacao.Value) : null,
+                Situacao = escola.Situacao.HasValue ? ToModel(escola.Situacao.Value) : null,
+                EtapasEnsino = escola.EtapasEnsino?.ConvertAll(e => ToModel(e.EtapaEnsino)),
+            };
+
+        public PorteModel ToModel(Porte porte) =>
+            new PorteModel
+            {
+                Id = porte,
+                Descricao = porte.AsString(EnumFormat.Description)!,
+            };
+
+        public RedeModel ToModel(Rede rede) =>
+            new RedeModel
+            {
+                Id = rede,
+                Descricao = rede.AsString(EnumFormat.Description)!,
+            };
+
+        public LocalizacaoModel ToModel(Localizacao localizacao) =>
+            new LocalizacaoModel
+            {
+                Id = localizacao,
+                Descricao = localizacao.ToString(),
             };
     }
 }
