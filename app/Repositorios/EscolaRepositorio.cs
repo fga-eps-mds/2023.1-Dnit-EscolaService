@@ -87,85 +87,32 @@ namespace app.Repositorios
             dbContext.Add(escola);
             return escola;
         }
-        
-        public Escola Criar(CadastroEscolaData escolaData, Municipio municipio)
-        {
-            var escola = new Escola
-            {
-                Nome = escolaData.NomeEscola!,
-                Codigo = escolaData.CodigoEscola,
-                Cep = escolaData.Cep!,
-                Endereco = escolaData.Endereco!,
-                Latitude = escolaData.Latitude ?? "",
-                Longitude = escolaData.Longitude ?? "",
-                TotalAlunos = escolaData.NumeroTotalDeAlunos,
-                Telefone = escolaData.Telefone ?? "",
-                TotalDocentes = escolaData.NumeroTotalDeDocentes,
-                Rede = (Rede)escolaData.IdRede,
-                Uf = (UF)escolaData.IdUf,
-                Localizacao = (Localizacao?)escolaData.IdLocalizacao,
-                Porte = (Porte?)escolaData.IdPorte,
-                Situacao = (Situacao?)escolaData.IdSituacao,
-                DataAtualizacao = DateTimeOffset.Now,
-                MunicipioId = municipio.Id,
-                Municipio = municipio,
-            };
-            dbContext.Add(escola);
-            return escola;
-        }
 
-        public Escola Criar(EscolaModel dadosEscola, double distanciaSuperintendencia, Superintendencia? superintendencia)
+        public Escola Criar(EscolaModel escola, double distanciaSuperintendencia = 0, Superintendencia? superintendencia = null)
         {
             var entidade = new Escola()
             {
                 Id = Guid.NewGuid(),
-                Nome = dadosEscola.NomeEscola,
-                Codigo = dadosEscola.CodigoEscola,
-                Cep = dadosEscola.Cep,
-                Endereco = dadosEscola.Endereco,
-                Latitude = dadosEscola.Latitude ?? "",
-                Longitude = dadosEscola.Longitude ?? "",
-                TotalAlunos = dadosEscola.NumeroTotalDeAlunos ?? 0,
-                Telefone = dadosEscola.Telefone,
-                TotalDocentes = dadosEscola.NumeroTotalDeDocentes,
-                Rede = dadosEscola.Rede!.Value,
-                Uf = dadosEscola.Uf,
-                Localizacao = dadosEscola.Localizacao,
-                MunicipioId = dadosEscola.IdMunicipio,
-                Porte = dadosEscola.Porte,
-                Situacao = dadosEscola.Situacao,
-                Observacao = dadosEscola.Observacao,
+                Nome = escola.NomeEscola,
+                Codigo = escola.CodigoEscola,
+                Cep = escola.Cep,
+                Endereco = escola.Endereco,
+                Latitude = escola.Latitude ?? "",
+                Longitude = escola.Longitude ?? "",
+                TotalAlunos = escola.NumeroTotalDeAlunos ?? 0,
+                Telefone = escola.Telefone,
+                TotalDocentes = escola.NumeroTotalDeDocentes,
+                Rede = escola.Rede!.Value,
+                Uf = escola.Uf,
+                Localizacao = escola.Localizacao,
+                MunicipioId = escola.IdMunicipio,
+                Porte = escola.Porte,
+                Situacao = escola.Situacao,
+                Observacao = escola.Observacao,
                 DataAtualizacao = DateTimeOffset.Now,
                 DistanciaSuperintendencia = distanciaSuperintendencia,
                 Superintendencia = superintendencia,
                 SuperintendenciaId = superintendencia?.Id,
-            };
-            dbContext.Add(entidade);
-            return entidade;
-        }
-
-        public Escola Criar(EscolaModel dadosEscola)
-        {
-            var entidade = new Escola()
-            {
-                Id = Guid.NewGuid(),
-                Nome = dadosEscola.NomeEscola,
-                Codigo = dadosEscola.CodigoEscola,
-                Cep = dadosEscola.Cep,
-                Endereco = dadosEscola.Endereco,
-                Latitude = dadosEscola.Latitude ?? "",
-                Longitude = dadosEscola.Longitude ?? "",
-                TotalAlunos = dadosEscola.NumeroTotalDeAlunos ?? 0,
-                Telefone = dadosEscola.Telefone,
-                TotalDocentes = dadosEscola.NumeroTotalDeDocentes,
-                Rede = dadosEscola.Rede!.Value,
-                Uf = dadosEscola.Uf,
-                Localizacao = dadosEscola.Localizacao,
-                MunicipioId = dadosEscola.IdMunicipio,
-                Porte = dadosEscola.Porte,
-                Situacao = dadosEscola.Situacao,
-                Observacao = dadosEscola.Observacao,
-                DataAtualizacao = DateTimeOffset.Now,
             };
             dbContext.Add(entidade);
             return entidade;
