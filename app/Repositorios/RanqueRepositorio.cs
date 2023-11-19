@@ -66,7 +66,7 @@ namespace app.Repositorios
 
             var total = await query.CountAsync();
             var items = await query
-                .OrderByDescending(er => er.Pontuacao)
+                .OrderBy(er => er.Posicao)
                 .Skip((filtro.Pagina - 1) * filtro.TamanhoPagina)
                 .Take(filtro.TamanhoPagina)
                 .ToListAsync();
