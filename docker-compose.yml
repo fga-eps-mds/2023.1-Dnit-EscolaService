@@ -16,8 +16,6 @@ services:
       - MODE=container
     env_file:
       - .env
-    environment:
-      - MODE=container
     networks:
       - dnit-network
 

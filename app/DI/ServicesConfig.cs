@@ -3,6 +3,8 @@ using app.Entidades;
 using app.Services;
 using Microsoft.EntityFrameworkCore;
 using service.Interfaces;
+using System.Text;
+using app.Services.Interfaces;
 using Hangfire;
 using Hangfire.PostgreSql;
 using app.Repositorios.Interfaces;
@@ -24,6 +26,7 @@ namespace app.DI
 
             services.AddScoped<IEscolaService, EscolaService>();
             services.AddScoped<IMunicipioService, MunicipioService>();
+            services.AddScoped<ISuperintendenciaService, SuperintendenciaService>();
             services.AddScoped<ISolicitacaoAcaoService, SolicitacaoAcaoService>();
             services.AddScoped<IRanqueService, RanqueService>();
             services.AddScoped<IBackgroundJobClient, BackgroundJobClient>();

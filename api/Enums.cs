@@ -125,6 +125,10 @@ namespace api
         EscolaNaoEncontrada,
         [Description("Municipio não encontrado")]
         MunicipioNaoEncontrado,
+        [Description("Superintendência não encontrada")]
+        SuperIntendenciaNaoEncontrada,
+        [Description("Já tem um ranque sendo calculado, tente novamente mais tarde")]
+        RanqueJaSendoCalculado,
         [Description("Formato JSON não reconhecido")]
         FormatoJsonNaoReconhecido,
     }

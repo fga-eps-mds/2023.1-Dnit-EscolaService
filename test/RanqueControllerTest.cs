@@ -1,6 +1,8 @@
 ﻿using api.Escolas;
+using api.Escolas;
 using app.Controllers;
 using app.Entidades;
+using System.Threading.Tasks;
 using test.Fixtures;
 using Xunit.Abstractions;
 
@@ -10,7 +12,6 @@ namespace test
     {
         private readonly RanqueController controller;
         private readonly AppDbContext dbContext;
-        private readonly PesquisaEscolaFiltro FiltroVazio = new();
 
         public RanqueControllerTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
