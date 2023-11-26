@@ -148,6 +148,13 @@ namespace app.Repositorios
             {
                 query = query.Where(e => e.Uf == (UF)filtro.IdUf);
             }
+            // FIXME: tem que funcionar apenas com a opção de qtd MÍNIMA de alunos (ex: acima de 1001 alunos)
+            if (filtro.QuantidadeAlunosMin != null)
+            {
+                query = query.Where(e => e.TotalAlunos >= filtro.QuantidadeAlunosMin);
+                if (filtro.QuantidadeAlunosMax != null)
+                    query = query.Where(e => e.TotalAlunos <= filtro.QuantidadeAlunosMax);
+            }
 
             var total = await query.CountAsync();
             var items = await query

@@ -1,6 +1,7 @@
 using api.Escolas;
 using app.Entidades;
 using app.Repositorios.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace app.Repositorios
 {
@@ -13,21 +14,24 @@ namespace app.Repositorios
             this.dbContext = dbContext;
         }
 
-        public SolicitacaoAcao Criar(SolicitacaoAcaoData s)
+        public async Task<SolicitacaoAcao> Criar(SolicitacaoAcaoData s)
         {
             var sol = new SolicitacaoAcao
             {
+                EscolaId = s.EscolaId,
                 Email = s.Email,
                 Telefone = s.Telefone,
                 NomeSolicitante = s.NomeSolicitante,
+                DataRealizada = DateTimeOffset.Now,
                 Observacoes = s.Observacoes,
-                // FIXME: como pegar esse Id?
-                EscolaId = Guid.NewGuid(),
-                DataRealizada = DateTimeOffset.Now
             };
-
-            dbContext.Solicitacoes.Add(sol);
+            await dbContext.Solicitacoes.AddAsync(sol);
             return sol;
+        }
+
+        public async Task<SolicitacaoAcao?> ObterPorEscolaIdAsync(Guid escolaId)
+        {
+            return await dbContext.Solicitacoes.Where(e => e.EscolaId == escolaId).FirstOrDefaultAsync();
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     public class SolicitacaoAcaoData
     {
+        public Guid EscolaId { get; set; }
         public string Escola { get; set; }
         public string UF { get; set; }
         public string Municipio { get; set; }

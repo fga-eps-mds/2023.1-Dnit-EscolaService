@@ -17,7 +17,7 @@ namespace test
         const int INTERNAL_SERVER_ERROR = 500;
 
         [Fact]
-        public void EnviarSolicitacaoAcao_QuandoSolicitacaoForEnviada_DeveRetornarOk()
+        public async void EnviarSolicitacaoAcao_QuandoSolicitacaoForEnviada_DeveRetornarOk()
         {
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
@@ -26,14 +26,14 @@ namespace test
 
             var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
-            var result = controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
+            var result = await controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
             solicitacaoAcaoServiceMock.Verify(service => service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO), Times.Once);
             Assert.IsType<OkResult>(result);
         }
 
         [Fact]
-        public void EnviarSolicitacaoAcao_QuandoEnvioDoEmailFalhar_DeveRetornarErro()
+        public async void EnviarSolicitacaoAcao_QuandoEnvioDoEmailFalhar_DeveRetornarErro()
         {
             SolicitacaoAcaoStub solicitacaoAcaoStub = new SolicitacaoAcaoStub();
             var solicitacaoAcaoDTO = solicitacaoAcaoStub.ObterSolicitacaoAcaoDTO();
@@ -43,7 +43,7 @@ namespace test
 
             var controller = new SolicitacaoAcaoController(solicitacaoAcaoServiceMock.Object);
 
-            var result = controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
+            var result = await controller.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
 
             solicitacaoAcaoServiceMock.Verify(service => service.EnviarSolicitacaoAcao(solicitacaoAcaoDTO), Times.Once);
             var objeto = Assert.IsType<ObjectResult>(result);

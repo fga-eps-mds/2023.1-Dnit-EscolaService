@@ -11,29 +11,35 @@ using System.Threading;
 using test.Stubs;
 using app.Services;
 using app.Repositorios.Interfaces;
+using app.Entidades;
+using Xunit.Microsoft.DependencyInjection.Abstracts;
+using test.Fixtures;
+using Xunit.Abstractions;
 
 namespace test
 {
-    public class SolicitacaoAcaoServiceTest
+    public class SolicitacaoAcaoServiceTest : TestBed<Base>
     {
         private readonly Mock<ISmtpClientWrapper> smtpClientWrapperMock;
         private readonly Mock<IHttpClientFactory> httpClientFactoryMock;
         private readonly Mock<IConfiguration> configurationMock;
         private readonly Mock<ISolicitacaoAcaoRepositorio> solicitacaoAcaoRepositorioMock;
+        private readonly AppDbContext db;
         private SolicitacaoAcaoService service;
 
-        public SolicitacaoAcaoServiceTest()
+        public SolicitacaoAcaoServiceTest(ITestOutputHelper testOutputHelper, Base fixture) : base(testOutputHelper, fixture)
         {
             Environment.SetEnvironmentVariable("EMAIL_SERVICE_ADDRESS", "teste_email@exemplo.com");
             Environment.SetEnvironmentVariable("EMAIL_SERVICE_PASSWORD", "teste");
             Environment.SetEnvironmentVariable("EMAIL_DNIT", "teste_email@exemplo.com");
 
+            db = fixture.GetService<AppDbContext>(testOutputHelper)!;
             smtpClientWrapperMock = new();
             httpClientFactoryMock = new();
             configurationMock = new();
             solicitacaoAcaoRepositorioMock = new();
 
-            service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object);
+            service = new SolicitacaoAcaoService(db, smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object);
         }
 
         [Fact]
@@ -137,7 +143,7 @@ namespace test
             int primeiraPosicao = 0;
             int segundaPosicao = 1;
 
-            service = new SolicitacaoAcaoService(smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object);
+            service = new SolicitacaoAcaoService(db, smtpClientWrapperMock.Object, httpClientFactoryMock.Object, configurationMock.Object, solicitacaoAcaoRepositorioMock.Object);
             var escolas = await service.ObterEscolas(municipio);
 
             Assert.Equal(codEscolaA, escolas.ElementAt(primeiraPosicao).Cod);

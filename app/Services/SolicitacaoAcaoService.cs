@@ -3,6 +3,8 @@ using System.Net.Mail;
 using Newtonsoft.Json.Linq;
 using System.Web;
 using api.Escolas;
+using app.Repositorios.Interfaces;
+using app.Entidades;
 
 namespace app.Services
 {
@@ -11,12 +13,16 @@ namespace app.Services
         private readonly ISmtpClientWrapper _smtpClientWrapper;
         private readonly IHttpClientFactory httpClientFactory;
         private readonly IConfiguration configuration;
+        private readonly ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio;
+        private readonly AppDbContext dbContext;
 
-        public SolicitacaoAcaoService(ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public SolicitacaoAcaoService(AppDbContext dbContext, ISmtpClientWrapper smtpClientWrapper, IHttpClientFactory httpClientFactory, IConfiguration configuration, ISolicitacaoAcaoRepositorio solicitacaoAcaoRepositorio)
         {
+            this.dbContext = dbContext;
             _smtpClientWrapper = smtpClientWrapper;
             this.httpClientFactory = httpClientFactory;
             this.configuration = configuration;
+            this.solicitacaoAcaoRepositorio = solicitacaoAcaoRepositorio;
         }
 
         public void EnviarSolicitacaoAcao(SolicitacaoAcaoData solicitacaoAcaoDTO)
@@ -37,6 +43,7 @@ namespace app.Services
             var emailDestinatario = Environment.GetEnvironmentVariable("EMAIL_DNIT") ?? "";
             EnviarEmail(emailDestinatario, "Solicitação de Serviço", mensagem);
         }
+
         public void EnviarEmail(string emailDestinatario, string assunto, string corpo)
         {
 
@@ -50,6 +57,16 @@ namespace app.Services
             mensagem.Body = corpo;
 
             _smtpClientWrapper.Send(mensagem);
+        }
+
+        public async Task Criar(SolicitacaoAcaoData solicitacao)
+        {
+            // TODO: E se a escola não existir?
+            var solicitacaoExistente = solicitacaoAcaoRepositorio.ObterPorEscolaIdAsync(solicitacao.EscolaId)
+                ?? throw new Exception("Já foi feita uma solicitação para essa escola");
+
+            await solicitacaoAcaoRepositorio.Criar(solicitacao);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<EscolaInep>> ObterEscolas(int municipio)

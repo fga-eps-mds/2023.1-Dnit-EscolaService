@@ -16,12 +16,14 @@ namespace app.Controllers
         {
             this.solicitacaoAcaoService = solicitacaoAcaoService;
         }
+
         [HttpPost]
-        public IActionResult EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoData solicitacaoAcaoDTO)
+        public async Task<IActionResult> EnviarSolicitacaoAcao([FromBody] SolicitacaoAcaoData solicitacaoAcaoDTO)
         {
             try
             {
                 solicitacaoAcaoService.EnviarSolicitacaoAcao(solicitacaoAcaoDTO);
+                await solicitacaoAcaoService.Criar(solicitacaoAcaoDTO);
                 return Ok();
             }
             catch (SmtpException)
