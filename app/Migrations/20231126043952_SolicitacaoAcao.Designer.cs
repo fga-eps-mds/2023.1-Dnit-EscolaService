@@ -12,8 +12,8 @@ using app.Entidades;
 namespace app.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231123063652_AdicionaSolicitacoes")]
-    partial class AdicionaSolicitacoes
+    [Migration("20231126043952_SolicitacaoAcao")]
+    partial class SolicitacaoAcao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -204,7 +204,7 @@ namespace app.Migrations
                     b.ToTable("Ranques");
                 });
 
-            modelBuilder.Entity("app.Entidades.Solicitacao", b =>
+            modelBuilder.Entity("app.Entidades.SolicitacaoAcao", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -321,7 +321,7 @@ namespace app.Migrations
                     b.Navigation("Ranque");
                 });
 
-            modelBuilder.Entity("app.Entidades.Solicitacao", b =>
+            modelBuilder.Entity("app.Entidades.SolicitacaoAcao", b =>
                 {
                     b.HasOne("app.Entidades.Escola", "Escola")
                         .WithMany()

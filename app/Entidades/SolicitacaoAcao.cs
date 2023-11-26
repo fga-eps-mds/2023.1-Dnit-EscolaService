@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app.Entidades
 {
-    public class Solicitacao
+    public class SolicitacaoAcao
     {
         [Key]
         public Guid Id { get; set; }

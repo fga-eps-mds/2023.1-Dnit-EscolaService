@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace app.Migrations
 {
     /// <inheritdoc />
-    public partial class AdicionaSolicitacoes : Migration
+    public partial class SolicitacaoAcao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

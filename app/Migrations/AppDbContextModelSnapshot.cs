@@ -201,7 +201,7 @@ namespace app.Migrations
                     b.ToTable("Ranques");
                 });
 
-            modelBuilder.Entity("app.Entidades.Solicitacao", b =>
+            modelBuilder.Entity("app.Entidades.SolicitacaoAcao", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -318,7 +318,7 @@ namespace app.Migrations
                     b.Navigation("Ranque");
                 });
 
-            modelBuilder.Entity("app.Entidades.Solicitacao", b =>
+            modelBuilder.Entity("app.Entidades.SolicitacaoAcao", b =>
                 {
                     b.HasOne("app.Entidades.Escola", "Escola")
                         .WithMany()
